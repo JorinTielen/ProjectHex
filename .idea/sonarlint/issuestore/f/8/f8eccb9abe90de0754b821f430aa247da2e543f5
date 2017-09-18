@@ -1,6 +1,0 @@
-
-ssquid:UselessImportCheck"ERemove this unused import 'com.badlogic.gdx.utils.viewport.Viewport'.(Œ·üáÿÿÿÿÿ8Ş½­ é+
-\squid:UselessImportCheck"3Remove this unused import 'com.badlogic.gdx.Input'.(•˜ë8Åµ“¡é+
-]squid:S1854"<Remove this useless assignment to local variable "viewport".(ë”Í–ùÿÿÿÿ8ÆÂ¬ é+
-csquid:UselessImportCheck":Remove this unused import 'com.badlogic.gdx.math.Vector3'.(ğ«‰Ô8ç¡é+
-Nsquid:S1481"-Remove this unused "viewport" local variable.(ë”Í–ùÿÿÿÿ8ÆÂ¬ é+
