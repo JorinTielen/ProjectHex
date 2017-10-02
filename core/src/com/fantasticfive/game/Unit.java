@@ -1,5 +1,7 @@
 package com.fantasticfive.game;
 
+import com.fantasticfive.game.enums.UnitType;
+
 import java.io.File;
 
 public class Unit {

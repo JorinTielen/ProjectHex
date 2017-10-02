@@ -1,4 +1,4 @@
-package com.fantasticfive.game;
+package com.fantasticfive.game.enums;
 
 public enum GroundType {
     GRASS,

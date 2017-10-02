@@ -1,5 +1,6 @@
 package com.fantasticfive.game;
 
+import com.fantasticfive.game.enums.BuildingType;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;

@@ -1,5 +1,7 @@
 package com.fantasticfive.game;
 
+import com.fantasticfive.game.enums.GroundType;
+import com.fantasticfive.game.enums.ObjectType;
 import javafx.scene.paint.Color;
 
 import java.io.File;

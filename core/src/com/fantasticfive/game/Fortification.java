@@ -1,5 +1,8 @@
 package com.fantasticfive.game;
 
+import com.fantasticfive.game.enums.BuildingType;
+import com.fantasticfive.game.enums.GroundType;
+
 import java.io.File;
 
 public class Fortification extends Building {

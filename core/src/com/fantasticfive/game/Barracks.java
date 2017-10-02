@@ -1,5 +1,9 @@
 package com.fantasticfive.game;
 
+import com.fantasticfive.game.enums.BuildingType;
+import com.fantasticfive.game.enums.GroundType;
+import com.fantasticfive.game.enums.UnitType;
+
 import java.io.File;
 
 public class Barracks extends Building{
