@@ -9,8 +9,8 @@ public class BuildingFactory {
 
     private List<Building> buildingPresets;
 
-    public BuildingFactory(List<Building> buildingPresets) {
-        this.buildingPresets = buildingPresets;
+    public BuildingFactory() {
+
     }
 
     private Building createBuilding(BuildingType buildingType, Point location) {

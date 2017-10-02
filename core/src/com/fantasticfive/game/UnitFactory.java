@@ -9,8 +9,8 @@ import java.util.List;
 public class UnitFactory {
     private List<Unit> unitPresets;
 
-    public UnitFactory(List<Unit> unitPresets) {
-        this.unitPresets = unitPresets;
+    public UnitFactory() {
+
     }
 
     private List<Unit> getUnitPresets() {

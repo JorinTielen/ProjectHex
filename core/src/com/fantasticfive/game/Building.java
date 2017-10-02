@@ -15,6 +15,16 @@ public abstract class Building {
     protected GroundType[] buildableOn;
     protected Player owner;
 
+    public Building(BuildingType buildingType, int health, Point location, File image, int purchaseCost, GroundType[] buildableOn, Player owner){
+        this.buildingType = buildingType;
+        this.health = health;
+        this.location = location;
+        this.image = image;
+        this.purchaseCost = purchaseCost;
+        this.buildableOn = buildableOn;
+        this.owner = owner;
+    }
+
     public void damageHealth(int hp) {
         throw new UnsupportedOperationException();
     }

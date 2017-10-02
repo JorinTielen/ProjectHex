@@ -2,7 +2,7 @@ package com.fantasticfive.game;
 
 import com.fantasticfive.game.enums.GroundType;
 import com.fantasticfive.game.enums.ObjectType;
-import javafx.scene.paint.Color;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.File;
 
@@ -14,14 +14,38 @@ public class Hexagon {
     private int radius;
     private File groundImage;
     private File objectImage;
-    private Color ownerColor;
+    private Player owner;
 
-    public Hexagon(GroundType groundType, ObjectType objectType, Point location, File groundImage, File objectImage, int radius) {
+    public Hexagon(GroundType groundType, Point location, int radius) {
+        this.groundType = groundType;
+        this.location = location;
+        this.radius = radius;
+    }
+
+    public Hexagon(GroundType groundType, ObjectType objectType, Point location, int radius) {
         this.groundType = groundType;
         this.objectType = objectType;
         this.location = location;
-        this.groundImage = groundImage;
-        this.objectImage = objectImage;
         this.radius = radius;
+    }
+
+    public void addObjectType(ObjectType objectType) {
+        this.objectType = objectType;
+    }
+
+    public void removeObjectType() {
+        this.objectType = null;
+    }
+
+    public void addOwner(Player owner) {
+        this.owner = owner;
+    }
+
+    public void deleteOwner() {
+        this.owner = null;
+    }
+
+    public boolean hasOwner(){
+        throw new NotImplementedException();
     }
 }

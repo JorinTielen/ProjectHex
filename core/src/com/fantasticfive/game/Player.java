@@ -8,11 +8,12 @@ import java.util.List;
 public class Player {
     private List<Building> buildings;
     private List<Unit> units;
+    private List<Hexagon> hexagons;
     private Color color;
     private int gold = 0;
     private String username;
 
-    public Player(Color color, String username) {
+    public Player(String username, Color color) {
         this.color = color;
         this.username = username;
     }
@@ -41,15 +42,23 @@ public class Player {
         this.units.remove(unit); //still need to remove gold
     }
 
-    public void endTurn(){
+    public void addHexagon(Hexagon hexagon) {
+        this.hexagons.add(hexagon);
+    }
+
+    public void removeHexagon(Hexagon hexagon) {
+        this.hexagons.remove(hexagon);
+    }
+
+    public void endTurn() {
         throw new NotImplementedException();
     }
 
-    public void leaveGame(){
+    public void leaveGame() {
         throw new NotImplementedException();
     }
 
-    public void update(){
+    public void updateResources() {
         throw new NotImplementedException();
     }
 }

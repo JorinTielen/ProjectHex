@@ -9,17 +9,18 @@ import java.util.List;
 public class Game {
     private List<Player> players;
     private Map map;
-    private UnitFactory unitFactory;
-    private BuildingFactory buildingFactory;
+    private UnitFactory unitFactory = new UnitFactory();
+    private BuildingFactory buildingFactory = new BuildingFactory();
 
     private String hash;
+    private int id;
 
     public Game() {
 
     }
 
-    public void addPlayer(Player player) {
-        this.players.add(player);
+    public void addPlayer(String username) {
+        throw new NotImplementedException();
     }
 
     public void removePlayer(Player player) {
@@ -38,11 +39,19 @@ public class Game {
         throw new NotImplementedException();
     }
 
-    public void CreateUnit(Player player, UnitType unitType) {
+    public void createUnit(Player player, UnitType unitType, Point location) {
         throw new NotImplementedException();
     }
 
-    public void CreateBuilding(Player player, BuildingType buildingType) {
+    public void createBuilding(Player player, BuildingType buildingType, Point location) {
+        throw new NotImplementedException();
+    }
+
+    public void claimLand(Unit unit){
+        throw new NotImplementedException();
+    }
+
+    public void update() {
         throw new NotImplementedException();
     }
 }

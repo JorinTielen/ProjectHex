@@ -13,7 +13,7 @@ public class Main {
         throw new NotImplementedException();
     }
 
-    public void joinGame() {
+    public void joinGame(int id) {
         throw new NotImplementedException();
     }
 }
