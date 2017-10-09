@@ -45,11 +45,11 @@ public class Game {
             color = Color.getRandomColor();
         } while (usedColors.contains(color));
 
-        Player p = new Player(username, color);
         if(available) {
+            Player p = new Player(username, color);
             players.add(p);
-            //p.purchaseBuilding(new TownCentre(BuildingType.TOWNCENTRE, 50, new Point(5, 2), new Texture("townCentre.png"), 10, new GroundType[] { GroundType.GRASS }, p));
-            //should go via factory
+            Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(0,0)); //Random Point???
+            p.purchaseBuilding(b);
         }
     }
 

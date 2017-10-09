@@ -11,11 +11,11 @@ public class BuildingFactory {
         //Set presets from database
     }
 
-    private Building createBuilding(BuildingType buildingType, Point location) {
+    public Building createBuilding(BuildingType buildingType, Point location) {
         throw new NotImplementedException();
     }
 
-    private Building getBuildingPreset(BuildingType buildingType) {
+    public Building getBuildingPreset(BuildingType buildingType) {
         throw new NotImplementedException();
     }
 }
