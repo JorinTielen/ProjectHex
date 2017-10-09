@@ -2,7 +2,6 @@ package com.fantasticfive.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.game.enums.UnitType;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,10 +11,6 @@ public class UnitFactory {
 
     public UnitFactory() {
         fillList();
-    }
-
-    public List<Unit> getUnitPresets() {
-        return Collections.unmodifiableList(unitPresets);
     }
 
     public Unit createUnit(UnitType unitType, Point location, Player owner) {
@@ -37,8 +32,8 @@ public class UnitFactory {
     }
 
     public Unit getUnitPreset(UnitType unitType) {
-        Unit copy = null;
-        for(Unit unit : getUnitPresets()) {
+        Unit copy;
+        for(Unit unit : unitPresets) {
             if(unit.getType() == unitType) {
                 try {
                     copy = (Unit) unit.clone();
@@ -49,6 +44,10 @@ public class UnitFactory {
             }
         }
         return null;
+    }
+
+    public List<Unit> getUnitPresets() {
+        return Collections.unmodifiableList(unitPresets);
     }
 
     private void fillList() {

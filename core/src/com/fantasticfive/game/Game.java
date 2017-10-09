@@ -1,12 +1,12 @@
 package com.fantasticfive.game;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.Color;
-import com.fantasticfive.game.enums.GroundType;
 import com.fantasticfive.game.enums.UnitType;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Game {
@@ -18,14 +18,6 @@ public class Game {
     private int id;
 
     public Game() {
-        //Just for testing
-        players.add(new Player("maxim", null));
-        players.add(new Player("enemy", null));
-        players.get(0).addGold(99999);
-    }
-
-    public List<Player> getPlayers() {
-        return players;
     }
 
     public void addPlayer(String username) {
@@ -33,11 +25,11 @@ public class Game {
         ArrayList<Color> usedColors = new ArrayList<Color>();
 
         for (Player p : players) {
-            if(p.getUsername() == username){
+            if (p.getUsername().equals(username)) {
                 System.out.println("This username is already in this game!");
                 available = false;
             }
-            if(!usedColors.contains(p.getColor())){
+            if (!usedColors.contains(p.getColor())) {
                 usedColors.add(p.getColor());
             }
         }
@@ -47,10 +39,10 @@ public class Game {
             color = Color.getRandomColor();
         } while (usedColors.contains(color));
 
-        if(available) {
+        if (available) {
             Player p = new Player(username, color);
             players.add(p);
-            Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(0,0)); //Random Point???
+            Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(1, 0), p); //Random Point???
             p.purchaseBuilding(b);
         }
     }
@@ -72,7 +64,7 @@ public class Game {
     }
 
     public void createUnit(Player player, UnitType unitType, Point location) {
-        if(hexEmpty(location)) {
+        if (hexEmpty(location)) {
             Unit unit = unitFactory.getUnitPreset(unitType);
             if (player.getGold() - unit.getPurchaseCost() > 0) {
                 player.purchaseUnit(unitFactory.createUnit(unitType, location, player));
@@ -83,13 +75,13 @@ public class Game {
     }
 
     public void createBuilding(Player player, BuildingType buildingType, Point location) {
-        if (map.isHexBuildable(location, player)){
+        if (map.isHexBuildable(location, player)) {
             player.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, player));
             map.createBuilding(buildingType, location);
         }
     }
 
-    public void claimLand(Unit unit){
+    public void claimLand(Unit unit) {
         throw new NotImplementedException();
     }
 
@@ -102,8 +94,8 @@ public class Game {
     }
 
     public Player getTestPlayer() {
-        for(Player player : getPlayers()) {
-            if(player.getUsername() == "maxim") {
+        for (Player player : getPlayers()) {
+            if (player.getUsername().equals("maxim")) { //This player is created in ProjectHex.java
                 return player;
             }
         }
@@ -111,13 +103,13 @@ public class Game {
     }
 
     public void MoveUnit(Unit unit, Point location) {
-        if(hexEmpty(location)) {
+        if (hexEmpty(location)) {
             unit.move(location);
         }
     }
 
     public Unit getTestUnit() {
-        if(getTestPlayer().getUnits().size() != 0) {
+        if (getTestPlayer().getUnits().size() != 0) {
             return getTestPlayer().getUnits().get(0);
         }
         return null;
@@ -125,9 +117,9 @@ public class Game {
 
     public boolean hexEmpty(Point location) {
         boolean empty = true;
-        for(Player player: players) {
-            for(Unit unit : player.getUnits()) {
-                if(unit.getLocation() == location) {
+        for (Player player : players) {
+            for (Unit unit : player.getUnits()) {
+                if (unit.getLocation() == location) {
                     empty = false;
                 }
             }
