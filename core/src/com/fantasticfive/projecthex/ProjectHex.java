@@ -15,16 +15,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.fantasticfive.game.Hexagon;
-import com.fantasticfive.game.Map;
-import com.fantasticfive.game.Game;
-import com.fantasticfive.game.Player;
-import com.fantasticfive.game.Point;
-import com.fantasticfive.game.Unit;
-import com.fantasticfive.game.enums.UnitType;
+import com.fantasticfive.game.*;
 
 public class ProjectHex extends ApplicationAdapter {
-    private InputManager input = new InputManager();
+    private InputManager input = new InputManager(this);
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
 	private Map map;
@@ -41,6 +35,10 @@ public class ProjectHex extends ApplicationAdapter {
         //setup map
 		map = new Map(20,15);
 
+        //setup test game
+        game = new Game();
+        game.setMap(map);
+        game.addPlayer("test1");
 
 		//setup window
 		batch = new SpriteBatch();
@@ -95,6 +93,7 @@ public class ProjectHex extends ApplicationAdapter {
 	public void render () {
 	    //handle input
 	    input.HandleInput();
+	    Gdx.input.setInputProcessor(input);
 
 	    //move camera
 		camera.translate(input.getCamPos());
@@ -107,14 +106,19 @@ public class ProjectHex extends ApplicationAdapter {
 
         //draw all the sprites
         batch.begin();
-		for (Hexagon hex : map.getHexagons()) {
+
+        for (Hexagon hex : map.getHexagons()) {
 
 			batch.draw(hex.groundImage, hex.getPos().x, hex.getPos().y);
 			if(hex.objectImage != null){
 				batch.draw(hex.objectImage, hex.getPos().x, hex.getPos().y);
 			}
 		}
-		for (Player player: game.getPlayers()) {
+		for (Player p : game.getPlayers()) {
+            for (Building b : p.getBuildings()) {
+                Hexagon h = map.getHexAtLocation(b.getLocation());
+                batch.draw(b.image, h.getPos().x, h.getPos().y);
+            }
 		    for(Unit u : player.getUnits()) {
 		        Hexagon h = map.getHexAtLocation(u.getLocation());
                 batch.draw(u.getTexture(), h.getPos().x, h.getPos().y);

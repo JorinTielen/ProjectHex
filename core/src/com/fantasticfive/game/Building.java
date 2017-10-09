@@ -1,31 +1,50 @@
 package com.fantasticfive.game;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.GroundType;
 
 import java.io.File;
 
 public abstract class Building {
+    public Texture image;
 
-    protected BuildingType buildingType;
     protected int health;
     protected Point location;
-    protected File image;
-    protected int purchaseCost;
+    protected Texture image;
     protected GroundType[] buildableOn;
     protected Player owner;
 
-    public Building(BuildingType buildingType, int health, Point location, File image, int purchaseCost, GroundType[] buildableOn, Player owner){
-        this.buildingType = buildingType;
+    public Building(int health, Point location, Texture image, GroundType[] buildableOn, Player owner){
         this.health = health;
         this.location = location;
         this.image = image;
-        this.purchaseCost = purchaseCost;
         this.buildableOn = buildableOn;
         this.owner = owner;
     }
 
-    public void damageHealth(int hp) {
-        throw new UnsupportedOperationException();
+    public Building(int health, Texture image, GroundType[] buildableOn){
+        this.health = health;
+        this.image = image;
+        this.buildableOn = buildableOn;
+    }
+
+    public void setLocation(Point location){
+        this.location = location;
+    }
+
+    public void setOwner(Player owner){
+        this.owner = owner;
+    }
+    public boolean damageHealth(int hp) {
+        health = health - hp;
+        if (health <= 0){
+            return true;
+        }
+        return false;
+    }
+
+    public Point getLocation() {
+        return location;
     }
 }

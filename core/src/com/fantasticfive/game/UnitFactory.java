@@ -14,7 +14,7 @@ public class UnitFactory {
         fillList();
     }
 
-    private List<Unit> getUnitPresets() {
+    public List<Unit> getUnitPresets() {
         return Collections.unmodifiableList(unitPresets);
     }
 

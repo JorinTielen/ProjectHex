@@ -2,7 +2,6 @@ package com.fantasticfive.game;
 
 import com.fantasticfive.game.enums.Color;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +17,14 @@ public class Player {
     public Player(String username, Color color) {
         this.color = color;
         this.username = username;
+
+        buildings = new ArrayList<Building>();
+        units = new ArrayList<Unit>();
+        hexagons = new ArrayList<Hexagon>();
+    }
+
+    public List<Building> getBuildings() {
+        return buildings;
     }
 
     public Color getColor() {

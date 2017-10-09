@@ -1,10 +1,11 @@
 package com.fantasticfive.game;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.Color;
+import com.fantasticfive.game.enums.GroundType;
 import com.fantasticfive.game.enums.UnitType;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,9 +24,14 @@ public class Game {
         players.get(0).addGold(99999);
     }
 
+    public List<Player> getPlayers() {
+        return players;
+    }
+
     public void addPlayer(String username) {
         boolean available = true;
         ArrayList<Color> usedColors = new ArrayList<Color>();
+
         for (Player p : players) {
             if(p.getUsername() == username){
                 System.out.println("This username is already in this game!");
@@ -39,10 +45,13 @@ public class Game {
         Color color;
         do {
             color = Color.getRandomColor();
-        }while (!usedColors.contains(color));
+        } while (usedColors.contains(color));
 
-        if(available){
-            players.add(new Player(username, color));
+        if(available) {
+            Player p = new Player(username, color);
+            players.add(p);
+            Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(0,0)); //Random Point???
+            p.purchaseBuilding(b);
         }
     }
 
@@ -74,7 +83,10 @@ public class Game {
     }
 
     public void createBuilding(Player player, BuildingType buildingType, Point location) {
-        throw new NotImplementedException();
+        if (map.isHexBuildable(location, player)){
+            player.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, player));
+            map.createBuilding(buildingType, location);
+        }
     }
 
     public void claimLand(Unit unit){
