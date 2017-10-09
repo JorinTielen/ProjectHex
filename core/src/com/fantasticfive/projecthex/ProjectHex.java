@@ -22,7 +22,7 @@ public class ProjectHex extends ApplicationAdapter {
 	public void create () {
 	    //setup the camera
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 1920, 1080);
+        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         //setup map
 		map = new Map(20,15);
@@ -30,7 +30,6 @@ public class ProjectHex extends ApplicationAdapter {
 
 		//setup window
 		batch = new SpriteBatch();
-		ExtendViewport viewport = new ExtendViewport(1920, 1080, camera);
 	}
 
 	@Override
@@ -50,7 +49,11 @@ public class ProjectHex extends ApplicationAdapter {
         //draw all the sprites
         batch.begin();
 		for (Hexagon hex : map.getHexagons()) {
+
 			batch.draw(hex.groundImage, hex.getPos().x, hex.getPos().y);
+			if(hex.objectImage != null){
+				batch.draw(hex.objectImage, hex.getPos().x, hex.getPos().y);
+			}
 		}
 		batch.end();
 	}

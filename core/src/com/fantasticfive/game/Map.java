@@ -1,7 +1,7 @@
 package com.fantasticfive.game;
 
 import com.fantasticfive.game.enums.GroundType;
-import com.fantasticfive.projecthex.Hex;
+import com.fantasticfive.game.enums.ObjectType;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public class Map {
         this.width = width;
         this.height = height;
 
-        hexagons = new ArrayList<Hexagon>();
+        hexagons = new ArrayList<>();
         Generate();
     }
 
@@ -31,14 +31,29 @@ public class Map {
         float scale = 0.10f; //To determine the density
         float[][] noiseValues = Noise.Calc2DNoise(height, width, scale);
 
+        int maxNoise1 = 75;
+        int maxNoise2 = 125;
+        int maxNoise3 = 150;
+        int maxNoise4 = 220;
+        int maxNoise5 = 235;
+        int maxNoise6 = 255;
+
         for (int column = 0; column < width; column++) {
             for (int row = 0; row < height; row++) {
                 GroundType gt = GroundType.GRASS;
-                if (noiseValues[row][column] >= 0   && noiseValues[row][column] < 100) { gt = GroundType.GRASS; }
-                if (noiseValues[row][column] >= 100 && noiseValues[row][column] < 150) { gt = GroundType.DIRT; }
-                if (noiseValues[row][column] >= 150 && noiseValues[row][column] < 200) { gt = GroundType.SAND; }
-                if (noiseValues[row][column] >= 200 && noiseValues[row][column] < 255) { gt = GroundType.WATER; }
-                hexagons.add(new Hexagon(gt, new Point(row, column), 62));
+                ObjectType ot = null;
+                if (noiseValues[row][column] >= 0   && noiseValues[row][column] < maxNoise1) { gt = GroundType.WATER; }
+                if (noiseValues[row][column] >= maxNoise1 && noiseValues[row][column] < maxNoise2) { gt = GroundType.SAND; }
+                if (noiseValues[row][column] >= maxNoise2 && noiseValues[row][column] < maxNoise3) { gt = GroundType.DIRT; }
+                if (noiseValues[row][column] >= maxNoise3 && noiseValues[row][column] < maxNoise4) { gt = GroundType.GRASS; }
+                if (noiseValues[row][column] >= maxNoise4 && noiseValues[row][column] < maxNoise5) { gt = GroundType.FOREST; }
+                if (noiseValues[row][column] >= maxNoise5&& noiseValues[row][column] < maxNoise6) { gt = GroundType.GRASS; ot = ObjectType.MOUNTAIN;}
+                if(ot == null){
+                    hexagons.add(new Hexagon(gt, new Point(row, column), 62));
+                }
+                else{
+                    hexagons.add(new Hexagon(gt, ot, new Point(row, column), 62));
+                }
             }
         }
     }

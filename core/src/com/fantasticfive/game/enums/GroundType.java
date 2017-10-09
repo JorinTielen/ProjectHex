@@ -4,6 +4,6 @@ public enum GroundType {
     GRASS,
     DIRT,
     WATER,
-    SAND
-
+    SAND,
+    FOREST
 }
