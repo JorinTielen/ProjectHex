@@ -18,6 +18,10 @@ public class Player {
         this.username = username;
     }
 
+    public String getUsername() {
+        return this.username;
+    }
+
     public void addGold(int gold) {
         this.gold += gold;
     }
