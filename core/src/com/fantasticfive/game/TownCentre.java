@@ -7,9 +7,9 @@ import com.fantasticfive.game.enums.GroundType;
 import java.io.File;
 
 public class TownCentre extends Building {
-    public TownCentre(BuildingType buildingType, int health, Point location,
-                      Texture image, int purchaseCost, GroundType[] buildableOn,
+    public TownCentre(int health, Point location,
+                      Texture image, GroundType[] buildableOn,
                       Player owner) {
-        super(buildingType, health, location, image, purchaseCost, buildableOn, owner);
+        super(health, location, image, buildableOn, owner);
     }
 }

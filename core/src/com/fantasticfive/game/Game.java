@@ -6,7 +6,6 @@ import com.fantasticfive.game.enums.Color;
 import com.fantasticfive.game.enums.GroundType;
 import com.fantasticfive.game.enums.UnitType;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,7 +73,10 @@ public class Game {
     }
 
     public void createBuilding(Player player, BuildingType buildingType, Point location) {
-        throw new NotImplementedException();
+        if (map.isHexBuildable(location, player)){
+            player.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, player));
+            map.createBuilding(buildingType, location);
+        }
     }
 
     public void claimLand(Unit unit){

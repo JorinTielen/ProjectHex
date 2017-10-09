@@ -10,10 +10,23 @@ import java.io.File;
 public class Barracks extends Building{
 
     private UnitType[] creatableUnits;
-
-    public Barracks(BuildingType buildingType, int health, Point location,
+  
+    protected int purchaseCost;
+    public Barracks(int health, Point location,
                     Texture image, int purchaseCost, GroundType[] buildableOn,
                     UnitType[] creatableUnits, Player owner) {
-        super(buildingType, health, location, image, purchaseCost, buildableOn, owner);
+        super(health, location, image, buildableOn, owner);
+        this.creatableUnits = creatableUnits;
+        this.purchaseCost = purchaseCost;
+    }
+
+    public Barracks(int health,
+                    Texture image, int purchaseCost, GroundType[] buildableOn) {
+        super(health, image, buildableOn);
+        this.purchaseCost = purchaseCost;
+    }
+
+    public void setCreatableUnits(UnitType[] creatableUnits){
+        this.creatableUnits = creatableUnits;
     }
 }
