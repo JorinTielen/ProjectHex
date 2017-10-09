@@ -45,11 +45,13 @@ public class Game {
     }
 
     public void createUnit(Player player, UnitType unitType, Point location) {
-        Unit unit = unitFactory.getUnitPreset(unitType);
-        if(player.getGold() - unit.getPurchaseCost() > 0) {
-            player.purchaseUnit(unitFactory.createUnit(unitType, location, player));
-        } else {
-            throw new NotImplementedException();
+        if(hexEmpty(location)) {
+            Unit unit = unitFactory.getUnitPreset(unitType);
+            if (player.getGold() - unit.getPurchaseCost() > 0) {
+                player.purchaseUnit(unitFactory.createUnit(unitType, location, player));
+            } else {
+                throw new NotImplementedException();
+            }
         }
     }
 
@@ -76,5 +78,30 @@ public class Game {
             }
         }
         return null;
+    }
+
+    public void MoveUnit(Unit unit, Point location) {
+        if(hexEmpty(location)) {
+            unit.move(location);
+        }
+    }
+
+    public Unit getTestUnit() {
+        if(getTestPlayer().getUnits().size() != 0) {
+            return getTestPlayer().getUnits().get(0);
+        }
+        return null;
+    }
+
+    public boolean hexEmpty(Point location) {
+        boolean empty = true;
+        for(Player player: players) {
+            for(Unit unit : player.getUnits()) {
+                if(unit.getLocation() == location) {
+                    empty = false;
+                }
+            }
+        }
+        return empty;
     }
 }

@@ -33,7 +33,6 @@ public class ProjectHex extends ApplicationAdapter {
 	private Skin skin;
 	private Stage stage;
 	private Game game;
-
 	
 	@Override
 	public void create () {
@@ -72,14 +71,24 @@ public class ProjectHex extends ApplicationAdapter {
         table.setFillParent(true);
         stage.addActor(table);
 
-        final TextButton button = new TextButton("Click me!", skin);
-        table.add(button);
+        final TextButton buttonCreateUnit = new TextButton("Create unit", skin);
+        final TextButton buttonMoveUnit = new TextButton("Move unit", skin);
+        table.add(buttonCreateUnit);
+        table.add(buttonMoveUnit);
 
         game = new Game();
-
-        button.addListener(new ChangeListener() {
+        buttonCreateUnit.addListener(new ChangeListener() {
             public void changed (ChangeEvent event, Actor actor) {
-                game.createUnit(game.getTestPlayer(), UnitType.SWORDSMAN, new Point(3,3,-6));
+          game.createUnit(game.getTestPlayer(), UnitType.SWORDSMAN, new Point(2, 2, -4));
+          game.createUnit(game.getTestPlayer(), UnitType.ARCHER, new Point(1,1,-2));
+          //buttonCreateUnit.setDisabled(true);
+            }
+        });
+
+        buttonMoveUnit.addListener(new ChangeListener() {
+            public void changed (ChangeEvent event, Actor actor) {
+            if(game.getTestUnit() != null) {
+                game.MoveUnit(game.getTestUnit(), new Point(4,2,-6)); }
             }
         });
 	}

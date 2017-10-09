@@ -37,9 +37,15 @@ public class UnitFactory {
     }
 
     public Unit getUnitPreset(UnitType unitType) {
+        Unit copy = null;
         for(Unit unit : getUnitPresets()) {
             if(unit.getType() == unitType) {
-                return unit;
+                try {
+                    copy = (Unit) unit.clone();
+                    return copy;
+                } catch (CloneNotSupportedException e) {
+                    return null;
+                }
             }
         }
         return null;
@@ -56,4 +62,5 @@ public class UnitFactory {
                 1, 5, 75, 1,
                 true, 150, new Texture("characterScout.png")));
     }
+
 }

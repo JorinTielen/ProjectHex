@@ -5,7 +5,7 @@ import com.fantasticfive.game.enums.UnitType;
 
 import java.io.File;
 
-public class Unit {
+public class Unit implements Cloneable{
 
     private UnitType unitType;
     private int health;
@@ -113,5 +113,10 @@ public class Unit {
 
     public Point getLocation() {
         return this.location;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException{
+        return super.clone();
     }
 }
