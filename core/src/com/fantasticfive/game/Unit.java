@@ -18,7 +18,7 @@ public class Unit {
     private Boolean canTakeLand;
     private int upgradeCost;
     private Point location;
-    private Texture image;
+    private Texture texture;
     private int allowedToMove;
 
     private Player owner;
@@ -38,7 +38,7 @@ public class Unit {
         this.costPerTurn = costPerTurn;
         this.canTakeLand = canTakeLand;
         this.upgradeCost = upgradeCost;
-        this.image = image;
+        this.texture = image;
         this.owner = owner;
     }
 
@@ -57,7 +57,7 @@ public class Unit {
         this.canTakeLand = canTakeLand;
         this.upgradeCost = upgradeCost;
         this.location = location;
-        this.image = image;
+        this.texture = image;
         this.owner = owner;
     }
 
@@ -97,5 +97,21 @@ public class Unit {
 
     public UnitType getType() {
         return this.unitType;
+    }
+
+    public int getPurchaseCost() {
+        return this.purchaseCost;
+    }
+
+    public int getCostPerTurn() {
+        return this.getCostPerTurn();
+    }
+
+    public Texture getTexture() {
+        return this.texture;
+    }
+
+    public Point getLocation() {
+        return this.location;
     }
 }
