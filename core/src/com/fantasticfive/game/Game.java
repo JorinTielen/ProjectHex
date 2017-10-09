@@ -3,7 +3,6 @@ package com.fantasticfive.game;
 import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.UnitType;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.List;
 
 public class Game {
@@ -11,7 +10,6 @@ public class Game {
     private Map map;
     private UnitFactory unitFactory = new UnitFactory();
     private BuildingFactory buildingFactory = new BuildingFactory();
-
     private String hash;
     private int id;
 

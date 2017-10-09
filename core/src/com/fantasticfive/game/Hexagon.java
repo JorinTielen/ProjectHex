@@ -6,21 +6,15 @@ import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.GroundType;
 import com.fantasticfive.game.enums.ObjectType;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.Random;
 
 public class Hexagon {
     //hex stuff
-    private Point location;
-    private int radius;
-
     private GroundType groundType;
     private ObjectType objectType;
     private boolean accessible;
     private Point location;
     private int radius;
-    private Texture groundImage;
-    private Texture objectImage;
     private Player owner;
 
     //data
@@ -126,6 +120,7 @@ public class Hexagon {
             case RESOURCE: objectImage = new Texture("mine.png");
         }
     }
+
     //returns the real x,y position of this hex
     public Vector2 getPos() {
         double height = radius * 2;

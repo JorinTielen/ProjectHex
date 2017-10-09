@@ -4,14 +4,12 @@ import com.fantasticfive.game.enums.GroundType;
 import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.ObjectType;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class Map {
     private List<Hexagon> hexagons;
     private int id;
-
     private int width;
     private int height;
 
@@ -19,7 +17,7 @@ public class Map {
         this.width = width;
         this.height = height;
 
-        hexagons = new ArrayList<>();
+        hexagons = new ArrayList<Hexagon>();
         Generate();
     }
 
