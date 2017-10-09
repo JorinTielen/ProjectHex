@@ -3,11 +3,13 @@ package com.fantasticfive.game;
 import javafx.scene.paint.Color;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Player {
     private List<Building> buildings;
-    private List<Unit> units;
+    private List<Unit> units = new ArrayList<Unit>();
     private List<Hexagon> hexagons;
     private Color color;
     private int gold = 0;
@@ -16,6 +18,14 @@ public class Player {
     public Player(String username, Color color) {
         this.color = color;
         this.username = username;
+    }
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    public int getGold() {
+        return gold;
     }
 
     public void addGold(int gold) {
@@ -35,11 +45,13 @@ public class Player {
     }
 
     public void purchaseUnit(Unit unit) {
-        this.units.add(unit); //still need to remove gold
+        this.removeGold(unit.getPurchaseCost());
+        this.units.add(unit);
     }
 
     public void sellUnit(Unit unit) {
-        this.units.remove(unit); //still need to remove gold
+        this.addGold((int)(unit.getPurchaseCost() * 0.66));
+        this.units.remove(unit);
     }
 
     public void addHexagon(Hexagon hexagon) {
@@ -51,7 +63,10 @@ public class Player {
     }
 
     public void endTurn() {
-        throw new NotImplementedException();
+        for(Unit u: units) {
+            u.resetMoves();
+            this.removeGold(u.getCostPerTurn());
+        }
     }
 
     public void leaveGame() {
@@ -60,5 +75,9 @@ public class Player {
 
     public void updateResources() {
         throw new NotImplementedException();
+    }
+
+    public List<Unit> getUnits() {
+        return Collections.unmodifiableList(units);
     }
 }

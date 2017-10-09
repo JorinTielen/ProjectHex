@@ -10,4 +10,16 @@ public class Point {
         this.y = y;
         this.z = z;
     }
+
+    public int getX() {
+        return this.x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getZ() {
+        return z;
+    }
 }

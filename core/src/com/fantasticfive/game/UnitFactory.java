@@ -2,15 +2,13 @@ package com.fantasticfive.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.game.enums.UnitType;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.awt.*;
-import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class UnitFactory {
-    private List<Unit> unitPresets;
+    private List<Unit> unitPresets = new ArrayList<Unit>();
 
     public UnitFactory() {
         fillList();
@@ -20,7 +18,7 @@ public class UnitFactory {
         return Collections.unmodifiableList(unitPresets);
     }
 
-    private Unit createUnit(UnitType unitType, Point location, Player owner) {
+    public Unit createUnit(UnitType unitType, Point location, Player owner) {
         Unit unit = null;
         switch (unitType) {
             case SWORDSMAN:
@@ -38,7 +36,7 @@ public class UnitFactory {
         return unit;
     }
 
-    private Unit getUnitPreset(UnitType unitType) {
+    public Unit getUnitPreset(UnitType unitType) {
         for(Unit unit : getUnitPresets()) {
             if(unit.getType() == unitType) {
                 return unit;
@@ -50,7 +48,7 @@ public class UnitFactory {
     private void fillList() {
         unitPresets.add(new Unit(UnitType.SWORDSMAN, 100, 15, 30,
                 1, 2, 100, 1,
-                false, 150, new Texture("characterSwordsman.png")));
+                false, 150, new Texture("grassClear.png")));
         unitPresets.add(new Unit(UnitType.ARCHER, 75, 5, 30,
                 2, 3, 125, 1,
                 false, 150, new Texture("characterArcher.png")));
