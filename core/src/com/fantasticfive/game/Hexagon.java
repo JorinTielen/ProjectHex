@@ -73,7 +73,7 @@ public class Hexagon {
     //returns the real x,y position of this hex
     public Vector2 getPos() {
         double height = radius * 2;
-        double width = HEIGHT_MULTIPLIER * height;
+        double width = height;
 
         double vert = height * 0.75f;
         double horiz = width;

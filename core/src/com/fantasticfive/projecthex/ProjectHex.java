@@ -22,7 +22,7 @@ public class ProjectHex extends ApplicationAdapter {
 	public void create () {
 	    //setup the camera
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 1280, 720);
+		camera.setToOrtho(false, 1920, 1080);
 
         //setup map
 		map = new Map(20,15);
@@ -30,7 +30,7 @@ public class ProjectHex extends ApplicationAdapter {
 
 		//setup window
 		batch = new SpriteBatch();
-		ExtendViewport viewport = new ExtendViewport(1280, 720, camera);
+		ExtendViewport viewport = new ExtendViewport(1920, 1080, camera);
 	}
 
 	@Override

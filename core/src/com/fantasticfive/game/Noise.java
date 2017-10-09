@@ -23,11 +23,32 @@
 
 package com.fantasticfive.game;
 
-public final class Noise {
+import java.util.Random;
 
+public final class Noise {
     private Noise() {
         perm = new int[permOriginal.length];
         System.arraycopy(this.permOriginal, 0, perm, 0, permOriginal.length);
+    }
+
+    private static int seed = 0;
+
+    public static int getSeed() {
+        return seed;
+    }
+
+    public static void setSeed(int value) {
+        if (value == 0) {
+            perm = new int[permOriginal.length];
+            System.arraycopy(permOriginal, 0, perm, 0, permOriginal.length);
+        }
+        else {
+            perm = new int[512];
+            Random rnd = new Random(value);
+            for (int i = 0; i < perm.length; i++) {
+                perm[i] = rnd.nextInt(256);
+            }
+        }
     }
 
     public static float[][] Calc2DNoise(int width, int height, float scale) {
