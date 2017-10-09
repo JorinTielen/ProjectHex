@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.GroundType;
 import com.fantasticfive.game.enums.ObjectType;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.util.Random;
 
 public class Hexagon {
@@ -96,18 +95,6 @@ public class Hexagon {
         groundImage.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
     }
 
-    public Point getLocation() {
-        return location;
-    }
-
-    public Player getOwner(){
-        return owner;
-    }
-
-    public ObjectType getObjectType() {
-        return objectType;
-    }
-
     public void addObject(BuildingType buildingType){
         addObjectType(ObjectType.BUILDING);
         switch (buildingType){
@@ -139,6 +126,14 @@ public class Hexagon {
             x += (width / 2);
         }
         return new Vector2(x, y);
+    }
+
+    public Player getOwner(){
+        return owner;
+    }
+
+    public ObjectType getObjectType() {
+        return objectType;
     }
 
     public Point getLocation() {
