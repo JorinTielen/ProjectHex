@@ -25,10 +25,8 @@ import com.fantasticfive.game.enums.UnitType;
 
 public class ProjectHex extends ApplicationAdapter {
     private InputManager input = new InputManager();
-
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
-	private Texture hexTex;
 	private Map map;
 	private Skin skin;
 	private Stage stage;
