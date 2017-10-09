@@ -29,11 +29,18 @@ public class Game {
                 System.out.println("This username is already in this game!");
                 available = false;
             }
-            if()
+            if(!usedColors.contains(p.getColor())){
+                usedColors.add(p.getColor());
+            }
         }
 
+        Color color;
+        do {
+            color = Color.getRandomColor();
+        }while (!usedColors.contains(color));
+
         if(available){
-            players.add(new Player(username, Color.RED));
+            players.add(new Player(username, color));
         }
     }
 
