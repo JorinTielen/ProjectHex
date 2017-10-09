@@ -49,7 +49,11 @@ public class ProjectHex extends ApplicationAdapter {
         //draw all the sprites
         batch.begin();
 		for (Hexagon hex : map.getHexagons()) {
+
 			batch.draw(hex.groundImage, hex.getPos().x, hex.getPos().y);
+			if(hex.objectImage != null){
+				batch.draw(hex.objectImage, hex.getPos().x, hex.getPos().y);
+			}
 		}
 		batch.end();
 	}

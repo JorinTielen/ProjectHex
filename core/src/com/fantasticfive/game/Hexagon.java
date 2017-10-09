@@ -6,6 +6,8 @@ import com.fantasticfive.game.enums.GroundType;
 import com.fantasticfive.game.enums.ObjectType;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.util.Random;
+
 public class Hexagon {
     //hex stuff
     private Point location;
@@ -24,6 +26,7 @@ public class Hexagon {
     private static final double HEIGHT_MULTIPLIER = Math.sqrt(3) / 2;
 
     public Hexagon(GroundType groundType, Point location, int radius) {
+        Random random = new Random();
         this.groundType = groundType;
         this.location = location;
         this.radius = radius;
@@ -39,7 +42,28 @@ public class Hexagon {
                 this.groundImage = new Texture("waterClear.png");
                 break;
             case SAND:
-                this.groundImage = new Texture("sandClear.png");
+                int randomNumber = random.nextInt(10);
+
+                switch (randomNumber) {
+                    case 2:
+                        this.groundImage = new Texture("sandTrees1.png");
+                        break;
+                    case 7:
+                        this.groundImage = new Texture("sandTrees2.png");
+                        break;
+                    default:
+                        this.groundImage = new Texture("sandClear.png");
+                        break;
+                }
+
+                break;
+            case FOREST:
+                if (random.nextInt(2) == 1) {
+                    this.groundImage = new Texture("grassTrees1.png");
+                } else {
+                    this.groundImage = new Texture("grassTrees2.png");
+                }
+
                 break;
         }
 
@@ -65,8 +89,12 @@ public class Hexagon {
             case SAND:
                 this.groundImage = new Texture("sandClear.png");
                 break;
+            case FOREST:
+                this.groundImage = new Texture("grassClear.png");
+                break;
         }
 
+        objectImage = new Texture("rockBig.png");
         groundImage.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
     }
 
@@ -78,8 +106,8 @@ public class Hexagon {
         double vert = height * 0.75f;
         double horiz = width;
 
-        float x = (float)(horiz * (this.location.y + this.location.x/2f));
-        float y = (float)(vert * this.location.x);
+        float x = (float) (horiz * (this.location.y + this.location.x / 2f));
+        float y = (float) (vert * this.location.x);
 
         return new Vector2(x, y);
     }
@@ -100,7 +128,7 @@ public class Hexagon {
         this.owner = null;
     }
 
-    public boolean hasOwner(){
+    public boolean hasOwner() {
         throw new NotImplementedException();
     }
 }
