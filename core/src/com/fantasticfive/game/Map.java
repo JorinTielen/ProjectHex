@@ -18,7 +18,7 @@ public class Map {
         this.width = width;
         this.height = height;
 
-        hexagons = new ArrayList<Hexagon>();
+        hexagons = new ArrayList<>();
         Generate();
     }
 
