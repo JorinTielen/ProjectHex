@@ -1,8 +1,7 @@
 package com.fantasticfive.game;
 
-import javafx.scene.paint.Color;
+import com.fantasticfive.game.enums.Color;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.List;
 
 public class Player {
@@ -18,12 +17,20 @@ public class Player {
         this.username = username;
     }
 
+    public Color getColor() {
+        return this.color;
+    }
+
+    public String getUsername() {
+        return this.username;
+    }
+
     public void addGold(int gold) {
         this.gold += gold;
     }
 
     public void removeGold(int gold) {
-        this.gold += gold;
+        this.gold -= gold;
     }
 
     public void purchaseBuilding(Building building) {
