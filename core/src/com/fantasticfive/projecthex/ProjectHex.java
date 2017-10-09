@@ -30,7 +30,6 @@ public class ProjectHex extends ApplicationAdapter {
 	private SpriteBatch batch;
 	private Texture hexTex;
 	private Map map;
-	private HexMap map;
 	private Skin skin;
 	private Stage stage;
 	private Game game;
@@ -110,7 +109,8 @@ public class ProjectHex extends ApplicationAdapter {
 		}
 		for (Player player: game.getPlayers()) {
 		    for(Unit u : player.getUnits()) {
-                batch.draw(u.getTexture(), u.getLocation().getX(), u.getLocation().getY());
+		        Hexagon h = map.getHexAtLocation(u.getLocation());
+                batch.draw(u.getTexture(), h.getPos().x, h.getPos().y);
             }
         }
 		batch.end();

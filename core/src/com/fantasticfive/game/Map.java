@@ -48,10 +48,10 @@ public class Map {
                 if (noiseValues[row][column] >= maxNoise3 && noiseValues[row][column] < maxNoise4) { gt = GroundType.GRASS; }
                 if (noiseValues[row][column] >= maxNoise4 && noiseValues[row][column] < maxNoise5) { gt = GroundType.FOREST; }
                 if (noiseValues[row][column] >= maxNoise5&& noiseValues[row][column] < maxNoise6) { gt = GroundType.GRASS; ot = ObjectType.MOUNTAIN;}
-                if(ot == null){
+                if (ot == null) {
                     hexagons.add(new Hexagon(gt, new Point(row, column), 62));
                 }
-                else{
+                else {
                     hexagons.add(new Hexagon(gt, ot, new Point(row, column), 62));
                 }
             }
@@ -60,5 +60,23 @@ public class Map {
 
     public List<Hexagon> getHexagons() {
         return hexagons;
+    }
+
+    public Hexagon getHexAtLocation(int x, int y) {
+        for (Hexagon hex : hexagons) {
+            if (hex.getLocation().x == x && hex.getLocation().y == y) {
+                return hex;
+            }
+        }
+        return null;
+    }
+
+    public Hexagon getHexAtLocation(Point loc) {
+        for (Hexagon hex : hexagons) {
+            if (hex.getLocation().x == loc.x && hex.getLocation().y == loc.y) {
+                return hex;
+            }
+        }
+        return null;
     }
 }

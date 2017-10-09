@@ -48,7 +48,7 @@ public class UnitFactory {
     private void fillList() {
         unitPresets.add(new Unit(UnitType.SWORDSMAN, 100, 15, 30,
                 1, 2, 100, 1,
-                false, 150, new Texture("grassClear.png")));
+                false, 150, new Texture("characterSwordsman.png")));
         unitPresets.add(new Unit(UnitType.ARCHER, 75, 5, 30,
                 2, 3, 125, 1,
                 false, 150, new Texture("characterArcher.png")));
