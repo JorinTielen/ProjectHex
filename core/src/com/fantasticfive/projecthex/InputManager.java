@@ -29,8 +29,7 @@ public class InputManager implements InputProcessor {
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             camPos = new Vector2(5, 0);
-        }
-        else {
+        } else {
             camPos = Vector2.Zero;
         }
 

@@ -2,20 +2,18 @@ package com.fantasticfive.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.GroundType;
 import com.fantasticfive.game.enums.ObjectType;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.Random;
 
 public class Hexagon {
     //hex stuff
-    private Point location;
-    private int radius;
-
     private GroundType groundType;
     private ObjectType objectType;
     private boolean accessible;
+    private Point location;
+    private int radius;
     private Player owner;
 
     //data
@@ -97,6 +95,19 @@ public class Hexagon {
         groundImage.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
     }
 
+    public void addObject(BuildingType buildingType){
+        addObjectType(ObjectType.BUILDING);
+        switch (buildingType){
+            case TOWNCENTRE: objectImage = new Texture("townCentre.png");
+            break;
+            case BARRACKS: objectImage = new Texture("barracks.png");
+            break;
+            case FORTIFICATION: objectImage = new Texture("tower.png");
+            break;
+            case RESOURCE: objectImage = new Texture("mine.png");
+        }
+    }
+
     //returns the real x,y position of this hex
     public Vector2 getPos() {
         double height = radius * 2;
@@ -115,6 +126,14 @@ public class Hexagon {
             x += (width / 2);
         }
         return new Vector2(x, y);
+    }
+
+    public Player getOwner(){
+        return owner;
+    }
+
+    public ObjectType getObjectType() {
+        return objectType;
     }
 
     public Point getLocation() {
