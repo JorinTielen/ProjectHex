@@ -4,15 +4,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.GroundType;
 import com.fantasticfive.game.enums.UnitType;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-import javax.xml.soap.Text;
-import java.io.File;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class BuildingFactory {
     private List<Building> buildingPresets;
 
     public BuildingFactory() {
+        buildingPresets = new ArrayList<Building>();
         GroundType[] buildableOn = new GroundType[]{GroundType.GRASS, GroundType.DIRT, GroundType.SAND};
         buildingPresets.add(new Barracks(30, new Texture("barracks.png"), 30, buildableOn));
         buildingPresets.add(new Resource(10, new Texture("mine.png"), 15, 3, buildableOn));
@@ -22,6 +23,7 @@ public class BuildingFactory {
     public Building createBuilding(BuildingType buildingType, Point location, Player player) {
         Building building;
         GroundType[] buildableOn = new GroundType[]{GroundType.GRASS, GroundType.DIRT, GroundType.SAND};
+
         switch (buildingType){
             case TOWNCENTRE: building = new TownCentre(50, location, new Texture("townCentre.png"), buildableOn, player);
                 break;
@@ -59,5 +61,9 @@ public class BuildingFactory {
             }
         }
         return null;
+    }
+
+    public List<Building> getBuildingPresets() {
+        return Collections.unmodifiableList(buildingPresets);
     }
 }

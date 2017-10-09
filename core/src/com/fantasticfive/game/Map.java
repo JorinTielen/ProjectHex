@@ -3,7 +3,6 @@ package com.fantasticfive.game;
 import com.fantasticfive.game.enums.GroundType;
 import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.ObjectType;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +21,12 @@ public class Map {
     }
 
     public boolean hexHasOwner(Point location){
-        throw new NotImplementedException();
+        for(Hexagon h : hexagons){
+            if(h.getLocation() == location){
+                return h.hasOwner();
+            }
+        }
+        return false;
     }
 
     private void Generate() {
@@ -47,10 +51,10 @@ public class Map {
                 if (noiseValues[row][column] >= maxNoise3 && noiseValues[row][column] < maxNoise4) { gt = GroundType.GRASS; }
                 if (noiseValues[row][column] >= maxNoise4 && noiseValues[row][column] < maxNoise5) { gt = GroundType.FOREST; }
                 if (noiseValues[row][column] >= maxNoise5&& noiseValues[row][column] < maxNoise6) { gt = GroundType.GRASS; ot = ObjectType.MOUNTAIN;}
-                if(ot == null){
+                if (ot == null) {
                     hexagons.add(new Hexagon(gt, new Point(row, column), 62));
                 }
-                else{
+                else {
                     hexagons.add(new Hexagon(gt, ot, new Point(row, column), 62));
                 }
             }
@@ -82,14 +86,6 @@ public class Map {
                 h.addObject(buildingType);
             }
         }
-      
-    public Hexagon getHexAtLocation(int x, int y) {
-        for (Hexagon hex : hexagons) {
-            if (hex.getLocation().x == x && hex.getLocation().y == y) {
-                return hex;
-            }
-        }
-        return null;
     }
 
     public Hexagon getHexAtLocation(Point loc) {

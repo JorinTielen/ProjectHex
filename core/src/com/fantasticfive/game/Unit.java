@@ -1,10 +1,10 @@
 package com.fantasticfive.game;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.game.enums.UnitType;
 
-import java.io.File;
-
-public class Unit {
+public class Unit implements Cloneable{
+    public Texture texture;
 
     private UnitType unitType;
     private int health;
@@ -14,35 +14,34 @@ public class Unit {
     private int movementRange;
     private int purchaseCost;
     private int costPerTurn;
-    private int canTakeLand;
+    private Boolean canTakeLand;
     private int upgradeCost;
     private Point location;
-    private File image;
-
+    private int allowedToMove;
     private Player owner;
 
     public Unit(UnitType unitType, int health, int armor,
                 int attackPower, int attackRange, int movementRange,
-                int purchaseCost, int costPerTurn, int canTakeLand,
-                int upgradeCost, File image, Player owner) {
+                int purchaseCost, int costPerTurn, Boolean canTakeLand,
+                int upgradeCost, Texture image) {
         this.unitType = unitType;
         this.health = health;
         this.armor = armor;
         this.attackPower = attackPower;
         this.attackRange = attackRange;
         this.movementRange = movementRange;
+        this.allowedToMove = movementRange;
         this.purchaseCost = purchaseCost;
         this.costPerTurn = costPerTurn;
         this.canTakeLand = canTakeLand;
         this.upgradeCost = upgradeCost;
-        this.image = image;
-        this.owner = owner;
+        this.texture = image;
     }
 
     public Unit(UnitType unitType, int health, int armor,
                 int attackPower, int attackRange, int movementRange,
-                int purchaseCost, int costPerTurn, int canTakeLand,
-                int upgradeCost, Point location, File image, Player owner) {
+                int purchaseCost, int costPerTurn, Boolean canTakeLand,
+                int upgradeCost, Point location, Texture image, Player owner) {
         this.unitType = unitType;
         this.health = health;
         this.armor = armor;
@@ -54,12 +53,12 @@ public class Unit {
         this.canTakeLand = canTakeLand;
         this.upgradeCost = upgradeCost;
         this.location = location;
-        this.image = image;
+        this.texture = image;
         this.owner = owner;
     }
 
     public void attack(Unit unitToAttack) {
-        throw new UnsupportedOperationException();
+        unitToAttack.reduceHealth(attackPower - unitToAttack.getArmor());
     }
 
     public void attack(Building buildingToAttack) {
@@ -67,14 +66,53 @@ public class Unit {
     }
 
     public void reduceHealth(int hp) {
-        throw new UnsupportedOperationException();
+        if(hp > 0) {
+            this.health -= hp;
+        }
     }
 
     public void move(Point destination) {
-        throw new UnsupportedOperationException();
+        this.location = destination;
     }
 
     public void upgrade() {
         throw new UnsupportedOperationException();
+    }
+
+    public void resetMoves() {
+        this.allowedToMove = this.movementRange;
+    }
+
+    public int getArmor() {
+        return this.armor;
+    }
+
+    public void setOwner(Player owner) {
+        this.owner = owner;
+    }
+
+    public UnitType getType() {
+        return this.unitType;
+    }
+
+    public int getPurchaseCost() {
+        return this.purchaseCost;
+    }
+
+    public int getCostPerTurn() {
+        return this.costPerTurn;
+    }
+
+    public Texture getTexture() {
+        return this.texture;
+    }
+
+    public Point getLocation() {
+        return this.location;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException{
+        return super.clone();
     }
 }
