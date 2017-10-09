@@ -1,7 +1,9 @@
 package com.fantasticfive.game;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.Color;
+import com.fantasticfive.game.enums.GroundType;
 import com.fantasticfive.game.enums.UnitType;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -17,12 +19,17 @@ public class Game {
     private int id;
 
     public Game() {
+        players = new ArrayList<Player>();
+    }
 
+    public List<Player> getPlayers() {
+        return players;
     }
 
     public void addPlayer(String username) {
         boolean available = true;
         ArrayList<Color> usedColors = new ArrayList<Color>();
+
         for (Player p : players) {
             if(p.getUsername() == username){
                 System.out.println("This username is already in this game!");
@@ -36,10 +43,13 @@ public class Game {
         Color color;
         do {
             color = Color.getRandomColor();
-        }while (!usedColors.contains(color));
+        } while (usedColors.contains(color));
 
-        if(available){
-            players.add(new Player(username, color));
+        Player p = new Player(username, color);
+        if(available) {
+            players.add(p);
+            //p.purchaseBuilding(new TownCentre(BuildingType.TOWNCENTRE, 50, new Point(5, 2), new Texture("townCentre.png"), 10, new GroundType[] { GroundType.GRASS }, p));
+            //should go via factory
         }
     }
 
