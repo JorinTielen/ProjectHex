@@ -23,7 +23,7 @@ public class HexMap {
     private void Generate() {
         for (int column = 0; column < width; column++) {
             for (int row = 0; row < height; row++) {
-                hexes.add(new Hex(69, column, row));
+                hexes.add(new Hex(56, column, row));
             }
         }
     }
