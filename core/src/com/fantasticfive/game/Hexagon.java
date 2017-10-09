@@ -1,5 +1,7 @@
 package com.fantasticfive.game;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.GroundType;
 import com.fantasticfive.game.enums.ObjectType;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -12,8 +14,8 @@ public class Hexagon {
     private boolean accessible;
     private Point location;
     private int radius;
-    private File groundImage;
-    private File objectImage;
+    private Texture groundImage;
+    private Texture objectImage;
     private Player owner;
 
     public Hexagon(GroundType groundType, Point location, int radius) {
@@ -29,6 +31,30 @@ public class Hexagon {
         this.radius = radius;
     }
 
+    public Point getLocation() {
+        return location;
+    }
+
+    public Player getOwner(){
+        return owner;
+    }
+
+    public ObjectType getObjectType() {
+        return objectType;
+    }
+
+    public void addObject(BuildingType buildingType){
+        addObjectType(ObjectType.BUILDING);
+        switch (buildingType){
+            case TOWNCENTRE: objectImage = new Texture("townCentre.png");
+            break;
+            case BARRACKS: objectImage = new Texture("barracks.png");
+            break;
+            case FORTIFICATION: objectImage = new Texture("tower.png");
+            break;
+            case RESOURCE: objectImage = new Texture("mine.png");
+        }
+    }
     public void addObjectType(ObjectType objectType) {
         this.objectType = objectType;
     }

@@ -23,7 +23,7 @@ public class Player {
     }
 
     public void removeGold(int gold) {
-        this.gold += gold;
+        this.gold -= gold;
     }
 
     public void purchaseBuilding(Building building) {

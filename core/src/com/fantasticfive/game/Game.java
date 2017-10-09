@@ -44,7 +44,10 @@ public class Game {
     }
 
     public void createBuilding(Player player, BuildingType buildingType, Point location) {
-        throw new NotImplementedException();
+        if (map.isHexBuildable(location, player)){
+            player.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, player));
+            map.createBuilding(buildingType, location);
+        }
     }
 
     public void claimLand(Unit unit){
