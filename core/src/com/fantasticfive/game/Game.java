@@ -1,8 +1,10 @@
 package com.fantasticfive.game;
 
 import com.fantasticfive.game.enums.BuildingType;
+import com.fantasticfive.game.enums.Color;
 import com.fantasticfive.game.enums.UnitType;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
@@ -18,7 +20,26 @@ public class Game {
     }
 
     public void addPlayer(String username) {
-        throw new NotImplementedException();
+        boolean available = true;
+        ArrayList<Color> usedColors = new ArrayList<Color>();
+        for (Player p : players) {
+            if(p.getUsername() == username){
+                System.out.println("This username is already in this game!");
+                available = false;
+            }
+            if(!usedColors.contains(p.getColor())){
+                usedColors.add(p.getColor());
+            }
+        }
+
+        Color color;
+        do {
+            color = Color.getRandomColor();
+        }while (!usedColors.contains(color));
+
+        if(available){
+            players.add(new Player(username, color));
+        }
     }
 
     public void removePlayer(Player player) {

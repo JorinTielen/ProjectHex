@@ -132,6 +132,12 @@ public class Hexagon {
         float x = (float) (horiz * (this.location.y + this.location.x / 2f));
         float y = (float) (vert * this.location.x);
 
+        if (this.location.x % 2 == 0) {
+            x -= (this.location.x * (width / 2));
+        } else {
+            x -= (this.location.x * (width / 2));
+            x += (width / 2);
+        }
         return new Vector2(x, y);
     }
 
@@ -152,6 +158,6 @@ public class Hexagon {
     }
 
     public boolean hasOwner() {
-        throw new NotImplementedException();
+        return owner != null;
     }
 }

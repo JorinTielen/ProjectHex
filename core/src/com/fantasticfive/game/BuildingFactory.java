@@ -5,13 +5,11 @@ import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.GroundType;
 import com.fantasticfive.game.enums.UnitType;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import javax.xml.soap.Text;
 import java.io.File;
 import java.util.List;
 
 public class BuildingFactory {
-
     private List<Building> buildingPresets;
 
     public BuildingFactory() {
