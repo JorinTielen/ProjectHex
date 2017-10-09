@@ -16,7 +16,6 @@ public class Hexagon {
     private GroundType groundType;
     private ObjectType objectType;
     private boolean accessible;
-
     private Player owner;
 
     //data
@@ -129,6 +128,6 @@ public class Hexagon {
     }
 
     public boolean hasOwner() {
-        throw new NotImplementedException();
+        return owner != null;
     }
 }

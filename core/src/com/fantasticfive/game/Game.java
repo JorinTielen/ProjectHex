@@ -13,7 +13,6 @@ public class Game {
     private Map map;
     private UnitFactory unitFactory = new UnitFactory();
     private BuildingFactory buildingFactory = new BuildingFactory();
-
     private String hash;
     private int id;
 

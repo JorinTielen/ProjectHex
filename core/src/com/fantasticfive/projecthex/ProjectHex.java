@@ -12,10 +12,8 @@ import com.fantasticfive.game.Map;
 
 public class ProjectHex extends ApplicationAdapter {
     private InputManager input = new InputManager();
-
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
-	private Texture hexTex;
 	private Map map;
 	
 	@Override
@@ -60,7 +58,6 @@ public class ProjectHex extends ApplicationAdapter {
 	
 	@Override
 	public void dispose () {
-		batch.dispose();
 		batch.dispose();
 	}
 }
