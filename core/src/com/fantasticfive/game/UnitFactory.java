@@ -1,8 +1,11 @@
 package com.fantasticfive.game;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.game.enums.UnitType;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.awt.*;
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,6 +48,14 @@ public class UnitFactory {
     }
 
     private void fillList() {
-        unitPresets.add(new Unit(UnitType.SWORDSMAN, 100, 15, 30, 1, 2, 100, 1, false, 150, null));
+        unitPresets.add(new Unit(UnitType.SWORDSMAN, 100, 15, 30,
+                1, 2, 100, 1,
+                false, 150, new Texture("characterSwordsman.png")));
+        unitPresets.add(new Unit(UnitType.ARCHER, 75, 5, 30,
+                2, 3, 125, 1,
+                false, 150, new Texture("characterArcher.png")));
+        unitPresets.add(new Unit(UnitType.SCOUT, 50, 0, 15,
+                1, 5, 75, 1,
+                true, 150, new Texture("characterScout.png")));
     }
 }

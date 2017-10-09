@@ -1,5 +1,6 @@
 package com.fantasticfive.game;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.game.enums.UnitType;
 
 import java.io.File;
@@ -17,7 +18,7 @@ public class Unit {
     private Boolean canTakeLand;
     private int upgradeCost;
     private Point location;
-    private File image;
+    private Texture image;
     private int allowedToMove;
 
     private Player owner;
@@ -25,7 +26,7 @@ public class Unit {
     public Unit(UnitType unitType, int health, int armor,
                 int attackPower, int attackRange, int movementRange,
                 int purchaseCost, int costPerTurn, Boolean canTakeLand,
-                int upgradeCost, File image) {
+                int upgradeCost, Texture image) {
         this.unitType = unitType;
         this.health = health;
         this.armor = armor;
@@ -44,7 +45,7 @@ public class Unit {
     public Unit(UnitType unitType, int health, int armor,
                 int attackPower, int attackRange, int movementRange,
                 int purchaseCost, int costPerTurn, Boolean canTakeLand,
-                int upgradeCost, Point location, File image, Player owner) {
+                int upgradeCost, Point location, Texture image, Player owner) {
         this.unitType = unitType;
         this.health = health;
         this.armor = armor;
