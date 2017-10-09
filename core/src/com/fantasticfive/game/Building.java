@@ -7,6 +7,7 @@ import com.fantasticfive.game.enums.GroundType;
 import java.io.File;
 
 public abstract class Building {
+    public Texture image;
 
     protected int health;
     protected Point location;
@@ -41,5 +42,9 @@ public abstract class Building {
             return true;
         }
         return false;
+    }
+
+    public Point getLocation() {
+        return location;
     }
 }

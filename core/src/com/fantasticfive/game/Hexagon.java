@@ -141,6 +141,10 @@ public class Hexagon {
         return new Vector2(x, y);
     }
 
+    public Point getLocation() {
+        return location;
+    }
+
     public void addObjectType(ObjectType objectType) {
         this.objectType = objectType;
     }

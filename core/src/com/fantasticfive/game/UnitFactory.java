@@ -12,15 +12,15 @@ public class UnitFactory {
         //Set presets from database
     }
 
-    private List<Unit> getUnitPresets() {
+    public List<Unit> getUnitPresets() {
         return Collections.unmodifiableList(unitPresets);
     }
 
-    private Unit createUnit(UnitType unitType, Point location) {
+    public Unit createUnit(UnitType unitType, Point location) {
         throw new NotImplementedException();
     }
 
-    private Unit getUnitPreset(UnitType unitType) {
+    public Unit getUnitPreset(UnitType unitType) {
         throw new NotImplementedException();
     }
 }

@@ -10,6 +10,7 @@ import java.io.File;
 public class Barracks extends Building{
 
     private UnitType[] creatableUnits;
+  
     protected int purchaseCost;
     public Barracks(int health, Point location,
                     Texture image, int purchaseCost, GroundType[] buildableOn,

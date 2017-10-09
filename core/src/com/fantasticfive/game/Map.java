@@ -82,5 +82,22 @@ public class Map {
                 h.addObject(buildingType);
             }
         }
+      
+    public Hexagon getHexAtLocation(int x, int y) {
+        for (Hexagon hex : hexagons) {
+            if (hex.getLocation().x == x && hex.getLocation().y == y) {
+                return hex;
+            }
+        }
+        return null;
+    }
+
+    public Hexagon getHexAtLocation(Point loc) {
+        for (Hexagon hex : hexagons) {
+            if (hex.getLocation().x == loc.x && hex.getLocation().y == loc.y) {
+                return hex;
+            }
+        }
+        return null;
     }
 }
