@@ -3,9 +3,8 @@ package com.fantasticfive.game;
 import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.game.enums.UnitType;
 
-import java.io.File;
-
 public class Unit implements Cloneable{
+    public Texture texture;
 
     private UnitType unitType;
     private int health;
@@ -18,9 +17,7 @@ public class Unit implements Cloneable{
     private Boolean canTakeLand;
     private int upgradeCost;
     private Point location;
-    private Texture texture;
     private int allowedToMove;
-
     private Player owner;
 
     public Unit(UnitType unitType, int health, int armor,
@@ -39,7 +36,6 @@ public class Unit implements Cloneable{
         this.canTakeLand = canTakeLand;
         this.upgradeCost = upgradeCost;
         this.texture = image;
-        this.owner = owner;
     }
 
     public Unit(UnitType unitType, int health, int armor,
@@ -104,7 +100,7 @@ public class Unit implements Cloneable{
     }
 
     public int getCostPerTurn() {
-        return this.getCostPerTurn();
+        return this.costPerTurn;
     }
 
     public Texture getTexture() {

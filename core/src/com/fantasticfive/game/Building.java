@@ -1,17 +1,13 @@
 package com.fantasticfive.game;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.GroundType;
-
-import java.io.File;
 
 public abstract class Building {
     public Texture image;
 
     protected int health;
     protected Point location;
-    protected Texture image;
     protected GroundType[] buildableOn;
     protected Player owner;
 
@@ -36,6 +32,7 @@ public abstract class Building {
     public void setOwner(Player owner){
         this.owner = owner;
     }
+
     public boolean damageHealth(int hp) {
         health = health - hp;
         if (health <= 0){
