@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
+import java.io.InputStream;
+
 public class InputManager {
     private Vector2 camPos = Vector2.Zero;
 
@@ -23,8 +25,7 @@ public class InputManager {
         }
         else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             camPos = new Vector2(5, 0);
-        }
-        else {
+        } else {
             camPos = Vector2.Zero;
         }
 
