@@ -52,7 +52,7 @@ public class InputManager implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        System.out.println("Click: " + screenX + ", " + screenY);
+        projectHex.screenClick(screenX, screenY);
         return false;
     }
 
