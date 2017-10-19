@@ -27,6 +27,24 @@ public class Player {
         return buildings;
     }
 
+    public Building getBuildingAtLocation(Point location){
+        for (Building building : buildings){
+            if (building.getLocation() == location){
+                return building;
+            }
+        }
+        return null;
+    }
+
+    public Unit getUnitAtLocation(Point location){
+        for (Unit unit : units){
+            if (unit.getLocation() == location){
+                return unit;
+            }
+        }
+        return null;
+    }
+
     public Color getColor() {
         return this.color;
     }
@@ -51,8 +69,9 @@ public class Player {
         this.buildings.add(building); //still need to remove gold
     }
 
-    public void sellBuilding(Building building) {
-        this.buildings.remove(building); //still need to remove gold
+    public void sellBuilding(Building building, int cost) {
+        this.buildings.remove(building);
+        this.gold = gold + (int)Math.round(cost * 0.4);
     }
 
     public void purchaseUnit(Unit unit) {

@@ -22,4 +22,6 @@ public class Barracks extends Building{
     public void setCreatableUnits(UnitType[] creatableUnits){
         this.creatableUnits = creatableUnits;
     }
+
+    public int getPurchaseCost() { return purchaseCost; }
 }

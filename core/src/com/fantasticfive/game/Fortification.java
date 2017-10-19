@@ -15,4 +15,6 @@ public class Fortification extends Building {
         super(health, image, buildableOn);
         this.purchaseCost = purchaseCost;
     }
+
+    public int getPurchaseCost() { return purchaseCost; }
 }
