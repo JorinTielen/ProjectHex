@@ -8,6 +8,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -44,7 +47,7 @@ public class ProjectHex extends ApplicationAdapter {
         //setup window
         batch = new SpriteBatch();
         ExtendViewport viewport = new ExtendViewport(1280, 720, camera);
-
+        Gdx.input.setInputProcessor(input);
 
         //Just trying something
 //        skin = new Skin();
@@ -94,7 +97,6 @@ public class ProjectHex extends ApplicationAdapter {
     public void render() {
         //handle input
         input.HandleInput();
-        Gdx.input.setInputProcessor(input);
 
         //move camera
         camera.translate(input.getCamPos());
@@ -108,12 +110,15 @@ public class ProjectHex extends ApplicationAdapter {
         //draw all the sprites
         batch.begin();
 
+        //draw all hexes from the map
         for (Hexagon hex : map.getHexagons()) {
             batch.draw(hex.groundImage, hex.getPos().x, hex.getPos().y);
             if (hex.objectImage != null) {
                 batch.draw(hex.objectImage, hex.getPos().x, hex.getPos().y);
             }
         }
+
+        //draw all buildings and units from all players
         for (Player p : game.getPlayers()) {
             for (Building b : p.getBuildings()) {
                 Hexagon h = map.getHexAtLocation(b.getLocation());
@@ -124,6 +129,7 @@ public class ProjectHex extends ApplicationAdapter {
                 batch.draw(u.getTexture(), h.getPos().x, h.getPos().y);
             }
         }
+
         batch.end();
 //        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
 //        stage.draw();
@@ -134,5 +140,15 @@ public class ProjectHex extends ApplicationAdapter {
         batch.dispose();
     }
 
-
+    public void screenClick(int x, int y) {
+        Vector3 tmp = new Vector3(x, y, 0);
+        camera.unproject(tmp);
+        for (Hexagon hex : map.getHexagons()) {
+            Rectangle clickArea = new Rectangle(hex.getPos().x, hex.getPos().y,
+                    hex.groundImage.getWidth(), hex.groundImage.getHeight());
+            if (clickArea.contains(tmp.x,tmp.y)) {
+                System.out.println("clicked hex: " + hex.getLocation().x + " " + hex.getLocation().y);
+            }
+        }
+    }
 }
