@@ -20,6 +20,8 @@ public class Unit implements Cloneable{
     private int allowedToMove;
     private Player owner;
 
+    private boolean isSelected = false;
+
     public Unit(UnitType unitType, int health, int armor,
                 int attackPower, int attackRange, int movementRange,
                 int purchaseCost, int costPerTurn, Boolean canTakeLand,
@@ -114,5 +116,17 @@ public class Unit implements Cloneable{
     @Override
     public Object clone() throws CloneNotSupportedException{
         return super.clone();
+    }
+
+    public void toggleSelected() {
+        if(isSelected) {
+            isSelected = false;
+        } else {
+            isSelected = true;
+        }
+    }
+
+    public Boolean getSelected() {
+        return isSelected;
     }
 }

@@ -19,6 +19,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.fantasticfive.game.*;
+import com.fantasticfive.game.enums.GroundType;
+import com.fantasticfive.game.enums.ObjectType;
 import com.fantasticfive.game.enums.UnitType;
 
 public class ProjectHex extends ApplicationAdapter {
@@ -26,8 +28,6 @@ public class ProjectHex extends ApplicationAdapter {
     private OrthographicCamera camera;
     private SpriteBatch batch;
     private Map map;
-//    private Skin skin;
-//    private Stage stage;
     private Game game;
 
     @Override
@@ -48,49 +48,6 @@ public class ProjectHex extends ApplicationAdapter {
         batch = new SpriteBatch();
         ExtendViewport viewport = new ExtendViewport(1280, 720, camera);
         Gdx.input.setInputProcessor(input);
-
-        //Just trying something
-//        skin = new Skin();
-//        stage = new Stage();
-//        Gdx.input.setInputProcessor(stage);
-//        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-//        pixmap.setColor(Color.WHITE);
-//        pixmap.fill();
-//        skin.add("white", new Texture(pixmap));
-//        skin.add("default", new BitmapFont());
-//
-//        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-//        textButtonStyle.up = skin.newDrawable("white", Color.DARK_GRAY);
-//        textButtonStyle.down = skin.newDrawable("white", Color.DARK_GRAY);
-//        textButtonStyle.checked = skin.newDrawable("white", Color.BLUE);
-//        textButtonStyle.over = skin.newDrawable("white", Color.LIGHT_GRAY);
-//        textButtonStyle.font = skin.getFont("default");
-//        skin.add("default", textButtonStyle);
-//
-//        Table table = new Table();
-//        table.setFillParent(true);
-//        stage.addActor(table);
-//
-//        final TextButton buttonCreateUnit = new TextButton("Create unit", skin);
-//        final TextButton buttonMoveUnit = new TextButton("Move unit", skin);
-//        table.add(buttonCreateUnit);
-//        table.add(buttonMoveUnit);
-//
-//        buttonCreateUnit.addListener(new ChangeListener() {
-//            public void changed(ChangeEvent event, Actor actor) {
-//                game.createUnit(game.getTestPlayer(), UnitType.SWORDSMAN, new Point(2, 2, -4));
-//                game.createUnit(game.getTestPlayer(), UnitType.ARCHER, new Point(1, 1, -2));
-//                //buttonCreateUnit.setDisabled(true);
-//            }
-//        });
-//
-//        buttonMoveUnit.addListener(new ChangeListener() {
-//            public void changed(ChangeEvent event, Actor actor) {
-//                if (game.getTestUnit() != null) {
-//                    game.MoveUnit(game.getTestUnit(), new Point(4, 2, -6));
-//                }
-//            }
-//        });
     }
 
     @Override
@@ -131,8 +88,6 @@ public class ProjectHex extends ApplicationAdapter {
         }
 
         batch.end();
-//        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
-//        stage.draw();
     }
 
     @Override
@@ -148,6 +103,20 @@ public class ProjectHex extends ApplicationAdapter {
                     hex.groundImage.getWidth(), hex.groundImage.getHeight());
             if (clickArea.contains(tmp.x,tmp.y)) {
                 System.out.println("clicked hex: " + hex.getLocation().x + " " + hex.getLocation().y);
+                //If clicked on unit and no unit is selected
+                if(game.getUnitOnHex(hex) != null && game.getSelectedUnit() == null) {
+                    Unit u = game.getUnitOnHex(hex);
+                    u.toggleSelected();
+                //If not clicked on unit and unit is selected
+                } else if(game.getUnitOnHex(hex) == null && game.getSelectedUnit() != null) {
+                    Unit u = game.getSelectedUnit();
+                    //TODO Do this check somewhere else
+                    if (hex.getObjectType() != ObjectType.MOUNTAIN
+                            && hex.getGroundType() != GroundType.WATER) {
+                        u.move(new Point(hex.getLocation().x, hex.getLocation().y));
+                        u.toggleSelected();
+                    }
+                }
             }
         }
     }

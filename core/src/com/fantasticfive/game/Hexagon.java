@@ -159,4 +159,8 @@ public class Hexagon {
     public boolean hasOwner() {
         return owner != null;
     }
+
+    public GroundType getGroundType() {
+        return groundType;
+    }
 }

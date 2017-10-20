@@ -44,6 +44,8 @@ public class Game {
             players.add(p);
             Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(1, 0), p); //Random Point???
             p.purchaseBuilding(b);
+            Unit u = unitFactory.createUnit(UnitType.SWORDSMAN, new Point(2,0), p);
+            p.purchaseUnit(u);
         }
     }
 
@@ -93,26 +95,10 @@ public class Game {
         return Collections.unmodifiableList(players);
     }
 
-    public Player getTestPlayer() {
-        for (Player player : getPlayers()) {
-            if (player.getUsername().equals("maxim")) { //This player is created in ProjectHex.java
-                return player;
-            }
-        }
-        return null;
-    }
-
     public void MoveUnit(Unit unit, Point location) {
         if (hexEmpty(location)) {
             unit.move(location);
         }
-    }
-
-    public Unit getTestUnit() {
-        if (getTestPlayer().getUnits().size() != 0) {
-            return getTestPlayer().getUnits().get(0);
-        }
-        return null;
     }
 
     public boolean hexEmpty(Point location) {
@@ -125,5 +111,30 @@ public class Game {
             }
         }
         return empty;
+    }
+
+    public Unit getUnitOnHex(Hexagon hex) {
+        Unit unit = null;
+        for(Player p: getPlayers()) {
+            for(Unit u: p.getUnits()) {
+                if (u.getLocation().x == hex.getLocation().x && u.getLocation().y == hex.getLocation().y) {
+                    unit = u;
+                }
+            }
+        }
+        return unit;
+    }
+
+    public Unit getSelectedUnit() {
+        Unit unit = null;
+        //TODO implement current player only
+        for(Player p: getPlayers()) {
+            for(Unit u: p.getUnits()) {
+                if(u.getSelected()) {
+                    unit = u;
+                }
+            }
+        }
+        return unit;
     }
 }

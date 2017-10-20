@@ -3,6 +3,8 @@ package com.fantasticfive.game;
 import com.fantasticfive.game.enums.GroundType;
 import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.ObjectType;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,4 +98,9 @@ public class Map {
         }
         return null;
     }
+
+    public Unit getUnitAtLocation(Point loc) {
+        throw new NotImplementedException();
+    }
+
 }
