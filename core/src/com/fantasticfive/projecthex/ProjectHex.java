@@ -116,25 +116,25 @@ public class ProjectHex extends ApplicationAdapter {
         if(game.getUnitOnHex(hex) != null && game.getSelectedUnit() == null && game.getUnitOnHex(hex).getOwner() == game.getPlayers().get(0)) {
             Unit u = game.getUnitOnHex(hex);
             u.toggleSelected();
-            //If not clicked on unit and unit is selected
+        //If not clicked on unit and unit is selected
         } else if(game.getUnitOnHex(hex) == null && game.getSelectedUnit() != null) {
             Unit u = game.getSelectedUnit();
-            //TODO Do this check somewhere else
+            //TODO Is this supposed to be here?
             if (hex.getObjectType() != ObjectType.MOUNTAIN
                     && hex.getGroundType() != GroundType.WATER) {
                 u.move(new Point(hex.getLocation().x, hex.getLocation().y));
                 u.toggleSelected();
             }
-            //If clicked on unit and unit is selected
+        //If clicked on unit and unit is selected
         } else if(game.getUnitOnHex(hex) != null && game.getSelectedUnit() != null) {
             //If clicked on the selected unit
             if(game.getUnitOnHex(hex) == game.getSelectedUnit()) {
                 game.getSelectedUnit().toggleSelected();
-                //If clicked on a different unit with the same owner
+            //If clicked on a different unit with the same owner
             } else if(game.getUnitOnHex(hex).getOwner() == game.getSelectedUnit().getOwner()) {
                 game.getSelectedUnit().toggleSelected();
                 game.getUnitOnHex(hex).toggleSelected();
-                //If clicked on a unit with a different owner than the selected unit
+            //If clicked on a unit with a different owner than the selected unit
             } else if(game.getUnitOnHex(hex).getOwner() != game.getSelectedUnit().getOwner()) {
                 Unit enemy = game.getUnitOnHex(hex);
                 Unit playerUnit = game.getSelectedUnit();
