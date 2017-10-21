@@ -45,10 +45,18 @@ public class Game {
             if(username == "enemy") {
                 Unit u = unitFactory.createUnit(UnitType.SCOUT, new Point(9, 14), p);
                 p.purchaseUnit(u);
+                u = unitFactory.createUnit(UnitType.SWORDSMAN, new Point(12, 10), p);
+                p.purchaseUnit(u);
+                u = unitFactory.createUnit(UnitType.ARCHER, new Point(1,18), p);
+                p.purchaseUnit(u);
             } else {
                 Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(1, 0), p); //Random Point???
                 p.purchaseBuilding(b);
                 Unit u = unitFactory.createUnit(UnitType.SWORDSMAN, new Point(2, 0), p);
+                p.purchaseUnit(u);
+                u = unitFactory.createUnit(UnitType.SCOUT, new Point(3,0),p);
+                p.purchaseUnit(u);
+                u = unitFactory.createUnit(UnitType.ARCHER, new Point(4,0),p);
                 p.purchaseUnit(u);
             }
         }

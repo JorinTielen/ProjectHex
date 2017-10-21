@@ -146,8 +146,16 @@ public class Unit implements Cloneable{
     }
 
     private int calculateDistance(Point p1, Point p2) {
-        int distance = (int)Math.hypot(p1.x - p2.x, p1.y - p2.y);
-        return distance;
+        //TODO This formula isn't 100% correct yet
+
+        int dx = p2.x - p1.x;
+        int dy = p2.y - p1.y;
+
+        if(dx * dy > 0) {
+            return Math.abs(dx)+Math.abs(dy);
+        } else {
+            return Math.max(Math.abs(dx),Math.abs(dy));
+        }
     }
 
     public void setLocation(Point location) {
