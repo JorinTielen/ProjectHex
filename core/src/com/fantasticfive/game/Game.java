@@ -42,38 +42,15 @@ public class Game {
         if (available) {
             Player p = new Player(username, color);
             players.add(p);
-            Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(1, 0), p); //Random Point???
-            p.purchaseBuilding(b);
-            Unit u = unitFactory.createUnit(UnitType.SWORDSMAN, new Point(2,0), p);
-            p.purchaseUnit(u);
-        }
-    }
-
-    public void tmpAddEnemyPlayer(String username) {
-        boolean available = true;
-        ArrayList<Color> usedColors = new ArrayList<Color>();
-
-        for (Player p : players) {
-            if (p.getUsername().equals(username)) {
-                System.out.println("This username is already in this game!");
-                available = false;
+            if(username == "enemy") {
+                Unit u = unitFactory.createUnit(UnitType.SCOUT, new Point(9, 14), p);
+                p.purchaseUnit(u);
+            } else {
+                Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(1, 0), p); //Random Point???
+                p.purchaseBuilding(b);
+                Unit u = unitFactory.createUnit(UnitType.SWORDSMAN, new Point(2, 0), p);
+                p.purchaseUnit(u);
             }
-            if (!usedColors.contains(p.getColor())) {
-                usedColors.add(p.getColor());
-            }
-        }
-
-        Color color;
-        do {
-            color = Color.getRandomColor();
-        } while (usedColors.contains(color));
-
-
-        if (available) {
-            Player p = new Player(username, color);
-            players.add(p);
-            Unit u = unitFactory.createUnit(UnitType.SCOUT, new Point(9,14), p);
-            p.purchaseUnit(u);
         }
     }
 

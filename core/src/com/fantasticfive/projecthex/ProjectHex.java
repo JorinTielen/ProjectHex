@@ -43,7 +43,7 @@ public class ProjectHex extends ApplicationAdapter {
         game = new Game();
         game.setMap(map);
         game.addPlayer("maxim");
-        game.tmpAddEnemyPlayer("enemy");
+        game.addPlayer("enemy");
 
         //setup window
         batch = new SpriteBatch();
@@ -104,39 +104,44 @@ public class ProjectHex extends ApplicationAdapter {
                     hex.groundImage.getWidth(), hex.groundImage.getHeight());
             if (clickArea.contains(tmp.x,tmp.y)) {
                 System.out.println("clicked hex: " + hex.getLocation().x + " " + hex.getLocation().y);
-                //If clicked on unit and no unit is selected
-                if(game.getUnitOnHex(hex) != null && game.getSelectedUnit() == null && game.getUnitOnHex(hex).getOwner() == game.getPlayers().get(0)) {
-                    Unit u = game.getUnitOnHex(hex);
-                    u.toggleSelected();
-                //If not clicked on unit and unit is selected
-                } else if(game.getUnitOnHex(hex) == null && game.getSelectedUnit() != null) {
-                    Unit u = game.getSelectedUnit();
-                    //TODO Do this check somewhere else
-                    if (hex.getObjectType() != ObjectType.MOUNTAIN
-                            && hex.getGroundType() != GroundType.WATER) {
-                        u.move(new Point(hex.getLocation().x, hex.getLocation().y));
-                        u.toggleSelected();
-                    }
-                //If clicked on unit and unit is selected
-                } else if(game.getUnitOnHex(hex) != null && game.getSelectedUnit() != null) {
-                    //If clicked on the selected unit
-                    if(game.getUnitOnHex(hex) == game.getSelectedUnit()) {
-                        game.getSelectedUnit().toggleSelected();
-                    //If clicked on a different unit with the same owner
-                    } else if(game.getUnitOnHex(hex).getOwner() == game.getSelectedUnit().getOwner()) {
-                        game.getSelectedUnit().toggleSelected();
-                        game.getUnitOnHex(hex).toggleSelected();
-                    //If clicked on a unit with a different owner than the selected unit
-                    } else if(game.getUnitOnHex(hex).getOwner() != game.getSelectedUnit().getOwner()) {
-                        Unit enemy = game.getUnitOnHex(hex);
-                        Unit playerUnit = game.getSelectedUnit();
-                        playerUnit.attack(enemy);
-                        playerUnit.toggleSelected();
-                        System.out.println("Enemy hp remaining: " + enemy.getHealth());
-                        if(enemy.getHealth() == 0) {
-                            enemy.getOwner().removeUnit(enemy);
-                        }
-                    }
+                if(game.getUnitOnHex(hex) != null || game.getSelectedUnit() != null) {
+                    unitClick(hex);
+                }
+            }
+        }
+    }
+
+    private void unitClick(Hexagon hex) {
+        //If clicked on unit and no unit is selected
+        if(game.getUnitOnHex(hex) != null && game.getSelectedUnit() == null && game.getUnitOnHex(hex).getOwner() == game.getPlayers().get(0)) {
+            Unit u = game.getUnitOnHex(hex);
+            u.toggleSelected();
+            //If not clicked on unit and unit is selected
+        } else if(game.getUnitOnHex(hex) == null && game.getSelectedUnit() != null) {
+            Unit u = game.getSelectedUnit();
+            //TODO Do this check somewhere else
+            if (hex.getObjectType() != ObjectType.MOUNTAIN
+                    && hex.getGroundType() != GroundType.WATER) {
+                u.move(new Point(hex.getLocation().x, hex.getLocation().y));
+                u.toggleSelected();
+            }
+            //If clicked on unit and unit is selected
+        } else if(game.getUnitOnHex(hex) != null && game.getSelectedUnit() != null) {
+            //If clicked on the selected unit
+            if(game.getUnitOnHex(hex) == game.getSelectedUnit()) {
+                game.getSelectedUnit().toggleSelected();
+                //If clicked on a different unit with the same owner
+            } else if(game.getUnitOnHex(hex).getOwner() == game.getSelectedUnit().getOwner()) {
+                game.getSelectedUnit().toggleSelected();
+                game.getUnitOnHex(hex).toggleSelected();
+                //If clicked on a unit with a different owner than the selected unit
+            } else if(game.getUnitOnHex(hex).getOwner() != game.getSelectedUnit().getOwner()) {
+                Unit enemy = game.getUnitOnHex(hex);
+                Unit playerUnit = game.getSelectedUnit();
+                playerUnit.attack(enemy);
+                playerUnit.toggleSelected();
+                if(enemy.getHealth() == 0) {
+                    enemy.getOwner().removeUnit(enemy);
                 }
             }
         }

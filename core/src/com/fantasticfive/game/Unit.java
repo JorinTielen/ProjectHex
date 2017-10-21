@@ -77,6 +77,7 @@ public class Unit implements Cloneable{
         } else if(health - hp <= 0) {
             health = 0;
         }
+        System.out.println("Health has been reduced by " + hp + " to " + health);
     }
 
     public void move(Point destination) {
