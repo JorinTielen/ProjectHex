@@ -49,6 +49,34 @@ public class Game {
         }
     }
 
+    public void tmpAddEnemyPlayer(String username) {
+        boolean available = true;
+        ArrayList<Color> usedColors = new ArrayList<Color>();
+
+        for (Player p : players) {
+            if (p.getUsername().equals(username)) {
+                System.out.println("This username is already in this game!");
+                available = false;
+            }
+            if (!usedColors.contains(p.getColor())) {
+                usedColors.add(p.getColor());
+            }
+        }
+
+        Color color;
+        do {
+            color = Color.getRandomColor();
+        } while (usedColors.contains(color));
+
+
+        if (available) {
+            Player p = new Player(username, color);
+            players.add(p);
+            Unit u = unitFactory.createUnit(UnitType.SCOUT, new Point(9,14), p);
+            p.purchaseUnit(u);
+        }
+    }
+
     public void removePlayer(Player player) {
         this.players.remove(player);
     }

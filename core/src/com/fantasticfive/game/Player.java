@@ -58,7 +58,6 @@ public class Player {
     public void purchaseUnit(Unit unit) {
         this.removeGold(unit.getPurchaseCost());
         this.units.add(unit);
-        System.out.println("Aantal units in units: " + getUnits().size());
     }
 
     public void sellUnit(Unit unit) {
@@ -91,5 +90,11 @@ public class Player {
 
     public List<Unit> getUnits() {
         return Collections.unmodifiableList(units);
+    }
+
+    public void removeUnit(Unit unit) {
+        if(units.contains(unit)) {
+            units.remove(unit);
+        }
     }
 }

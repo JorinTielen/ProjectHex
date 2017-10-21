@@ -16,7 +16,7 @@ public class Unit implements Cloneable{
     private int costPerTurn;
     private Boolean canTakeLand;
     private int upgradeCost;
-    private Point location;
+    private Point location = new Point(0,0);
     private int allowedToMove;
     private Player owner;
 
@@ -60,7 +60,11 @@ public class Unit implements Cloneable{
     }
 
     public void attack(Unit unitToAttack) {
-        unitToAttack.reduceHealth(attackPower - unitToAttack.getArmor());
+        if(calculateDistance(this.location, unitToAttack.location) <= attackRange) {
+            unitToAttack.reduceHealth(attackPower - unitToAttack.getArmor());
+        } else {
+            toggleSelected();
+        }
     }
 
     public void attack(Building buildingToAttack) {
@@ -68,13 +72,21 @@ public class Unit implements Cloneable{
     }
 
     public void reduceHealth(int hp) {
-        if(hp > 0) {
-            this.health -= hp;
+        if(health - hp > 0) {
+            health -= hp;
+        } else if(health - hp <= 0) {
+            health = 0;
         }
     }
 
     public void move(Point destination) {
-        this.location = destination;
+        if(allowedToMove - calculateDistance(location, destination) < 0) {
+            System.out.println("Not allowed to walk :(");
+        } else {
+            //TODO uncomment this line to lower the amount of tiles a unit is allowed to walk after turns have been implemented
+            //this.allowedToMove -= calculateDistance(location, destination);
+            this.location = destination;
+        }
     }
 
     public void upgrade() {
@@ -120,13 +132,32 @@ public class Unit implements Cloneable{
 
     public void toggleSelected() {
         if(isSelected) {
+            System.out.println("Unit deselected");
             isSelected = false;
         } else {
+            System.out.println("Unit selected");
             isSelected = true;
         }
     }
 
     public Boolean getSelected() {
         return isSelected;
+    }
+
+    private int calculateDistance(Point p1, Point p2) {
+        int distance = (int)Math.hypot(p1.x - p2.x, p1.y - p2.y);
+        return distance;
+    }
+
+    public void setLocation(Point location) {
+        this.location = location;
+    }
+
+    public int getHealth() {
+        return this.health;
+    }
+
+    public Player getOwner() {
+        return owner;
     }
 }
