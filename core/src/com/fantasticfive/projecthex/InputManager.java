@@ -56,10 +56,10 @@ public class InputManager implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if(button == Input.Buttons.LEFT) {
-            projectHex.screenClick(screenX, screenY);
+            projectHex.screenLeftClick(screenX, screenY);
             return false;
         } else if(button == Input.Buttons.RIGHT) {
-            System.out.println("Rechtermuisklik :O");
+            projectHex.screenRightClick(screenX, screenY);
             return false;
         }
         return false;

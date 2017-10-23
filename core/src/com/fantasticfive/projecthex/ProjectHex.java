@@ -3,8 +3,8 @@ package com.fantasticfive.projecthex;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
@@ -85,49 +85,6 @@ public class ProjectHex extends ApplicationAdapter {
         inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(input);
         Gdx.input.setInputProcessor(inputMultiplexer);
-
-        //Just trying something
-//        skin = new Skin();
-//        stage = new Stage();
-//        Gdx.input.setInputProcessor(stage);
-//        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-//        pixmap.setColor(Color.WHITE);
-//        pixmap.fill();
-//        skin.add("white", new Texture(pixmap));
-//        skin.add("default", new BitmapFont());
-//
-//        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-//        textButtonStyle.up = skin.newDrawable("white", Color.DARK_GRAY);
-//        textButtonStyle.down = skin.newDrawable("white", Color.DARK_GRAY);
-//        textButtonStyle.checked = skin.newDrawable("white", Color.BLUE);
-//        textButtonStyle.over = skin.newDrawable("white", Color.LIGHT_GRAY);
-//        textButtonStyle.font = skin.getFont("default");
-//        skin.add("default", textButtonStyle);
-//
-//        Table table = new Table();
-//        table.setFillParent(true);
-//        stage.addActor(table);
-//
-//        final TextButton buttonCreateUnit = new TextButton("Create unit", skin);
-//        final TextButton buttonMoveUnit = new TextButton("Move unit", skin);
-//        table.add(buttonCreateUnit);
-//        table.add(buttonMoveUnit);
-//
-//        buttonCreateUnit.addListener(new ChangeListener() {
-//            public void changed(ChangeEvent event, Actor actor) {
-//                game.createUnit(game.getTestPlayer(), UnitType.SWORDSMAN, new Point(2, 2, -4));
-//                game.createUnit(game.getTestPlayer(), UnitType.ARCHER, new Point(1, 1, -2));
-//                //buttonCreateUnit.setDisabled(true);
-//            }
-//        });
-//
-//        buttonMoveUnit.addListener(new ChangeListener() {
-//            public void changed(ChangeEvent event, Actor actor) {
-//                if (game.getTestUnit() != null) {
-//                    game.MoveUnit(game.getTestUnit(), new Point(4, 2, -6));
-//                }
-//            }
-//        });
     }
 
     @Override
@@ -194,7 +151,7 @@ public class ProjectHex extends ApplicationAdapter {
         batch.dispose();
     }
 
-    public void screenClick(int x, int y) {
+    public void screenLeftClick(int x, int y) {
         unitShopTable = null;
 
         Vector3 tmp = new Vector3(x, y, 0);
@@ -207,6 +164,20 @@ public class ProjectHex extends ApplicationAdapter {
                 if(game.getUnitOnHex(hex) != null || game.getSelectedUnit() != null) {
                     unitClick(hex);
                 }
+            }
+        }
+    }
+
+    public void screenRightClick(int x, int y) {
+        unitShopTable = null;
+
+        Vector3 tmp = new Vector3(x, y, 0);
+        camera.unproject(tmp);
+        for (Hexagon hex : map.getHexagons()) {
+            Rectangle clickArea = new Rectangle(hex.getPos().x, hex.getPos().y,
+                    hex.groundImage.getWidth(), hex.groundImage.getHeight());
+            if (clickArea.contains(tmp.x, tmp.y)) {
+                System.out.println("clicked hex: " + hex.getLocation().x + " " + hex.getLocation().y);
 
                 Building b = game.getBuildingAtLocation(hex.getLocation());
                 if (b != null) {
