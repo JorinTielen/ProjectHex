@@ -77,6 +77,9 @@ public class Player {
         for(Unit u: units) {
             u.resetMoves();
             this.removeGold(u.getCostPerTurn());
+            if(u.getSelected()) {
+                u.toggleSelected();
+            }
         }
     }
 
