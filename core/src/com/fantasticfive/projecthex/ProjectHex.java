@@ -29,6 +29,7 @@ public class ProjectHex extends ApplicationAdapter {
     private Table unitShopTable;
     private Table playerTable;
     private Table unitSellTable;
+    private Table optionsTable;
     private Game game;
 
     @Override
@@ -59,8 +60,6 @@ public class ProjectHex extends ApplicationAdapter {
         stage.addActor(table);
         table.setDebug(true);
 
-        //createBuildingShopUI();
-
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.WHITE);
         pixmap.fill();
@@ -79,8 +78,6 @@ public class ProjectHex extends ApplicationAdapter {
         labelStyle.background = skin.newDrawable("white", Color.LIGHT_GRAY);
         labelStyle.font = skin.getFont("default");
         skin.add("default", labelStyle);
-
-
 
         //input mess
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
@@ -126,9 +123,6 @@ public class ProjectHex extends ApplicationAdapter {
             }
         }
 
-        //draw buttons
-
-
         batch.end();
 
         //draw ui
@@ -141,6 +135,11 @@ public class ProjectHex extends ApplicationAdapter {
         createPlayerUI();
         if (playerTable != null) {
             table.addActor(playerTable);
+        }
+
+        createGameUI();
+        if(optionsTable != null) {
+            table.addActor(optionsTable);
         }
 
         if(unitSellTable != null) {
@@ -160,6 +159,7 @@ public class ProjectHex extends ApplicationAdapter {
     public void screenLeftClick(int x, int y) {
         unitShopTable = null;
         unitSellTable = null;
+        optionsTable = null;
 
         Vector3 tmp = new Vector3(x, y, 0);
         camera.unproject(tmp);
@@ -209,7 +209,7 @@ public class ProjectHex extends ApplicationAdapter {
 
     private void unitClick(Hexagon hex) {
         //If clicked on unit and no unit is selected
-        if(game.getUnitOnHex(hex) != null && game.getSelectedUnit() == null && game.getUnitOnHex(hex).getOwner() == game.getPlayers().get(0)) {
+        if(game.getUnitOnHex(hex) != null && game.getSelectedUnit() == null && game.getUnitOnHex(hex).getOwner() == game.getCurrentPlayer()) {
             Unit u = game.getUnitOnHex(hex);
             u.toggleSelected();
         //If not clicked on unit and unit is selected
@@ -321,5 +321,55 @@ public class ProjectHex extends ApplicationAdapter {
         t.setPosition(100, Gdx.graphics.getHeight() - 10);
 
         playerTable = t;
+    }
+
+    public void createGameUI(){
+        TextButton buttonOptions = new TextButton("Options", skin);
+        buttonOptions.setPosition(Gdx.graphics.getWidth() - 60, 15);
+
+        buttonOptions.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                System.out.println("Options");
+                createOptionsUI();
+            }
+        });
+
+        stage.addActor(buttonOptions);
+    }
+
+    //Opens options menu
+    public void createOptionsUI(){
+        Table t = new Table();
+
+        final TextButton buttonEndTurn = new TextButton("End turn", skin);
+        t.add(buttonEndTurn).fill();
+        t.row();
+
+        final TextButton buttonLeaveGame = new TextButton("Leave game", skin);
+        t.add(buttonLeaveGame).fill();
+        t.row();
+
+        t.setPosition(Gdx.graphics.getWidth() - 40, 55);
+
+        buttonEndTurn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                System.out.println("Ending turn");
+                game.endTurn();
+                optionsTable = null;
+            }
+        });
+
+        buttonLeaveGame.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                System.out.println("Leaving game");
+                game.leaveGame();
+                optionsTable = null;
+            }
+        });
+
+        optionsTable = t;
     }
 }

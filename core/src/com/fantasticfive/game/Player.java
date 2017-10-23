@@ -58,7 +58,16 @@ public class Player {
     }
 
     public void purchaseBuilding(Building building) {
-        this.buildings.add(building); //still need to remove gold
+        this.buildings.add(building);
+        if(building instanceof Resource){
+            this.gold -= ((Resource) building).getPurchaseCost();
+        }
+        if(building instanceof Fortification){
+            this.gold -= ((Fortification) building).getPurchaseCost();
+        }
+        if(building instanceof Barracks){
+            this.gold -= ((Barracks) building).getPurchaseCost();
+        }
     }
 
     public void sellBuilding(Building building, int cost) {
