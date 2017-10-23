@@ -16,9 +16,11 @@ public class Unit implements Cloneable{
     private int costPerTurn;
     private Boolean canTakeLand;
     private int upgradeCost;
-    private Point location;
+    private Point location = new Point(0,0);
     private int allowedToMove;
     private Player owner;
+
+    private boolean isSelected = false;
 
     public Unit(UnitType unitType, int health, int armor,
                 int attackPower, int attackRange, int movementRange,
@@ -58,7 +60,13 @@ public class Unit implements Cloneable{
     }
 
     public void attack(Unit unitToAttack) {
-        unitToAttack.reduceHealth(attackPower - unitToAttack.getArmor());
+        if(calculateDistance(this.location, unitToAttack.location) <= attackRange && this.allowedToMove >= 1) {
+            unitToAttack.reduceHealth(attackPower - unitToAttack.getArmor());
+            //TODO Uncomment this to make a unit unable to do anything after attacking
+            //allowedToMove = 0;
+        } else {
+            toggleSelected();
+        }
     }
 
     public void attack(Building buildingToAttack) {
@@ -66,13 +74,22 @@ public class Unit implements Cloneable{
     }
 
     public void reduceHealth(int hp) {
-        if(hp > 0) {
-            this.health -= hp;
+        if(health - hp > 0) {
+            health -= hp;
+        } else if(health - hp <= 0) {
+            health = 0;
         }
+        System.out.println("Health has been reduced by " + hp + " to " + health);
     }
 
     public void move(Point destination) {
-        this.location = destination;
+        if(allowedToMove - calculateDistance(location, destination) < 0) {
+            System.out.println("Not allowed to walk :(");
+        } else {
+            //TODO uncomment this line to lower the amount of tiles a unit is allowed to walk after turns have been implemented
+            //this.allowedToMove -= calculateDistance(location, destination);
+            this.location = destination;
+        }
     }
 
     public void upgrade() {
@@ -103,10 +120,6 @@ public class Unit implements Cloneable{
         return this.costPerTurn;
     }
 
-    public Texture getTexture() {
-        return this.texture;
-    }
-
     public Point getLocation() {
         return this.location;
     }
@@ -114,5 +127,40 @@ public class Unit implements Cloneable{
     @Override
     public Object clone() throws CloneNotSupportedException{
         return super.clone();
+    }
+
+    public void toggleSelected() {
+        if(isSelected) {
+            System.out.println("Unit deselected");
+            isSelected = false;
+        } else {
+            System.out.println("Unit selected");
+            isSelected = true;
+        }
+    }
+
+    public Boolean getSelected() {
+        return isSelected;
+    }
+
+    private int calculateDistance(Point p1, Point p2) {
+        //TODO This formula isn't 100% correct yet
+
+        p1.z = -(p1.y + p1.x);
+        p2.z = -(p2.y + p2.x);
+
+        return (Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y) + Math.abs(p1.z - p2.z)) / 2;
+    }
+
+    public void setLocation(Point location) {
+        this.location = location;
+    }
+
+    public int getHealth() {
+        return this.health;
+    }
+
+    public Player getOwner() {
+        return owner;
     }
 }

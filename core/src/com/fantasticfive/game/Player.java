@@ -75,9 +75,12 @@ public class Player {
     }
 
     public void purchaseUnit(Unit unit) {
-        this.removeGold(unit.getPurchaseCost());
-        this.units.add(unit);
-        System.out.println("Aantal units in units: " + getUnits().size());
+        if(this.gold - unit.getPurchaseCost() >= 0) {
+            this.removeGold(unit.getPurchaseCost());
+            this.units.add(unit);
+        } else {
+            System.out.println("Not enough money");
+        }
     }
 
     public void sellUnit(Unit unit) {
@@ -97,6 +100,9 @@ public class Player {
         for(Unit u: units) {
             u.resetMoves();
             this.removeGold(u.getCostPerTurn());
+            if(u.getSelected()) {
+                u.toggleSelected();
+            }
         }
     }
 
@@ -110,5 +116,11 @@ public class Player {
 
     public List<Unit> getUnits() {
         return Collections.unmodifiableList(units);
+    }
+
+    public void removeUnit(Unit unit) {
+        if(units.contains(unit)) {
+            units.remove(unit);
+        }
     }
 }

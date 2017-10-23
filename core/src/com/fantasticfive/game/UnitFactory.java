@@ -27,7 +27,7 @@ public class UnitFactory {
                 break;
         }
         unit.setOwner(owner);
-        unit.move(location);
+        unit.setLocation(location);
         return unit;
     }
 
