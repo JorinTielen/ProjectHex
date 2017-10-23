@@ -163,4 +163,8 @@ public class Unit implements Cloneable{
     public Player getOwner() {
         return owner;
     }
+
+    public UnitType getUnitType() {
+        return unitType;
+    }
 }

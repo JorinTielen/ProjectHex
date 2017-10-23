@@ -24,4 +24,8 @@ public class Resource extends Building {
     }
 
     public int getPurchaseCost() { return purchaseCost; }
+
+    public int getProductionPerTurn() {
+        return this.productionPerTurn;
+    }
 }

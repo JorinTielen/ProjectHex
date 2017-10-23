@@ -1,5 +1,6 @@
 package com.fantasticfive.game;
 
+import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.Color;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.util.ArrayList;
@@ -122,5 +123,20 @@ public class Player {
         if(units.contains(unit)) {
             units.remove(unit);
         }
+    }
+
+    public int getGoldPerTurn() {
+        int gpt = 0;
+        for (Unit u: units) {
+            gpt -= u.getCostPerTurn();
+        }
+
+        for (Building b: buildings) {
+            if(b instanceof Resource) {
+                gpt += ((Resource) b).getProductionPerTurn();
+            }
+        }
+
+        return gpt;
     }
 }
