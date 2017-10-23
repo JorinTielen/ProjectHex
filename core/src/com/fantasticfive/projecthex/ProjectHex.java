@@ -127,8 +127,8 @@ public class ProjectHex extends ApplicationAdapter {
             }
         }
 
-        if (buildingToBuild != null){
-            Vector3 mousePos = new Vector3( Gdx.input.getX() - 80, Gdx.input.getY() + 80, 0); //Image position gets set hard-coded to get it under the cursor.
+        if (buildingToBuild != null) {
+            Vector3 mousePos = new Vector3(Gdx.input.getX() - 80, Gdx.input.getY() + 80, 0); //Image position gets set hard-coded to get it under the cursor.
             camera.unproject(mousePos);
             batch.draw(buildingToBuild.image, mousePos.x, mousePos.y);
         }
@@ -142,7 +142,7 @@ public class ProjectHex extends ApplicationAdapter {
             table.addActor(unitShopTable);
         }
 
-        if (buildingShopTable != null){
+        if (buildingShopTable != null) {
             table.addActor(buildingShopTable);
         }
 
@@ -152,15 +152,15 @@ public class ProjectHex extends ApplicationAdapter {
         }
 
         createGameUI();
-        if(optionsTable != null) {
+        if (optionsTable != null) {
             table.addActor(optionsTable);
         }
 
-        if(unitSellTable != null) {
+        if (unitSellTable != null) {
             table.addActor(unitSellTable);
         }
 
-        if (buildingSellTable != null){
+        if (buildingSellTable != null) {
             table.addActor(buildingSellTable);
         }
 
@@ -188,21 +188,18 @@ public class ProjectHex extends ApplicationAdapter {
                     hex.groundImage.getWidth(), hex.groundImage.getHeight());
             if (clickArea.contains(tmp.x, tmp.y)) {
                 System.out.println("clicked hex: " + hex.getLocation().x + " " + hex.getLocation().y);
-                if(game.getUnitOnHex(hex) != null || game.getSelectedUnit() != null) {
+                if (game.getUnitOnHex(hex) != null || game.getSelectedUnit() != null) {
                     buildingToBuild = null;
                     unitClick(hex);
-                }
-                else if (buildingToBuild != null){
+                } else if (buildingToBuild != null) {
                     //create building at location
-                    if (buildingToBuild instanceof Resource){
+                    if (buildingToBuild instanceof Resource) {
                         game.createBuilding(BuildingType.RESOURCE, hex.getLocation());
                         System.out.println("Resource built");
-                    }
-                    else if (buildingToBuild instanceof Fortification){
+                    } else if (buildingToBuild instanceof Fortification) {
                         game.createBuilding(BuildingType.FORTIFICATION, hex.getLocation());
                         System.out.println("Fortification built");
-                    }
-                    else if (buildingToBuild instanceof Barracks){
+                    } else if (buildingToBuild instanceof Barracks) {
                         game.createBuilding(BuildingType.BARRACKS, hex.getLocation());
                         System.out.println("Barracks built");
                     }
@@ -233,20 +230,18 @@ public class ProjectHex extends ApplicationAdapter {
                     } else if (b instanceof TownCentre) {
                         System.out.println("You clicked on a TownCentre");
                         createBuildingShopUI(x, y);
-                    }
-                    else if (b instanceof Resource){
+                    } else if (b instanceof Resource) {
                         System.out.println("You clicked on a Resource");
                         createSellBuildingUI(x, y, b);
-                    }
-                    else if (b instanceof Fortification){
+                    } else if (b instanceof Fortification) {
                         System.out.println("You clicked on a Fortification");
                         createSellBuildingUI(x, y, b);
                     }
                 }
                 Unit u = game.getUnitOnHex(hex);
-                if(u != null) {
-                    if(u.getOwner() == game.getCurrentPlayer())
-                    createSellUnitUI(x,y,u);
+                if (u != null) {
+                    if (u.getOwner() == game.getCurrentPlayer())
+                        createSellUnitUI(x, y, u);
                     System.out.println("You clicked on a unit!");
                 }
             }
@@ -255,11 +250,11 @@ public class ProjectHex extends ApplicationAdapter {
 
     private void unitClick(Hexagon hex) {
         //If clicked on unit and no unit is selected
-        if(game.getUnitOnHex(hex) != null && game.getSelectedUnit() == null && game.getUnitOnHex(hex).getOwner() == game.getCurrentPlayer()) {
+        if (game.getUnitOnHex(hex) != null && game.getSelectedUnit() == null && game.getUnitOnHex(hex).getOwner() == game.getCurrentPlayer()) {
             Unit u = game.getUnitOnHex(hex);
             u.toggleSelected();
-        //If not clicked on unit and unit is selected
-        } else if(game.getUnitOnHex(hex) == null && game.getSelectedUnit() != null) {
+            //If not clicked on unit and unit is selected
+        } else if (game.getUnitOnHex(hex) == null && game.getSelectedUnit() != null) {
             Unit u = game.getSelectedUnit();
             //TODO Is this supposed to be here?
             if (hex.getObjectType() != ObjectType.MOUNTAIN
@@ -268,22 +263,22 @@ public class ProjectHex extends ApplicationAdapter {
                 u.move(new Point(hex.getLocation().x, hex.getLocation().y));
                 u.toggleSelected();
             }
-        //If clicked on unit and unit is selected
-        } else if(game.getUnitOnHex(hex) != null && game.getSelectedUnit() != null) {
+            //If clicked on unit and unit is selected
+        } else if (game.getUnitOnHex(hex) != null && game.getSelectedUnit() != null) {
             //If clicked on the selected unit
-            if(game.getUnitOnHex(hex) == game.getSelectedUnit()) {
+            if (game.getUnitOnHex(hex) == game.getSelectedUnit()) {
                 game.getSelectedUnit().toggleSelected();
-            //If clicked on a different unit with the same owner
-            } else if(game.getUnitOnHex(hex).getOwner() == game.getSelectedUnit().getOwner()) {
+                //If clicked on a different unit with the same owner
+            } else if (game.getUnitOnHex(hex).getOwner() == game.getSelectedUnit().getOwner()) {
                 game.getSelectedUnit().toggleSelected();
                 game.getUnitOnHex(hex).toggleSelected();
-            //If clicked on a unit with a different owner than the selected unit
-            } else if(game.getUnitOnHex(hex).getOwner() != game.getSelectedUnit().getOwner()) {
+                //If clicked on a unit with a different owner than the selected unit
+            } else if (game.getUnitOnHex(hex).getOwner() != game.getSelectedUnit().getOwner()) {
                 Unit enemy = game.getUnitOnHex(hex);
                 Unit playerUnit = game.getSelectedUnit();
                 playerUnit.attack(enemy);
                 playerUnit.toggleSelected();
-                if(enemy.getHealth() == 0) {
+                if (enemy.getHealth() == 0) {
                     enemy.getOwner().removeUnit(enemy);
                 }
             }
@@ -296,12 +291,16 @@ public class ProjectHex extends ApplicationAdapter {
         t.add(new Label("Buy Unit", skin)).fill();
         t.row();
 
-        final TextButton buttonBuyArcher = new TextButton("Archer", skin);
+        final TextButton buttonBuyArcher = new TextButton("Archer - Cost: " + game.getUnitPreset(UnitType.ARCHER).getPurchaseCost(), skin);
         t.add(buttonBuyArcher).fill();
         t.row();
 
-        final TextButton buttonBuySwordsman = new TextButton("Swordsman", skin);
+        final TextButton buttonBuySwordsman = new TextButton("Swordsman - Cost: " + game.getUnitPreset(UnitType.SWORDSMAN).getPurchaseCost(), skin);
         t.add(buttonBuySwordsman).fill();
+        t.row();
+
+        final TextButton buttonBuyScout = new TextButton("Scout - Cost: " + game.getUnitPreset(UnitType.SCOUT).getPurchaseCost(), skin);
+        t.add(buttonBuyScout).fill();
         t.row();
 
         final TextButton buttonSellBarracks = new TextButton("Sell Barracks", skin);
@@ -314,7 +313,7 @@ public class ProjectHex extends ApplicationAdapter {
             public void changed(ChangeEvent event, Actor actor) {
                 //method for buying archer
                 System.out.println("you bought an archer");
-                game.createUnit(game.getCurrentPlayer(), UnitType.ARCHER, new Point(3,1));
+                game.createUnit(game.getCurrentPlayer(), UnitType.ARCHER, new Point(building.getLocation().x + 1, building.getLocation().y));
                 unitShopTable = null;
             }
         });
@@ -323,7 +322,16 @@ public class ProjectHex extends ApplicationAdapter {
             public void changed(ChangeEvent event, Actor actor) {
                 //method for buying swordsman
                 System.out.println("you bought a swordsman");
-                game.createUnit(game.getCurrentPlayer(), UnitType.SWORDSMAN, new Point(3,1));
+                game.createUnit(game.getCurrentPlayer(), UnitType.SWORDSMAN, new Point(building.getLocation().x + 1, building.getLocation().y));
+                unitShopTable = null;
+            }
+        });
+
+        buttonBuyScout.addListener(new ChangeListener() {
+            public void changed(ChangeEvent event, Actor actor) {
+                //method for buying scout
+                System.out.println("you bought a scout");
+                game.createUnit(game.getCurrentPlayer(), UnitType.SCOUT, new Point(building.getLocation().x + 1, building.getLocation().y));
                 unitShopTable = null;
             }
         });
@@ -390,17 +398,17 @@ public class ProjectHex extends ApplicationAdapter {
         buildingShopTable = t;
     }
 
-        private void createSellUnitUI(float x, float y, final Unit unit) {
-            Table t = new Table();
+    private void createSellUnitUI(float x, float y, final Unit unit) {
+        Table t = new Table();
 
-            t.add(new Label(unit.getUnitType().toString(), skin)).fill();
-            t.row();
+        t.add(new Label(unit.getUnitType().toString(), skin)).fill();
+        t.row();
 
-            final TextButton buttonSellUnit = new TextButton("Sell", skin);
-            t.add(buttonSellUnit).fill();
-            t.row();
+        final TextButton buttonSellUnit = new TextButton("Sell", skin);
+        t.add(buttonSellUnit).fill();
+        t.row();
 
-            t.setPosition(x, Gdx.graphics.getHeight() - y);
+        t.setPosition(x, Gdx.graphics.getHeight() - y);
 
         buttonSellUnit.addListener(new ChangeListener() {
             @Override
@@ -444,7 +452,7 @@ public class ProjectHex extends ApplicationAdapter {
         t.add(l).width(90);
 
         Label gpt = new Label("GPT: " + game.getCurrentPlayer().getGoldPerTurn(), skin);
-        if(game.getCurrentPlayer().getGoldPerTurn() < 0) {
+        if (game.getCurrentPlayer().getGoldPerTurn() < 0) {
             gpt.setColor(Color.RED);
         } else {
             gpt.setColor(Color.WHITE);
@@ -456,7 +464,7 @@ public class ProjectHex extends ApplicationAdapter {
         playerTable = t;
     }
 
-    public void createGameUI(){
+    public void createGameUI() {
         TextButton buttonOptions = new TextButton("Options", skin);
         buttonOptions.setPosition(Gdx.graphics.getWidth() - 60, 15);
 
@@ -472,7 +480,7 @@ public class ProjectHex extends ApplicationAdapter {
     }
 
     //Opens options menu
-    public void createOptionsUI(){
+    public void createOptionsUI() {
         Table t = new Table();
 
         final TextButton buttonEndTurn = new TextButton("End turn", skin);

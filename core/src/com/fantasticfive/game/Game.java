@@ -53,9 +53,9 @@ public class Game {
                 p.purchaseUnit(u);
             } else {
                 Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(1, 0), p); //Random Point???
-                p.purchaseBuilding(b, BuildingType.TOWNCENTRE);
-                Building b2 = buildingFactory.createBuilding(BuildingType.BARRACKS, new Point(2, 1), p); //Random Point???
-                p.purchaseBuilding(b2, BuildingType.BARRACKS);
+                p.purchaseBuilding(b);
+                b = buildingFactory.createBuilding(BuildingType.BARRACKS, new Point(2, 1), p); //Random Point???
+                p.purchaseBuilding(b);
                 Unit u = unitFactory.createUnit(UnitType.SWORDSMAN, new Point(2, 0), p);
                 p.purchaseUnit(u);
                 u = unitFactory.createUnit(UnitType.SCOUT, new Point(3, 0), p);
@@ -108,6 +108,10 @@ public class Game {
         return buildingFactory.getBuildingPreset(buildingType);
     }
 
+    public Unit getUnitPreset(UnitType unitType){
+        return unitFactory.getUnitPreset(unitType);
+    }
+
     public void createUnit(Player player, UnitType unitType, Point location) {
         if (hexEmpty(location)) {
             Unit unit = unitFactory.getUnitPreset(unitType);
@@ -122,10 +126,10 @@ public class Game {
     }
 
     public void createBuilding(BuildingType buildingType, Point location) {
-        //if (map.isHexBuildable(location, currentPlayer)) {
-            currentPlayer.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, currentPlayer), buildingType);
+//        if (map.isHexBuildable(location, currentPlayer)) {
+            currentPlayer.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, currentPlayer));
             map.createBuilding(buildingType, location);
-        //}
+//        }
     }
 
     public void sellBuilding(Point location){
