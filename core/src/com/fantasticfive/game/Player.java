@@ -37,7 +37,6 @@ public class Player {
         return null;
     }
 
-
     public Color getColor() {
         return this.color;
     }
