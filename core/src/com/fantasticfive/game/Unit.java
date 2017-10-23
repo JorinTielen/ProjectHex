@@ -60,8 +60,10 @@ public class Unit implements Cloneable{
     }
 
     public void attack(Unit unitToAttack) {
-        if(calculateDistance(this.location, unitToAttack.location) <= attackRange) {
+        if(calculateDistance(this.location, unitToAttack.location) <= attackRange && this.allowedToMove >= 1) {
             unitToAttack.reduceHealth(attackPower - unitToAttack.getArmor());
+            //TODO Uncomment this to make a unit unable to do anything after attacking
+            //allowedToMove = 0;
         } else {
             toggleSelected();
         }
