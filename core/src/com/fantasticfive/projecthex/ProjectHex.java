@@ -308,6 +308,11 @@ public class ProjectHex extends ApplicationAdapter {
         t.add(l).width(90);
 
         Label gpt = new Label("GPT: " + game.getCurrentPlayer().getGoldPerTurn(), skin);
+        if(game.getCurrentPlayer().getGoldPerTurn() < 0) {
+            gpt.setColor(Color.RED);
+        } else {
+            gpt.setColor(Color.WHITE);
+        }
         t.add(gpt).width(90);
 
         t.setPosition(100, Gdx.graphics.getHeight() - 10);
