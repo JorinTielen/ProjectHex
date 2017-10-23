@@ -58,7 +58,7 @@ public class UnitFactory {
                 2, 3, 125, 1,
                 false, 150, new Texture("characterArcher.png")));
         unitPresets.add(new Unit(UnitType.SCOUT, 50, 0, 15,
-                1, 5, 75, 1,
+                1, 3, 75, 1,
                 true, 150, new Texture("characterScout.png")));
     }
 
