@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.fantasticfive.game.*;
+import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.GroundType;
 import com.fantasticfive.game.enums.ObjectType;
 
@@ -27,7 +28,10 @@ public class ProjectHex extends ApplicationAdapter {
     private Table table;
     private Table unitShopTable;
     private Table playerTable;
+    private Table buildingShopTable;
+    private Building buildingToBuild;
     private Game game;
+    private Hexagon lastHexMenuOpened;
 
     @Override
     public void create() {
@@ -124,6 +128,12 @@ public class ProjectHex extends ApplicationAdapter {
             }
         }
 
+        if (buildingToBuild != null){
+            Vector3 mousePos = new Vector3( Gdx.input.getX() - 80, Gdx.input.getY() + 80, 0); //Image position gets set hard-coded to get it under the cursor.
+            camera.unproject(mousePos);
+            batch.draw(buildingToBuild.image, mousePos.x, mousePos.y);
+        }
+
         //draw buttons
 
 
@@ -134,6 +144,10 @@ public class ProjectHex extends ApplicationAdapter {
 
         if (unitShopTable != null) {
             table.addActor(unitShopTable);
+        }
+
+        if (buildingShopTable != null){
+            table.addActor(buildingShopTable);
         }
 
         createPlayerUI();
@@ -153,6 +167,7 @@ public class ProjectHex extends ApplicationAdapter {
 
     public void screenLeftClick(int x, int y) {
         unitShopTable = null;
+        buildingShopTable = null;
 
         Vector3 tmp = new Vector3(x, y, 0);
         camera.unproject(tmp);
@@ -162,7 +177,24 @@ public class ProjectHex extends ApplicationAdapter {
             if (clickArea.contains(tmp.x, tmp.y)) {
                 System.out.println("clicked hex: " + hex.getLocation().x + " " + hex.getLocation().y);
                 if(game.getUnitOnHex(hex) != null || game.getSelectedUnit() != null) {
+                    buildingToBuild = null;
                     unitClick(hex);
+                }
+                else if (buildingToBuild != null){
+                    //create building at location
+                    if (buildingToBuild instanceof Resource){
+                        game.createBuilding(BuildingType.RESOURCE, hex.getLocation());
+                        System.out.println("Resource built");
+                    }
+                    else if (buildingToBuild instanceof Fortification){
+                        game.createBuilding(BuildingType.FORTIFICATION, hex.getLocation());
+                        System.out.println("Fortification built");
+                    }
+                    else if (buildingToBuild instanceof Barracks){
+                        game.createBuilding(BuildingType.BARRACKS, hex.getLocation());
+                        System.out.println("Barracks built");
+                    }
+                    buildingToBuild = null;
                 }
             }
         }
@@ -170,13 +202,15 @@ public class ProjectHex extends ApplicationAdapter {
 
     public void screenRightClick(int x, int y) {
         unitShopTable = null;
-
+        buildingShopTable = null;
+        buildingToBuild = null;
         Vector3 tmp = new Vector3(x, y, 0);
         camera.unproject(tmp);
         for (Hexagon hex : map.getHexagons()) {
             Rectangle clickArea = new Rectangle(hex.getPos().x, hex.getPos().y,
                     hex.groundImage.getWidth(), hex.groundImage.getHeight());
             if (clickArea.contains(tmp.x, tmp.y)) {
+                lastHexMenuOpened = hex;
                 System.out.println("clicked hex: " + hex.getLocation().x + " " + hex.getLocation().y);
 
                 Building b = game.getBuildingAtLocation(hex.getLocation());
@@ -186,7 +220,7 @@ public class ProjectHex extends ApplicationAdapter {
                         createUnitShopUI(x, y);
                     } else if (b instanceof TownCentre) {
                         System.out.println("You clicked on a TownCentre");
-
+                        createBuildingShopUI(x, y);
                     }
                 }
             }
@@ -243,6 +277,10 @@ public class ProjectHex extends ApplicationAdapter {
         t.add(buttonBuySwordsman).fill();
         t.row();
 
+        final TextButton buttonSellBarracks = new TextButton("Sell Barracks", skin);
+        t.add(buttonSellBarracks).fill();
+        t.row();
+
         t.setPosition(x, Gdx.graphics.getHeight() - y);
 
         buttonBuyArcher.addListener(new ChangeListener() {
@@ -261,7 +299,66 @@ public class ProjectHex extends ApplicationAdapter {
             }
         });
 
+        buttonSellBarracks.addListener(new ChangeListener() {
+            public void changed(ChangeEvent event, Actor actor) {
+                //method for selling barracks
+                game.sellBuilding(lastHexMenuOpened.getLocation());
+                System.out.println("You sold your Barracks.");
+                unitShopTable = null;
+            }
+        });
+
         unitShopTable = t;
+    }
+
+    public void createBuildingShopUI(float x, float y){
+        System.out.println(x + ", " + y);
+        Table t = new Table();
+        t.add(new Label("Buy Building", skin)).fill();
+        t.row();
+
+        final TextButton buttonBuyResource = new TextButton("Resource - Cost: " + ((Resource)game.getBuildingPreset(BuildingType.RESOURCE)).getPurchaseCost(), skin);
+        t.add(buttonBuyResource).fill();
+        t.row();
+
+        final TextButton buttonBuyFortification = new TextButton("Fortification - Cost: " + ((Fortification)game.getBuildingPreset(BuildingType.FORTIFICATION)).getPurchaseCost(), skin);
+        t.add(buttonBuyFortification).fill();
+        t.row();
+
+        final TextButton buttonBuyBarracks = new TextButton("Barracks - Cost: " + ((Barracks)game.getBuildingPreset(BuildingType.BARRACKS)).getPurchaseCost(), skin);
+        t.add(buttonBuyBarracks).fill();
+        t.row();
+
+        t.setPosition(x, Gdx.graphics.getHeight() - y);
+
+        buttonBuyResource.addListener(new ChangeListener() {
+            public void changed(ChangeEvent event, Actor actor) {
+                //method for buying Resource
+                System.out.println("You bought a Resource");
+                buildingToBuild = game.getBuildingPreset(BuildingType.RESOURCE);
+                buildingShopTable = null;
+            }
+        });
+
+        buttonBuyFortification.addListener(new ChangeListener() {
+            public void changed(ChangeEvent event, Actor actor) {
+                //method for buying Fortification
+                System.out.println("You bought a Fortification");
+                buildingToBuild = game.getBuildingPreset(BuildingType.FORTIFICATION);
+                buildingShopTable = null;
+            }
+        });
+
+        buttonBuyBarracks.addListener(new ChangeListener() {
+            public void changed(ChangeEvent event, Actor actor) {
+                //method for buying Barracks
+                System.out.println("You bought a Barracks");
+                buildingToBuild = game.getBuildingPreset(BuildingType.BARRACKS);
+                buildingShopTable = null;
+            }
+        });
+
+        buildingShopTable = t;
     }
 
     public void createPlayerUI() {

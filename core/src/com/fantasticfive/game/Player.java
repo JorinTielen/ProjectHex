@@ -1,5 +1,6 @@
 package com.fantasticfive.game;
 
+import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.Color;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.util.ArrayList;
@@ -57,8 +58,21 @@ public class Player {
         this.gold -= gold;
     }
 
-    public void purchaseBuilding(Building building) {
-        this.buildings.add(building); //still need to remove gold
+    public void purchaseBuilding(Building building, BuildingType buildingType) {
+        this.buildings.add(building);
+        switch (buildingType){
+            case RESOURCE:
+                this.gold = gold - ((Resource)building).getPurchaseCost();
+                break;
+            case FORTIFICATION:
+                this.gold = gold - ((Fortification)building).getPurchaseCost();
+                break;
+            case BARRACKS:
+                this.gold = gold - ((Barracks)building).getPurchaseCost();
+                break;
+            default:
+                break;
+        }
     }
 
     public void sellBuilding(Building building, int cost) {

@@ -53,9 +53,9 @@ public class Game {
                 p.purchaseUnit(u);
             } else {
                 Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(1, 0), p); //Random Point???
-                p.purchaseBuilding(b);
+                p.purchaseBuilding(b, BuildingType.TOWNCENTRE);
                 Building b2 = buildingFactory.createBuilding(BuildingType.BARRACKS, new Point(2, 1), p); //Random Point???
-                p.purchaseBuilding(b2);
+                p.purchaseBuilding(b2, BuildingType.BARRACKS);
                 Unit u = unitFactory.createUnit(UnitType.SWORDSMAN, new Point(2, 0), p);
                 p.purchaseUnit(u);
                 u = unitFactory.createUnit(UnitType.SCOUT, new Point(3, 0), p);
@@ -98,6 +98,10 @@ public class Game {
         throw new NotImplementedException();
     }
 
+    public Building getBuildingPreset(BuildingType buildingType){
+        return buildingFactory.getBuildingPreset(buildingType);
+    }
+
     public void createUnit(Player player, UnitType unitType, Point location) {
         if (hexEmpty(location)) {
             Unit unit = unitFactory.getUnitPreset(unitType);
@@ -109,15 +113,15 @@ public class Game {
         }
     }
 
-    public void createBuilding(Player player, BuildingType buildingType, Point location) {
-        if (map.isHexBuildable(location, player)) {
-            player.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, player));
+    public void createBuilding(BuildingType buildingType, Point location) {
+        if (map.isHexBuildable(location, currentPlayer)) {
+            currentPlayer.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, currentPlayer), buildingType);
             map.createBuilding(buildingType, location);
         }
     }
 
-    public void sellBuilding(Player player, Point location){
-        Building building = player.getBuildingAtLocation(location);
+    public void sellBuilding(Point location){
+        Building building = currentPlayer.getBuildingAtLocation(location);
         if (building != null && !(building instanceof TownCentre)){
             int cost = 0;
             if (building instanceof Barracks){
@@ -129,7 +133,7 @@ public class Game {
             else if (building instanceof Resource){
                 cost = ((Resource)buildingFactory.getBuildingPreset(BuildingType.RESOURCE)).getPurchaseCost();
             }
-            player.sellBuilding(building, cost);
+            currentPlayer.sellBuilding(building, cost);
             Hexagon hex = map.getHexAtLocation(location);
             hex.removeObject();
             hex.removeObjectType();
