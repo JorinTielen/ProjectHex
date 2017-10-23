@@ -37,15 +37,6 @@ public class Player {
         return null;
     }
 
-    public Unit getUnitAtLocation(Point location){
-        for (Unit unit : units){
-            if (unit.getLocation().equals(location)) {
-                return unit;
-            }
-        }
-        return null;
-    }
-
     public Color getColor() {
         return this.color;
     }

@@ -98,9 +98,4 @@ public class Map {
         }
         return null;
     }
-
-    public Unit getUnitAtLocation(Point loc) {
-        throw new NotImplementedException();
-    }
-
 }

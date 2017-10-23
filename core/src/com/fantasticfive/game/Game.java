@@ -195,21 +195,11 @@ public class Game {
     }
 
     public void attackBuilding(Player player, Point locationUnit, Point locationBuilding){
-        Unit unit = getUnitAtLocation(locationUnit);
+        Unit unit = getUnitOnHex(map.getHexAtLocation(locationUnit));
         Building building = getBuildingAtLocation(locationBuilding);
         if (unit != null && building != null){
             unit.attack(building);
         }
-    }
-
-    public Unit getUnitAtLocation(Point location){
-        for (Player player : players){
-            Unit unit = player.getUnitAtLocation(location);
-            if (unit != null){
-                return unit;
-            }
-        }
-        return null;
     }
 
     public Building getBuildingAtLocation(Point location){
