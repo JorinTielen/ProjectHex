@@ -5,9 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 
-import java.io.InputStream;
-import java.net.InetAddress;
-
 public class InputManager implements InputProcessor {
     private Vector2 camPos = Vector2.Zero;
     private ProjectHex projectHex;
