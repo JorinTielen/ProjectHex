@@ -159,6 +159,7 @@ public class ProjectHex extends ApplicationAdapter {
 
     public void screenLeftClick(int x, int y) {
         unitShopTable = null;
+        unitSellTable = null;
 
         Vector3 tmp = new Vector3(x, y, 0);
         camera.unproject(tmp);
@@ -176,6 +177,7 @@ public class ProjectHex extends ApplicationAdapter {
 
     public void screenRightClick(int x, int y) {
         unitShopTable = null;
+        unitSellTable = null;
 
         Vector3 tmp = new Vector3(x, y, 0);
         camera.unproject(tmp);
@@ -197,6 +199,7 @@ public class ProjectHex extends ApplicationAdapter {
                 }
                 Unit u = game.getUnitOnHex(hex);
                 if(u != null) {
+                    if(u.getOwner() == game.getCurrentPlayer())
                     createSellUnitUI(x,y,u);
                     System.out.println("You clicked on a unit!");
                 }
