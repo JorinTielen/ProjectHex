@@ -57,20 +57,16 @@ public class Player {
         this.gold -= gold;
     }
 
-    public void purchaseBuilding(Building building, BuildingType buildingType) {
+    public void purchaseBuilding(Building building) {
         this.buildings.add(building);
-        switch (buildingType){
-            case RESOURCE:
-                this.gold = gold - ((Resource)building).getPurchaseCost();
-                break;
-            case FORTIFICATION:
-                this.gold = gold - ((Fortification)building).getPurchaseCost();
-                break;
-            case BARRACKS:
-                this.gold = gold - ((Barracks)building).getPurchaseCost();
-                break;
-            default:
-                break;
+        if(building instanceof Resource){
+            this.gold -= ((Resource) building).getPurchaseCost();
+        }
+        if(building instanceof Fortification){
+            this.gold -= ((Fortification) building).getPurchaseCost();
+        }
+        if(building instanceof Barracks){
+            this.gold -= ((Barracks) building).getPurchaseCost();
         }
     }
 
