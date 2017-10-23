@@ -86,6 +86,9 @@ public class Player {
 
     public void sellUnit(Unit unit) {
         this.addGold((int)(unit.getPurchaseCost() * 0.66));
+        if(unit.getSelected()) {
+            unit.toggleSelected();
+        }
         this.units.remove(unit);
     }
 
