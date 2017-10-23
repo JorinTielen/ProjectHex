@@ -104,8 +104,10 @@ public class Game {
             if (player.getGold() - unit.getPurchaseCost() > 0) {
                 player.purchaseUnit(unitFactory.createUnit(unitType, location, player));
             } else {
-                throw new NotImplementedException();
+                System.out.println("Not enough gold");
             }
+        } else {
+            System.out.println("Hex not empty");
         }
     }
 
@@ -160,7 +162,7 @@ public class Game {
         boolean empty = true;
         for (Player player : players) {
             for (Unit unit : player.getUnits()) {
-                if (unit.getLocation() == location) {
+                if (unit.getLocation().equals(location)) {
                     empty = false;
                 }
             }
@@ -209,5 +211,11 @@ public class Game {
 
         }
         return null;
+    }
+
+    public Player getCurrentPlayer() {
+        //TODO Ook echt de current player returnen
+        //return this.currentPlayer;
+        return players.get(0);
     }
 }
