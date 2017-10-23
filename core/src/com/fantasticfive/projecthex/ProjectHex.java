@@ -4,24 +4,13 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.fantasticfive.game.*;
 import com.fantasticfive.game.enums.GroundType;
 import com.fantasticfive.game.enums.ObjectType;
-import com.fantasticfive.game.enums.UnitType;
 
 public class ProjectHex extends ApplicationAdapter {
     private InputManager input = new InputManager(this);
