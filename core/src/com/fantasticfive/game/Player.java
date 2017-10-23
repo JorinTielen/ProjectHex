@@ -91,6 +91,9 @@ public class Player {
 
     public void sellUnit(Unit unit) {
         this.addGold((int)(unit.getPurchaseCost() * 0.66));
+        if(unit.getSelected()) {
+            unit.toggleSelected();
+        }
         this.units.remove(unit);
     }
 
@@ -128,5 +131,20 @@ public class Player {
         if(units.contains(unit)) {
             units.remove(unit);
         }
+    }
+
+    public int getGoldPerTurn() {
+        int gpt = 0;
+        for (Unit u: units) {
+            gpt -= u.getCostPerTurn();
+        }
+
+        for (Building b: buildings) {
+            if(b instanceof Resource) {
+                gpt += ((Resource) b).getProductionPerTurn();
+            }
+        }
+
+        return gpt;
     }
 }

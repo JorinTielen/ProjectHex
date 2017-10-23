@@ -75,6 +75,7 @@ public class Map {
             }
         }
         if (hex.getOwner() == player &&
+                hex.getGroundType() != GroundType.WATER &&
                 hex.getObjectType() != ObjectType.MOUNTAIN &&
                 hex.getObjectType() != ObjectType.BUILDING){
             return true;
