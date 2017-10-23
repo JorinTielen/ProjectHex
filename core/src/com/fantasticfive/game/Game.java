@@ -11,6 +11,7 @@ import java.util.List;
 
 public class Game {
     private List<Player> players = new ArrayList<Player>();
+    private Player currentPlayer;
     private Map map;
     private UnitFactory unitFactory = new UnitFactory();
     private BuildingFactory buildingFactory = new BuildingFactory();
@@ -43,21 +44,21 @@ public class Game {
             Player p = new Player(username, color);
             players.add(p);
             p.addGold(9999);
-            if(username == "enemy") {
+            if (username.equals("enemy")) {
                 Unit u = unitFactory.createUnit(UnitType.SCOUT, new Point(9, 14), p);
                 p.purchaseUnit(u);
                 u = unitFactory.createUnit(UnitType.SWORDSMAN, new Point(12, 10), p);
                 p.purchaseUnit(u);
-                u = unitFactory.createUnit(UnitType.ARCHER, new Point(1,18), p);
+                u = unitFactory.createUnit(UnitType.ARCHER, new Point(1, 18), p);
                 p.purchaseUnit(u);
             } else {
                 Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(1, 0), p); //Random Point???
                 p.purchaseBuilding(b);
                 Unit u = unitFactory.createUnit(UnitType.SWORDSMAN, new Point(2, 0), p);
                 p.purchaseUnit(u);
-                u = unitFactory.createUnit(UnitType.SCOUT, new Point(3,0),p);
+                u = unitFactory.createUnit(UnitType.SCOUT, new Point(3, 0), p);
                 p.purchaseUnit(u);
-                u = unitFactory.createUnit(UnitType.ARCHER, new Point(4,0),p);
+                u = unitFactory.createUnit(UnitType.ARCHER, new Point(4, 0), p);
                 p.purchaseUnit(u);
             }
         }
@@ -72,7 +73,23 @@ public class Game {
     }
 
     public void startGame() {
-        throw new NotImplementedException();
+        currentPlayer = players.get(0);
+    }
+
+    public void endTurn() {
+        currentPlayer.endTurn();
+        int i = players.indexOf(currentPlayer);
+        if (i != players.size() - 1) {
+            currentPlayer = players.get(i + 1);
+        }
+        else{
+            currentPlayer = players.get(0);
+        }
+
+    }
+
+    public void leaveGame(){
+        players.remove(currentPlayer);
     }
 
     public void generateHash() {
@@ -129,8 +146,8 @@ public class Game {
 
     public Unit getUnitOnHex(Hexagon hex) {
         Unit unit = null;
-        for(Player p: getPlayers()) {
-            for(Unit u: p.getUnits()) {
+        for (Player p : getPlayers()) {
+            for (Unit u : p.getUnits()) {
                 if (u.getLocation().x == hex.getLocation().x && u.getLocation().y == hex.getLocation().y) {
                     unit = u;
                 }
@@ -141,10 +158,9 @@ public class Game {
 
     public Unit getSelectedUnit() {
         Unit unit = null;
-        //TODO implement current player only
-        for(Player p: getPlayers()) {
-            for(Unit u: p.getUnits()) {
-                if(u.getSelected()) {
+        for (Player p : getPlayers()) {
+            for (Unit u : p.getUnits()) {
+                if (u.getSelected()) {
                     unit = u;
                 }
             }

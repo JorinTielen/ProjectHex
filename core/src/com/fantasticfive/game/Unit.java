@@ -120,10 +120,6 @@ public class Unit implements Cloneable{
         return this.costPerTurn;
     }
 
-    public Texture getTexture() {
-        return this.texture;
-    }
-
     public Point getLocation() {
         return this.location;
     }

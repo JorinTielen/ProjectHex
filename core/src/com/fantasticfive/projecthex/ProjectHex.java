@@ -33,6 +33,7 @@ public class ProjectHex extends ApplicationAdapter {
         game.setMap(map);
         game.addPlayer("maxim");
         game.addPlayer("enemy");
+        game.startGame();
 
         //setup window
         batch = new SpriteBatch();
@@ -73,9 +74,12 @@ public class ProjectHex extends ApplicationAdapter {
             }
             for (Unit u : p.getUnits()) {
                 Hexagon h = map.getHexAtLocation(u.getLocation());
-                batch.draw(u.getTexture(), h.getPos().x, h.getPos().y);
+                batch.draw(u.texture, h.getPos().x, h.getPos().y);
             }
         }
+
+        //draw buttons
+
 
         batch.end();
     }
