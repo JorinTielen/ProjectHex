@@ -148,6 +148,8 @@ public class Hexagon {
         this.objectType = null;
     }
 
+    public void removeObject(){ this.objectImage = null; }
+
     public void addOwner(Player owner) {
         this.owner = owner;
     }
