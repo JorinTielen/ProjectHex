@@ -56,8 +56,12 @@ public class Player {
     }
 
     public void purchaseUnit(Unit unit) {
-        this.removeGold(unit.getPurchaseCost());
-        this.units.add(unit);
+        if(this.gold - unit.getPurchaseCost() >= 0) {
+            this.removeGold(unit.getPurchaseCost());
+            this.units.add(unit);
+        } else {
+            System.out.println("Not enough money");
+        }
     }
 
     public void sellUnit(Unit unit) {

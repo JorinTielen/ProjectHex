@@ -42,6 +42,7 @@ public class Game {
         if (available) {
             Player p = new Player(username, color);
             players.add(p);
+            p.addGold(9999);
             if(username == "enemy") {
                 Unit u = unitFactory.createUnit(UnitType.SCOUT, new Point(9, 14), p);
                 p.purchaseUnit(u);
