@@ -43,7 +43,9 @@ public class Game {
             Player p = new Player(username, color);
             players.add(p);
             Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(1, 0), p); //Random Point???
+            Building b2 = buildingFactory.createBuilding(BuildingType.BARRACKS, new Point(2, 1), p);
             p.purchaseBuilding(b);
+            p.purchaseBuilding(b2);
         }
     }
 
@@ -79,6 +81,28 @@ public class Game {
             player.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, player));
             map.createBuilding(buildingType, location);
         }
+    }
+
+    public void sellBuilding(Player player, Point location){
+        Building building = player.getBuildingAtLocation(location);
+        if (building != null && !(building instanceof TownCentre)){
+            int cost = 0;
+            if (building instanceof Barracks){
+                cost = ((Barracks)buildingFactory.getBuildingPreset(BuildingType.BARRACKS)).getPurchaseCost();
+            }
+            else if (building instanceof Fortification){
+                cost = ((Fortification)buildingFactory.getBuildingPreset(BuildingType.FORTIFICATION)).getPurchaseCost();
+            }
+            else if (building instanceof Resource){
+                cost = ((Resource)buildingFactory.getBuildingPreset(BuildingType.RESOURCE)).getPurchaseCost();
+            }
+            player.sellBuilding(building, cost);
+            Hexagon hex = map.getHexAtLocation(location);
+            hex.removeObject();
+            hex.removeObjectType();
+        }
+
+
     }
 
     public void claimLand(Unit unit) {
@@ -125,5 +149,34 @@ public class Game {
             }
         }
         return empty;
+    }
+
+    public void attackBuilding(Player player, Point locationUnit, Point locationBuilding){
+        Unit unit = getUnitAtLocation(locationUnit);
+        Building building = getBuildingAtLocation(locationBuilding);
+        if (unit != null && building != null){
+            unit.attack(building);
+        }
+    }
+
+    public Unit getUnitAtLocation(Point location){
+        for (Player player : players){
+            Unit unit = player.getUnitAtLocation(location);
+            if (unit != null){
+                return unit;
+            }
+        }
+        return null;
+    }
+
+    public Building getBuildingAtLocation(Point location){
+        for (Player player : players){
+            Building building = player.getBuildingAtLocation(location);
+            if (building != null){
+                return building;
+            }
+
+        }
+        return null;
     }
 }

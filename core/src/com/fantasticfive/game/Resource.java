@@ -22,4 +22,6 @@ public class Resource extends Building {
     public void setProductionPerTurn(int productionPerTurn){
         this.productionPerTurn = productionPerTurn;
     }
+
+    public int getPurchaseCost() { return purchaseCost; }
 }
