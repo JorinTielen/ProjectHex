@@ -43,7 +43,9 @@ public class Game {
             Player p = new Player(username, color);
             players.add(p);
             Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(1, 0), p); //Random Point???
+            Building b2 = buildingFactory.createBuilding(BuildingType.BARRACKS, new Point(2, 1), p);
             p.purchaseBuilding(b);
+            p.purchaseBuilding(b2);
         }
     }
 
@@ -173,6 +175,7 @@ public class Game {
             if (building != null){
                 return building;
             }
+
         }
         return null;
     }

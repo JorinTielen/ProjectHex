@@ -2,6 +2,7 @@ package com.fantasticfive.projecthex;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -9,25 +10,24 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.fantasticfive.game.*;
-import com.fantasticfive.game.enums.UnitType;
 
 public class ProjectHex extends ApplicationAdapter {
     private InputManager input = new InputManager(this);
     private OrthographicCamera camera;
     private SpriteBatch batch;
     private Map map;
-//    private Skin skin;
-//    private Stage stage;
+    private Skin skin;
+    private Stage stage;
+    private Table table;
+    private Table unitShopTable;
+    private Table playerTable;
     private Game game;
 
     @Override
@@ -47,7 +47,43 @@ public class ProjectHex extends ApplicationAdapter {
         //setup window
         batch = new SpriteBatch();
         ExtendViewport viewport = new ExtendViewport(1280, 720, camera);
-        Gdx.input.setInputProcessor(input);
+
+        //UI
+        skin = new Skin();
+        stage = new Stage();
+        table = new Table();
+        table.setFillParent(true);
+        stage.addActor(table);
+        table.setDebug(true);
+
+        //createBuildingShopUI();
+
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.WHITE);
+        pixmap.fill();
+        skin.add("white", new Texture(pixmap));
+        skin.add("default", new BitmapFont());
+
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.up = skin.newDrawable("white", Color.DARK_GRAY);
+        textButtonStyle.down = skin.newDrawable("white", Color.DARK_GRAY);
+        textButtonStyle.checked = skin.newDrawable("white", Color.BLUE);
+        textButtonStyle.over = skin.newDrawable("white", Color.LIGHT_GRAY);
+        textButtonStyle.font = skin.getFont("default");
+        skin.add("default", textButtonStyle);
+
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.background = skin.newDrawable("white", Color.LIGHT_GRAY);
+        labelStyle.font = skin.getFont("default");
+        skin.add("default", labelStyle);
+
+
+
+        //input mess
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(stage);
+        inputMultiplexer.addProcessor(input);
+        Gdx.input.setInputProcessor(inputMultiplexer);
 
         //Just trying something
 //        skin = new Skin();
@@ -131,8 +167,22 @@ public class ProjectHex extends ApplicationAdapter {
         }
 
         batch.end();
-//        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
-//        stage.draw();
+
+        //draw ui
+        table.clearChildren();
+
+        if (unitShopTable != null) {
+            table.addActor(unitShopTable);
+        }
+
+        createPlayerUI();
+        if (playerTable != null) {
+            table.addActor(playerTable);
+        }
+
+        stage.addActor(table);
+        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+        stage.draw();
     }
 
     @Override
@@ -141,14 +191,72 @@ public class ProjectHex extends ApplicationAdapter {
     }
 
     public void screenClick(int x, int y) {
+        unitShopTable = null;
+
         Vector3 tmp = new Vector3(x, y, 0);
         camera.unproject(tmp);
         for (Hexagon hex : map.getHexagons()) {
             Rectangle clickArea = new Rectangle(hex.getPos().x, hex.getPos().y,
                     hex.groundImage.getWidth(), hex.groundImage.getHeight());
-            if (clickArea.contains(tmp.x,tmp.y)) {
+            if (clickArea.contains(tmp.x, tmp.y)) {
                 System.out.println("clicked hex: " + hex.getLocation().x + " " + hex.getLocation().y);
+
+                Building b = game.getBuildingAtLocation(hex.getLocation());
+                if (b != null) {
+                    if (b instanceof Barracks) {
+                        System.out.println("You clicked on a Barracks");
+                        createUnitShopUI(x, y);
+                    } else if (b instanceof TownCentre) {
+                        System.out.println("You clicked on a TownCentre");
+
+                    }
+                }
             }
         }
+    }
+
+    public void createUnitShopUI(float x, float y) {
+        System.out.println(x + ", " + y);
+        Table t = new Table();
+        t.add(new Label("Buy Unit", skin)).fill();
+        t.row();
+
+        final TextButton buttonBuyArcher = new TextButton("Archer", skin);
+        t.add(buttonBuyArcher).fill();
+        t.row();
+
+        final TextButton buttonBuySwordsman = new TextButton("Swordsman", skin);
+        t.add(buttonBuySwordsman).fill();
+        t.row();
+
+        t.setPosition(x, Gdx.graphics.getHeight() - y);
+
+        buttonBuyArcher.addListener(new ChangeListener() {
+            public void changed(ChangeEvent event, Actor actor) {
+                //method for buying archer
+                System.out.println("you bought an archer");
+                unitShopTable = null;
+            }
+        });
+
+        buttonBuySwordsman.addListener(new ChangeListener() {
+            public void changed(ChangeEvent event, Actor actor) {
+                //method for buying swordsman
+                System.out.println("you bought a swordsman");
+                unitShopTable = null;
+            }
+        });
+
+        unitShopTable = t;
+    }
+
+    public void createPlayerUI() {
+        Table t = new Table();
+        Label l = new Label("GOLD: 1436", skin);
+        t.add(l).width(90);
+
+        t.setPosition(75, Gdx.graphics.getHeight() - 10);
+
+        playerTable = t;
     }
 }

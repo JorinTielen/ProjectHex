@@ -27,9 +27,9 @@ public class Player {
         return buildings;
     }
 
-    public Building getBuildingAtLocation(Point location){
+    public Building getBuildingAtLocation(Point location) {
         for (Building building : buildings){
-            if (building.getLocation() == location){
+                if (building.getLocation().equals(location)) {
                 return building;
             }
         }
@@ -38,7 +38,7 @@ public class Player {
 
     public Unit getUnitAtLocation(Point location){
         for (Unit unit : units){
-            if (unit.getLocation() == location){
+            if (unit.getLocation().equals(location)) {
                 return unit;
             }
         }

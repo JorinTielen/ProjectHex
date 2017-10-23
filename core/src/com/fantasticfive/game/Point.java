@@ -20,4 +20,12 @@ public class Point {
         this.y = y;
         this.z = -(y + x);
     }
+
+    public boolean equals(Point other) {
+        if (this.x == other.x && this.y == other.y) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
