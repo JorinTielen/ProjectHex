@@ -56,6 +56,8 @@ public class Game {
                 p.purchaseBuilding(b);
                 b = buildingFactory.createBuilding(BuildingType.BARRACKS, new Point(2, 1), p); //Random Point???
                 p.purchaseBuilding(b);
+                b= buildingFactory.createBuilding(BuildingType.FORTIFICATION, new Point(4,1), p);
+                p.purchaseBuilding(b);
                 Unit u = unitFactory.createUnit(UnitType.SWORDSMAN, new Point(2, 0), p);
                 p.purchaseUnit(u);
                 u = unitFactory.createUnit(UnitType.SCOUT, new Point(3, 0), p);
