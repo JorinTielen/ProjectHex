@@ -349,6 +349,11 @@ public class ProjectHex extends ApplicationAdapter {
     }
 
     public void createBuildingShopUI(float x, float y) {
+        //Deselect unit if one has been selected
+        if(game.getSelectedUnit() != null) {
+            game.getSelectedUnit().toggleSelected();
+        }
+
         System.out.println(x + ", " + y);
         Table t = new Table();
         t.add(new Label("Buy Building", skin)).fill();
