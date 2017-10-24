@@ -38,21 +38,21 @@ public class ProjectHex extends ApplicationAdapter {
 
     @Override
     public void create() {
-        //setup the camera
+        //Setup the camera
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        //setup map
+        //Setup map
         map = new Map(20, 15);
 
-        //setup test game
+        //Setup test game
         game = new Game();
         game.setMap(map);
         game.addPlayer("maxim");
         game.addPlayer("enemy");
         game.startGame();
 
-        //setup window
+        //Setup window
         batch = new SpriteBatch();
         ExtendViewport viewport = new ExtendViewport(1280, 720, camera);
 
@@ -83,7 +83,7 @@ public class ProjectHex extends ApplicationAdapter {
         labelStyle.font = skin.getFont("default");
         skin.add("default", labelStyle);
 
-        //input mess
+        //Input processor
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(input);
@@ -92,10 +92,10 @@ public class ProjectHex extends ApplicationAdapter {
 
     @Override
     public void render() {
-        //handle input
+        //Handle input
         input.HandleInput();
 
-        //move camera
+        //Move camera
         camera.translate(input.getCamPos());
         camera.update();
         batch.setProjectionMatrix(camera.combined);
@@ -135,7 +135,7 @@ public class ProjectHex extends ApplicationAdapter {
 
         batch.end();
 
-        //draw ui
+        //Clear table
         table.clearChildren();
 
         if (unitShopTable != null) {
@@ -188,11 +188,14 @@ public class ProjectHex extends ApplicationAdapter {
                     hex.groundImage.getWidth(), hex.groundImage.getHeight());
             if (clickArea.contains(tmp.x, tmp.y)) {
                 System.out.println("clicked hex: " + hex.getLocation().x + " " + hex.getLocation().y);
+
+                //When clicked on unit or unit is selected
                 if (game.getUnitOnHex(hex) != null || game.getSelectedUnit() != null) {
                     buildingToBuild = null;
                     unitClick(hex);
-                } else if (buildingToBuild != null) {
-                    //create building at location
+                }
+                //Create building on hex
+                else if (buildingToBuild != null) {
                     if (buildingToBuild instanceof Resource) {
                         game.createBuilding(BuildingType.RESOURCE, hex.getLocation());
                         System.out.println("Resource built");
@@ -222,6 +225,7 @@ public class ProjectHex extends ApplicationAdapter {
             if (clickArea.contains(tmp.x, tmp.y)) {
                 System.out.println("clicked hex: " + hex.getLocation().x + " " + hex.getLocation().y);
 
+                //Right click on own building
                 Building b = game.getBuildingAtLocation(hex.getLocation());
                 if (b != null && b.getOwner() == game.getCurrentPlayer()) {
                     if (b instanceof Barracks) {
@@ -238,6 +242,7 @@ public class ProjectHex extends ApplicationAdapter {
                         createSellBuildingUI(x, y, b);
                     }
                 }
+                //Right click on own unit
                 Unit u = game.getUnitOnHex(hex);
                 if (u != null) {
                     if (u.getOwner() == game.getCurrentPlayer())
@@ -256,11 +261,15 @@ public class ProjectHex extends ApplicationAdapter {
             //If not clicked on unit and unit is selected
         } else if (game.getUnitOnHex(hex) == null && game.getSelectedUnit() != null) {
             Unit u = game.getSelectedUnit();
-            //TODO Is this supposed to be here?
-            if (hex.getObjectType() != ObjectType.MOUNTAIN
-                    && hex.getGroundType() != GroundType.WATER
-                    && game.getBuildingAtLocation(hex.getLocation()) == null) {
+            //Move unit to free hex
+            if (game.hexEmpty(hex.getLocation())) {
                 u.move(new Point(hex.getLocation().x, hex.getLocation().y));
+                u.toggleSelected();
+            }
+            //Unit attacks enemy building
+            else if (game.getBuildingAtLocation(hex.getLocation()) != null
+                    && game.getBuildingAtLocation(hex.getLocation()).getOwner() != game.getCurrentPlayer()) {
+                game.attackBuilding(game.getSelectedUnit(), hex.getLocation());
                 u.toggleSelected();
             }
             //If clicked on unit and unit is selected
@@ -311,34 +320,34 @@ public class ProjectHex extends ApplicationAdapter {
 
         buttonBuyArcher.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
-                //method for buying archer
+                //Method for buying archer
                 System.out.println("you bought an archer");
-                game.createUnit(game.getCurrentPlayer(), UnitType.ARCHER, new Point(building.getLocation().x + 1, building.getLocation().y));
+                game.createUnit(UnitType.ARCHER, new Point(building.getLocation().x + 1, building.getLocation().y));
                 unitShopTable = null;
             }
         });
 
         buttonBuySwordsman.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
-                //method for buying swordsman
+                //Method for buying swordsman
                 System.out.println("you bought a swordsman");
-                game.createUnit(game.getCurrentPlayer(), UnitType.SWORDSMAN, new Point(building.getLocation().x + 1, building.getLocation().y));
+                game.createUnit(UnitType.SWORDSMAN, new Point(building.getLocation().x + 1, building.getLocation().y));
                 unitShopTable = null;
             }
         });
 
         buttonBuyScout.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
-                //method for buying scout
+                //Method for buying scout
                 System.out.println("you bought a scout");
-                game.createUnit(game.getCurrentPlayer(), UnitType.SCOUT, new Point(building.getLocation().x + 1, building.getLocation().y));
+                game.createUnit(UnitType.SCOUT, new Point(building.getLocation().x + 1, building.getLocation().y));
                 unitShopTable = null;
             }
         });
 
         buttonSellBarracks.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
-                //method for selling barracks
+                //Method for selling barracks
                 game.sellBuilding(building.getLocation());
                 System.out.println("You sold your Barracks.");
                 unitShopTable = null;
@@ -349,6 +358,11 @@ public class ProjectHex extends ApplicationAdapter {
     }
 
     public void createBuildingShopUI(float x, float y) {
+        //Deselect unit if one has been selected
+        if(game.getSelectedUnit() != null) {
+            game.getSelectedUnit().toggleSelected();
+        }
+
         System.out.println(x + ", " + y);
         Table t = new Table();
         t.add(new Label("Buy Building", skin)).fill();
@@ -370,7 +384,7 @@ public class ProjectHex extends ApplicationAdapter {
 
         buttonBuyResource.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
-                //method for buying Resource
+                //Method for buying Resource
                 System.out.println("You bought a Resource");
                 buildingToBuild = game.getBuildingPreset(BuildingType.RESOURCE);
                 buildingShopTable = null;
@@ -379,7 +393,7 @@ public class ProjectHex extends ApplicationAdapter {
 
         buttonBuyFortification.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
-                //method for buying Fortification
+                //Method for buying Fortification
                 System.out.println("You bought a Fortification");
                 buildingToBuild = game.getBuildingPreset(BuildingType.FORTIFICATION);
                 buildingShopTable = null;
@@ -388,7 +402,7 @@ public class ProjectHex extends ApplicationAdapter {
 
         buttonBuyBarracks.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
-                //method for buying Barracks
+                //Method for buying Barracks
                 System.out.println("You bought a Barracks");
                 buildingToBuild = game.getBuildingPreset(BuildingType.BARRACKS);
                 buildingShopTable = null;
@@ -413,6 +427,7 @@ public class ProjectHex extends ApplicationAdapter {
         buttonSellUnit.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                //Method for selling unit
                 System.out.println("Selling unit");
                 game.getCurrentPlayer().sellUnit(unit);
                 unitSellTable = null;
@@ -437,7 +452,8 @@ public class ProjectHex extends ApplicationAdapter {
         buttonSellBuilding.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Selling unit");
+                //Method for selling a building
+                System.out.println("Selling building");
                 game.sellBuilding(building.getLocation());
                 buildingSellTable = null;
             }
@@ -446,6 +462,7 @@ public class ProjectHex extends ApplicationAdapter {
         buildingSellTable = t;
     }
 
+    //Shows the amount of gold and gold per turn cost
     public void createPlayerUI() {
         Table t = new Table();
         Label l = new Label("GOLD: " + game.getCurrentPlayer().getGold(), skin);
@@ -472,6 +489,7 @@ public class ProjectHex extends ApplicationAdapter {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("Options");
+                //Opens options menu
                 createOptionsUI();
             }
         });
@@ -479,7 +497,6 @@ public class ProjectHex extends ApplicationAdapter {
         stage.addActor(buttonOptions);
     }
 
-    //Opens options menu
     public void createOptionsUI() {
         Table t = new Table();
 
