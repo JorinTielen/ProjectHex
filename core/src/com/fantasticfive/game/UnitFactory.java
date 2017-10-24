@@ -54,11 +54,11 @@ public class UnitFactory {
         unitPresets.add(new Unit(UnitType.SWORDSMAN, 100, 15, 30,
                 1, 2, 100, 1,
                 false, 150, new Texture("characterSwordsman.png")));
-        unitPresets.add(new Unit(UnitType.ARCHER, 75, 5, 30,
+        unitPresets.add(new Unit(UnitType.ARCHER, 75, 5, 20,
                 2, 3, 125, 1,
                 false, 150, new Texture("characterArcher.png")));
-        unitPresets.add(new Unit(UnitType.SCOUT, 50, 0, 15,
-                1, 3, 75, 1,
+        unitPresets.add(new Unit(UnitType.SCOUT, 50, 0, 10,
+                1, 4, 75, 1,
                 true, 150, new Texture("characterScout.png")));
     }
 

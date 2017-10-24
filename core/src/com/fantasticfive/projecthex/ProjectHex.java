@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -257,11 +256,17 @@ public class ProjectHex extends ApplicationAdapter {
             //If not clicked on unit and unit is selected
         } else if (game.getUnitOnHex(hex) == null && game.getSelectedUnit() != null) {
             Unit u = game.getSelectedUnit();
-            //TODO Is this supposed to be here?
+            //Move unit to free hex
             if (hex.getObjectType() != ObjectType.MOUNTAIN
                     && hex.getGroundType() != GroundType.WATER
                     && game.getBuildingAtLocation(hex.getLocation()) == null) {
                 u.move(new Point(hex.getLocation().x, hex.getLocation().y));
+                u.toggleSelected();
+            }
+            //Unit attacks enemy building
+            else if (game.getBuildingAtLocation(hex.getLocation()) != null
+                    && game.getBuildingAtLocation(hex.getLocation()).getOwner() != game.getCurrentPlayer()) {
+                game.attackBuilding(game.getSelectedUnit(), hex.getLocation());
                 u.toggleSelected();
             }
             //If clicked on unit and unit is selected

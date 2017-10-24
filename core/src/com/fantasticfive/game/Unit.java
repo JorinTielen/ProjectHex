@@ -62,15 +62,18 @@ public class Unit implements Cloneable{
     public void attack(Unit unitToAttack) {
         if(calculateDistance(this.location, unitToAttack.location) <= attackRange && this.allowedToMove >= 1) {
             unitToAttack.reduceHealth(attackPower - unitToAttack.getArmor());
-            //TODO Uncomment this to make a unit unable to do anything after attacking
-            //allowedToMove = 0;
-        } else {
-            toggleSelected();
+//            TODO uncomment to make sure unit doesn't move after attack
+//            allowedToMove = 0;
         }
     }
 
-    public void attack(Building buildingToAttack) {
-        throw new UnsupportedOperationException();
+    public boolean attack(Building buildingToAttack) {
+        if(calculateDistance(this.location, buildingToAttack.location) <= attackRange && this.allowedToMove >= 1) {
+//            TODO uncomment to make sure unit doesn't move after attack
+//            allowedToMove = 0;
+            return buildingToAttack.damageHealth(this.attackPower);
+        }
+        return false;
     }
 
     public void reduceHealth(int hp) {
@@ -79,7 +82,7 @@ public class Unit implements Cloneable{
         } else if(health - hp <= 0) {
             health = 0;
         }
-        System.out.println("Health has been reduced by " + hp + " to " + health);
+        System.out.println("Health has been reduced with " + hp + " to " + health);
     }
 
     public void move(Point destination) {

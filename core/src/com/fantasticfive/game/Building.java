@@ -11,7 +11,7 @@ public abstract class Building implements Cloneable {
     protected GroundType[] buildableOn;
     protected Player owner;
 
-    public Building(int health, Point location, Texture image, GroundType[] buildableOn, Player owner){
+    public Building(int health, Point location, Texture image, GroundType[] buildableOn, Player owner) {
         this.health = health;
         this.location = location;
         this.image = image;
@@ -19,28 +19,31 @@ public abstract class Building implements Cloneable {
         this.owner = owner;
     }
 
-    public Building(int health, Texture image, GroundType[] buildableOn){
+    public Building(int health, Texture image, GroundType[] buildableOn) {
         this.health = health;
         this.image = image;
         this.buildableOn = buildableOn;
     }
 
-    public void setLocation(Point location){
+    public void setLocation(Point location) {
         this.location = location;
     }
 
-    public Player getOwner() {return this.owner;}
+    public Player getOwner() {
+        return this.owner;
+    }
 
-    public void setOwner(Player owner){
+    public void setOwner(Player owner) {
         this.owner = owner;
     }
 
     public boolean damageHealth(int hp) {
-        health = health - hp;
-        if (health <= 0){
-            return true;
+        health -= hp;
+        if(health <= 0){
+            health = 0;
         }
-        return false;
+        System.out.println("Health has been reduced with " + hp + " to " + health);
+        return health <= 0;
     }
 
     public Point getLocation() {
@@ -48,7 +51,7 @@ public abstract class Building implements Cloneable {
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException{
+    public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 }

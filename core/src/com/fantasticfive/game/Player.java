@@ -25,19 +25,6 @@ public class Player {
         hexagons = new ArrayList<Hexagon>();
     }
 
-    public List<Building> getBuildings() {
-        return buildings;
-    }
-
-    public Building getBuildingAtLocation(Point location) {
-        for (Building building : buildings) {
-            if (building.getLocation().equals(location)) {
-                return building;
-            }
-        }
-        return null;
-    }
-
     public Color getColor() {
         return this.color;
     }
@@ -74,6 +61,25 @@ public class Player {
         this.gold += (int) Math.round(cost * 0.66);
     }
 
+    public void removeBuilding(Building building) {
+        if (buildings.contains(building)) {
+            buildings.remove(building);
+        }
+    }
+
+    public List<Building> getBuildings() {
+        return buildings;
+    }
+
+    public Building getBuildingAtLocation(Point location) {
+        for (Building building : buildings) {
+            if (building.getLocation().equals(location)) {
+                return building;
+            }
+        }
+        return null;
+    }
+
     public void purchaseUnit(Unit unit) {
         if (this.gold - unit.getPurchaseCost() >= 0) {
             this.removeGold(unit.getPurchaseCost());
@@ -89,6 +95,16 @@ public class Player {
             unit.toggleSelected();
         }
         this.units.remove(unit);
+    }
+
+    public void removeUnit(Unit unit) {
+        if (units.contains(unit)) {
+            units.remove(unit);
+        }
+    }
+
+    public List<Unit> getUnits() {
+        return Collections.unmodifiableList(units);
     }
 
     public void addHexagon(Hexagon hexagon) {
@@ -113,22 +129,8 @@ public class Player {
         }
     }
 
-    public void leaveGame() {
-        throw new NotImplementedException();
-    }
-
     public void updateResources() {
         throw new NotImplementedException();
-    }
-
-    public List<Unit> getUnits() {
-        return Collections.unmodifiableList(units);
-    }
-
-    public void removeUnit(Unit unit) {
-        if (units.contains(unit)) {
-            units.remove(unit);
-        }
     }
 
     public int getGoldPerTurn() {

@@ -15,9 +15,9 @@ public class BuildingFactory {
     public BuildingFactory() {
         buildingPresets = new ArrayList<Building>();
         GroundType[] buildableOn = new GroundType[]{GroundType.GRASS, GroundType.DIRT, GroundType.SAND};
-        buildingPresets.add(new Barracks(30, new Texture("barracks.png"), 30, buildableOn));
-        buildingPresets.add(new Resource(10, new Texture("mine.png"), 15, 3, buildableOn));
-        buildingPresets.add(new Fortification(20, new Texture("tower.png"), 10, buildableOn));
+        buildingPresets.add(new Barracks(75, new Texture("barracks.png"), 30, buildableOn));
+        buildingPresets.add(new Resource(50, new Texture("mine.png"), 15, 3, buildableOn));
+        buildingPresets.add(new Fortification(100, new Texture("tower.png"), 10, buildableOn));
     }
 
     public Building createBuilding(BuildingType buildingType, Point location, Player player) {
@@ -25,7 +25,7 @@ public class BuildingFactory {
         GroundType[] buildableOn = new GroundType[]{GroundType.GRASS, GroundType.DIRT, GroundType.SAND};
 
         switch (buildingType){
-            case TOWNCENTRE: building = new TownCentre(50, location, new Texture("townCentre.png"), buildableOn, player);
+            case TOWNCENTRE: building = new TownCentre(150, location, new Texture("townCentre.png"), buildableOn, player);
                 break;
             case BARRACKS: building = getBuildingPreset(buildingType);
             ((Barracks)building).setCreatableUnits(new UnitType[]{UnitType.SWORDSMAN, UnitType.ARCHER, UnitType.SCOUT});

@@ -72,6 +72,10 @@ public class Game {
 
     public void removePlayer(Player player) {
         this.players.remove(player);
+
+        if(players.size() == 1){
+            System.out.println(currentPlayer.getUsername() + " has won the game!");
+        }
     }
 
     public void setMap(Map map) {
@@ -210,11 +214,16 @@ public class Game {
         return unit;
     }
 
-    public void attackBuilding(Player player, Point locationUnit, Point locationBuilding) {
-        Unit unit = getUnitOnHex(map.getHexAtLocation(locationUnit));
+    public void attackBuilding(Unit selectedUnit, Point locationBuilding) {
         Building building = getBuildingAtLocation(locationBuilding);
-        if (unit != null && building != null) {
-            unit.attack(building);
+        if (selectedUnit != null && building != null) {
+            if(selectedUnit.attack(building)){
+                Player enemy = building.getOwner();
+                enemy.removeBuilding(building);
+                if(building instanceof TownCentre){
+                    removePlayer(enemy);
+                }
+            }
         }
     }
 
