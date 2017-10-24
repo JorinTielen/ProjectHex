@@ -45,18 +45,20 @@ public class Game {
             players.add(p);
             p.addGold(9999);
             if (username.equals("enemy")) {
-                Unit u = unitFactory.createUnit(UnitType.SCOUT, new Point(9, 14), p);
+                Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(10,13),p);
+                p.purchaseBuilding(b);
+                b = buildingFactory.createBuilding(BuildingType.BARRACKS, new Point(10,12),p);
+                p.purchaseBuilding(b);
+                Unit u = unitFactory.createUnit(UnitType.SCOUT, new Point(10, 11), p);
                 p.purchaseUnit(u);
-                u = unitFactory.createUnit(UnitType.SWORDSMAN, new Point(12, 10), p);
+                u = unitFactory.createUnit(UnitType.SWORDSMAN, new Point(11, 10), p);
                 p.purchaseUnit(u);
-                u = unitFactory.createUnit(UnitType.ARCHER, new Point(1, 18), p);
+                u = unitFactory.createUnit(UnitType.ARCHER, new Point(9, 12), p);
                 p.purchaseUnit(u);
             } else {
                 Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(1, 0), p); //Random Point???
                 p.purchaseBuilding(b);
                 b = buildingFactory.createBuilding(BuildingType.BARRACKS, new Point(2, 1), p); //Random Point???
-                p.purchaseBuilding(b);
-                b= buildingFactory.createBuilding(BuildingType.FORTIFICATION, new Point(4,1), p);
                 p.purchaseBuilding(b);
                 Unit u = unitFactory.createUnit(UnitType.SWORDSMAN, new Point(2, 0), p);
                 p.purchaseUnit(u);
