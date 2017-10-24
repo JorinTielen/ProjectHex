@@ -2,26 +2,22 @@ package com.fantasticfive.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.GroundType;
 import com.fantasticfive.game.enums.ObjectType;
 import java.util.Random;
 
 public class Hexagon {
-    //hex stuff
+    public Texture groundImage;
+    public Texture objectImage;
     private GroundType groundType;
     private ObjectType objectType;
     private boolean accessible;
     private Point location;
     private int radius;
     private Player owner;
-
-    //data
-    public Texture groundImage;
-    public Texture objectImage;
-
     private static final double HEIGHT_MULTIPLIER = Math.sqrt(3) / 2;
 
+    //Normal hexagon
     public Hexagon(GroundType groundType, Point location, int radius) {
         Random random = new Random();
         this.groundType = groundType;
@@ -40,7 +36,6 @@ public class Hexagon {
                 break;
             case SAND:
                 int randomNumber = random.nextInt(10);
-
                 switch (randomNumber) {
                     case 2:
                         this.groundImage = new Texture("sandTrees1.png");
@@ -52,7 +47,6 @@ public class Hexagon {
                         this.groundImage = new Texture("sandClear.png");
                         break;
                 }
-
                 break;
             case FOREST:
                 if (random.nextInt(2) == 1) {
@@ -60,13 +54,12 @@ public class Hexagon {
                 } else {
                     this.groundImage = new Texture("grassTrees2.png");
                 }
-
                 break;
         }
-
         groundImage.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
     }
 
+    //Hexagon with rock
     public Hexagon(GroundType groundType, ObjectType objectType, Point location, int radius) {
         this.groundType = groundType;
         this.objectType = objectType;
@@ -95,19 +88,6 @@ public class Hexagon {
         groundImage.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
     }
 
-    public void addObject(BuildingType buildingType){
-        addObjectType(ObjectType.BUILDING);
-        switch (buildingType){
-            case TOWNCENTRE: objectImage = new Texture("townCentre.png");
-            break;
-            case BARRACKS: objectImage = new Texture("barracks.png");
-            break;
-            case FORTIFICATION: objectImage = new Texture("tower.png");
-            break;
-            case RESOURCE: objectImage = new Texture("mine.png");
-        }
-    }
-
     //returns the real x,y position of this hex
     public Vector2 getPos() {
         double height = radius * 2;
@@ -126,6 +106,10 @@ public class Hexagon {
             x += (width / 2);
         }
         return new Vector2(x, y);
+    }
+
+    public void setOwner(Player owner) {
+        this.owner = owner;
     }
 
     public Player getOwner(){
@@ -149,10 +133,6 @@ public class Hexagon {
     }
 
     public void removeObject(){ this.objectImage = null; }
-
-    public void addOwner(Player owner) {
-        this.owner = owner;
-    }
 
     public void deleteOwner() {
         this.owner = null;

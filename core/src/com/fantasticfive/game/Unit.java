@@ -5,7 +5,6 @@ import com.fantasticfive.game.enums.UnitType;
 
 public class Unit implements Cloneable{
     public Texture texture;
-
     private UnitType unitType;
     private int health;
     private int armor;
@@ -40,37 +39,16 @@ public class Unit implements Cloneable{
         this.texture = image;
     }
 
-    public Unit(UnitType unitType, int health, int armor,
-                int attackPower, int attackRange, int movementRange,
-                int purchaseCost, int costPerTurn, Boolean canTakeLand,
-                int upgradeCost, Point location, Texture image, Player owner) {
-        this.unitType = unitType;
-        this.health = health;
-        this.armor = armor;
-        this.attackPower = attackPower;
-        this.attackRange = attackRange;
-        this.movementRange = movementRange;
-        this.purchaseCost = purchaseCost;
-        this.costPerTurn = costPerTurn;
-        this.canTakeLand = canTakeLand;
-        this.upgradeCost = upgradeCost;
-        this.location = location;
-        this.texture = image;
-        this.owner = owner;
-    }
-
     public void attack(Unit unitToAttack) {
         if(calculateDistance(this.location, unitToAttack.location) <= attackRange && this.allowedToMove >= 1) {
             unitToAttack.reduceHealth(attackPower - unitToAttack.getArmor());
-//            TODO uncomment to make sure unit doesn't move after attack
-//            allowedToMove = 0;
+            allowedToMove = 0;
         }
     }
 
     public boolean attack(Building buildingToAttack) {
-        if(calculateDistance(this.location, buildingToAttack.location) <= attackRange && this.allowedToMove >= 1) {
-//            TODO uncomment to make sure unit doesn't move after attack
-//            allowedToMove = 0;
+        if(calculateDistance(this.location, buildingToAttack.getLocation()) <= attackRange && this.allowedToMove >= 1) {
+            allowedToMove = 0;
             return buildingToAttack.damageHealth(this.attackPower);
         }
         return false;
@@ -89,8 +67,7 @@ public class Unit implements Cloneable{
         if(allowedToMove - calculateDistance(location, destination) < 0) {
             System.out.println("Not allowed to walk :(");
         } else {
-            //TODO uncomment this line to lower the amount of tiles a unit is allowed to walk after turns have been implemented
-            //this.allowedToMove -= calculateDistance(location, destination);
+            this.allowedToMove -= calculateDistance(location, destination);
             this.location = destination;
         }
     }
@@ -111,8 +88,8 @@ public class Unit implements Cloneable{
         this.owner = owner;
     }
 
-    public UnitType getType() {
-        return this.unitType;
+    public Player getOwner() {
+        return owner;
     }
 
     public int getPurchaseCost() {
@@ -123,8 +100,20 @@ public class Unit implements Cloneable{
         return this.costPerTurn;
     }
 
+    public void setLocation(Point location) {
+        this.location = location;
+    }
+
     public Point getLocation() {
         return this.location;
+    }
+
+    public int getHealth() {
+        return this.health;
+    }
+
+    public UnitType getUnitType() {
+        return this.unitType;
     }
 
     @Override
@@ -146,6 +135,7 @@ public class Unit implements Cloneable{
         return isSelected;
     }
 
+    //Calculates distance from 2 selected points
     private int calculateDistance(Point p1, Point p2) {
         //TODO This formula isn't 100% correct yet
 
@@ -153,21 +143,5 @@ public class Unit implements Cloneable{
         p2.z = -(p2.y + p2.x);
 
         return (Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y) + Math.abs(p1.z - p2.z)) / 2;
-    }
-
-    public void setLocation(Point location) {
-        this.location = location;
-    }
-
-    public int getHealth() {
-        return this.health;
-    }
-
-    public Player getOwner() {
-        return owner;
-    }
-
-    public UnitType getUnitType() {
-        return unitType;
     }
 }

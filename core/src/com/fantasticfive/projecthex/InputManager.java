@@ -18,6 +18,7 @@ public class InputManager implements InputProcessor {
     }
 
     public void HandleInput() {
+        //Check for key presses
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             camPos = new Vector2(0, 5);
         }
@@ -52,10 +53,13 @@ public class InputManager implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        //Left mouse button down
         if(button == Input.Buttons.LEFT) {
             projectHex.screenLeftClick(screenX, screenY);
             return false;
-        } else if(button == Input.Buttons.RIGHT) {
+        }
+        //Right mouse button down
+        else if(button == Input.Buttons.RIGHT) {
             projectHex.screenRightClick(screenX, screenY);
             return false;
         }

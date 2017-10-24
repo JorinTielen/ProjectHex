@@ -4,9 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.GroundType;
 import com.fantasticfive.game.enums.UnitType;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class BuildingFactory {
@@ -15,23 +13,21 @@ public class BuildingFactory {
     public BuildingFactory() {
         buildingPresets = new ArrayList<Building>();
         GroundType[] buildableOn = new GroundType[]{GroundType.GRASS, GroundType.DIRT, GroundType.SAND};
-        buildingPresets.add(new Barracks(75, new Texture("barracks.png"), 30, buildableOn));
-        buildingPresets.add(new Resource(50, new Texture("mine.png"), 15, 3, buildableOn));
-        buildingPresets.add(new Fortification(100, new Texture("tower.png"), 10, buildableOn));
+        buildingPresets.add(new Barracks(125, new Texture("barracks.png"), 30, buildableOn));
+        buildingPresets.add(new Resource(100, new Texture("mine.png"), 15, 3, buildableOn));
+        buildingPresets.add(new Fortification(150, new Texture("tower.png"), 10, buildableOn));
     }
 
     public Building createBuilding(BuildingType buildingType, Point location, Player player) {
         Building building;
         GroundType[] buildableOn = new GroundType[]{GroundType.GRASS, GroundType.DIRT, GroundType.SAND};
-
         switch (buildingType){
-            case TOWNCENTRE: building = new TownCentre(150, location, new Texture("townCentre.png"), buildableOn, player);
+            case TOWNCENTRE: building = new TownCentre(200, location, new Texture("townCentre.png"), buildableOn, player);
                 break;
             case BARRACKS: building = getBuildingPreset(buildingType);
             ((Barracks)building).setCreatableUnits(new UnitType[]{UnitType.SWORDSMAN, UnitType.ARCHER, UnitType.SCOUT});
                 break;
             case RESOURCE: building = getBuildingPreset(buildingType);
-            ((Resource)building).setProductionPerTurn(3);
                 break;
             case FORTIFICATION: building = getBuildingPreset(buildingType);
                 break;
@@ -69,9 +65,5 @@ public class BuildingFactory {
             }
         }
         return null;
-    }
-
-    public List<Building> getBuildingPresets() {
-        return Collections.unmodifiableList(buildingPresets);
     }
 }

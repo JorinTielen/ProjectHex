@@ -1,10 +1,7 @@
 package com.fantasticfive.game;
 
-import com.fantasticfive.game.enums.BuildingType;
-import com.fantasticfive.game.enums.Color;
-import com.fantasticfive.game.enums.UnitType;
+import com.fantasticfive.game.enums.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,29 +40,13 @@ public class Game {
         if (available) {
             Player p = new Player(username, color);
             players.add(p);
-            p.addGold(9999);
+            p.addGold(100);
             if (username.equals("enemy")) {
                 Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(10,13),p);
                 p.purchaseBuilding(b);
-                b = buildingFactory.createBuilding(BuildingType.BARRACKS, new Point(10,12),p);
-                p.purchaseBuilding(b);
-                Unit u = unitFactory.createUnit(UnitType.SCOUT, new Point(10, 11), p);
-                p.purchaseUnit(u);
-                u = unitFactory.createUnit(UnitType.SWORDSMAN, new Point(11, 10), p);
-                p.purchaseUnit(u);
-                u = unitFactory.createUnit(UnitType.ARCHER, new Point(9, 12), p);
-                p.purchaseUnit(u);
             } else {
                 Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(1, 0), p); //Random Point???
                 p.purchaseBuilding(b);
-                b = buildingFactory.createBuilding(BuildingType.BARRACKS, new Point(2, 1), p); //Random Point???
-                p.purchaseBuilding(b);
-                Unit u = unitFactory.createUnit(UnitType.SWORDSMAN, new Point(2, 0), p);
-                p.purchaseUnit(u);
-                u = unitFactory.createUnit(UnitType.SCOUT, new Point(3, 0), p);
-                p.purchaseUnit(u);
-                u = unitFactory.createUnit(UnitType.ARCHER, new Point(4, 0), p);
-                p.purchaseUnit(u);
             }
         }
     }
@@ -120,11 +101,11 @@ public class Game {
         return unitFactory.getUnitPreset(unitType);
     }
 
-    public void createUnit(Player player, UnitType unitType, Point location) {
+    public void createUnit(UnitType unitType, Point location) {
         if (hexEmpty(location)) {
             Unit unit = unitFactory.getUnitPreset(unitType);
-            if (player.getGold() - unit.getPurchaseCost() > 0) {
-                player.purchaseUnit(unitFactory.createUnit(unitType, location, player));
+            if (currentPlayer.getGold() - unit.getPurchaseCost() > 0) {
+                currentPlayer.purchaseUnit(unitFactory.createUnit(unitType, location, currentPlayer));
             } else {
                 System.out.println("Not enough gold");
             }
@@ -134,9 +115,10 @@ public class Game {
     }
 
     public void createBuilding(BuildingType buildingType, Point location) {
-//        if (map.isHexBuildable(location, currentPlayer)) {
-            currentPlayer.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, currentPlayer));
-            map.createBuilding(buildingType, location);
+//        if (map.isHexBuildable(location, currentPlayer)) { //TODO uncomment when hex owner is implemented
+            if (hexEmpty(location)) {
+                currentPlayer.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, currentPlayer));
+            }
 //        }
     }
 
@@ -152,12 +134,7 @@ public class Game {
                 cost = ((Resource) buildingFactory.getBuildingPreset(BuildingType.RESOURCE)).getPurchaseCost();
             }
             currentPlayer.sellBuilding(building, cost);
-            Hexagon hex = map.getHexAtLocation(location);
-            hex.removeObject();
-            hex.removeObjectType();
         }
-
-
     }
 
     public void claimLand(Unit unit) {
@@ -172,22 +149,26 @@ public class Game {
         return Collections.unmodifiableList(players);
     }
 
-    public void MoveUnit(Unit unit, Point location) {
-        if (hexEmpty(location)) {
-            unit.move(location);
-        }
-    }
-
     public boolean hexEmpty(Point location) {
-        boolean empty = true;
+        //Check if unit is on hex
         for (Player player : players) {
             for (Unit unit : player.getUnits()) {
                 if (unit.getLocation().equals(location)) {
-                    empty = false;
+                    return false;
                 }
             }
         }
-        return empty;
+
+        //Check if hex isn't water, mountain or possessed by a building
+        Hexagon hex = map.getHexAtLocation(location);
+        if (hex.getObjectType() == ObjectType.MOUNTAIN
+                || hex.getGroundType() == GroundType.WATER
+                || getBuildingAtLocation(location) != null){
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 
     public Unit getUnitOnHex(Hexagon hex) {

@@ -1,16 +1,14 @@
 package com.fantasticfive.game;
 
-import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.Color;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class Player {
     private List<Building> buildings;
-    private List<Unit> units = new ArrayList<Unit>();
+    private List<Unit> units;
     private List<Hexagon> hexagons;
     private Color color;
     private int gold = 0;
@@ -46,21 +44,46 @@ public class Player {
     }
 
     public void purchaseBuilding(Building building) {
-        this.buildings.add(building);
+        //Removes gold and adds resource
         if (building instanceof Resource) {
-            this.gold -= ((Resource) building).getPurchaseCost();
-        } else if (building instanceof Fortification) {
-            this.gold -= ((Fortification) building).getPurchaseCost();
-        } else if (building instanceof Barracks) {
-            this.gold -= ((Barracks) building).getPurchaseCost();
+            if (this.gold - ((Resource) building).getPurchaseCost() >= 0) {
+                this.removeGold(((Resource) building).getPurchaseCost());
+                this.buildings.add(building);
+            } else {
+                System.out.println("Not enough money");
+            }
+        }
+        //Removes gold and adds fortification
+        else if (building instanceof Fortification) {
+            if (this.gold - ((Fortification) building).getPurchaseCost() >= 0) {
+                this.removeGold(((Fortification) building).getPurchaseCost());
+                this.buildings.add(building);
+            } else {
+                System.out.println("Not enough money");
+            }
+        }
+        //Removes gold and adds barracks
+        else if (building instanceof Barracks) {
+            if (this.gold - ((Barracks) building).getPurchaseCost() >= 0) {
+                this.removeGold(((Barracks) building).getPurchaseCost());
+                this.buildings.add(building);
+            } else {
+                System.out.println("Not enough money");
+            }
+        }
+        //Adds town centre
+        else if (building instanceof TownCentre) {
+            this.buildings.add(building);
         }
     }
 
+    //Sells building
     public void sellBuilding(Building building, int cost) {
         this.buildings.remove(building);
         this.gold += (int) Math.round(cost * 0.66);
     }
 
+    //Removes building when destroyed
     public void removeBuilding(Building building) {
         if (buildings.contains(building)) {
             buildings.remove(building);
@@ -89,6 +112,7 @@ public class Player {
         }
     }
 
+    //Sells unit
     public void sellUnit(Unit unit) {
         this.addGold((int) (unit.getPurchaseCost() * 0.66));
         if (unit.getSelected()) {
@@ -97,6 +121,7 @@ public class Player {
         this.units.remove(unit);
     }
 
+    //Removes unit when dead
     public void removeUnit(Unit unit) {
         if (units.contains(unit)) {
             units.remove(unit);
@@ -116,17 +141,16 @@ public class Player {
     }
 
     public void endTurn() {
+        //Set unit fields back to normal
         for (Unit u : units) {
             u.resetMoves();
             if (u.getSelected()) {
                 u.toggleSelected();
             }
         }
-        if(getGoldPerTurn() > 0) {
-            this.addGold(getGoldPerTurn());
-        } else if(getGoldPerTurn() < 0) {
-            this.removeGold(getGoldPerTurn());
-        }
+
+        //Changes gold amount with gold per turn
+        this.addGold(getGoldPerTurn());
     }
 
     public void updateResources() {
@@ -144,7 +168,6 @@ public class Player {
                 gpt += ((Resource) b).getProductionPerTurn();
             }
         }
-
         return gpt;
     }
 }

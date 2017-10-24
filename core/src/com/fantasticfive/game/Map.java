@@ -1,10 +1,7 @@
 package com.fantasticfive.game;
 
 import com.fantasticfive.game.enums.GroundType;
-import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.ObjectType;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,30 +64,19 @@ public class Map {
         return hexagons;
     }
 
+    //Check if buildings can be placed on given location
     public boolean isHexBuildable(Point location, Player player){
-        Hexagon hex = null;
-        for (Hexagon h : hexagons){
-            if (h.getLocation() == location){
-                hex = h;
-            }
-        }
+        Hexagon hex = getHexAtLocation(location);
+
         if (hex.getOwner() == player &&
                 hex.getGroundType() != GroundType.WATER &&
-                hex.getObjectType() != ObjectType.MOUNTAIN &&
-                hex.getObjectType() != ObjectType.BUILDING){
+                hex.getObjectType() != ObjectType.MOUNTAIN){
             return true;
         }
         return false;
     }
 
-    public void createBuilding(BuildingType buildingType, Point location){
-        for (Hexagon h : hexagons){
-            if (h.getLocation() == location){
-                h.addObject(buildingType);
-            }
-        }
-    }
-
+    //Returns hexagon at a specific location
     public Hexagon getHexAtLocation(Point loc) {
         for (Hexagon hex : hexagons) {
             if (hex.getLocation().x == loc.x && hex.getLocation().y == loc.y) {

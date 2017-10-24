@@ -5,17 +5,16 @@ import com.fantasticfive.game.enums.GroundType;
 
 public abstract class Building implements Cloneable {
     public Texture image;
-
     protected int health;
-    protected Point location;
     protected GroundType[] buildableOn;
-    protected Player owner;
+    private Point location;
+    private Player owner;
 
     public Building(int health, Point location, Texture image, GroundType[] buildableOn, Player owner) {
-        this.health = health;
-        this.location = location;
         this.image = image;
+        this.health = health;
         this.buildableOn = buildableOn;
+        this.location = location;
         this.owner = owner;
     }
 
@@ -29,12 +28,16 @@ public abstract class Building implements Cloneable {
         this.location = location;
     }
 
-    public Player getOwner() {
-        return this.owner;
+    public Point getLocation() {
+        return location;
     }
 
     public void setOwner(Player owner) {
         this.owner = owner;
+    }
+
+    public Player getOwner() {
+        return this.owner;
     }
 
     public boolean damageHealth(int hp) {
@@ -44,10 +47,6 @@ public abstract class Building implements Cloneable {
         }
         System.out.println("Health has been reduced with " + hp + " to " + health);
         return health <= 0;
-    }
-
-    public Point getLocation() {
-        return location;
     }
 
     @Override
