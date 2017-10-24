@@ -3,7 +3,7 @@ package com.fantasticfive.game;
 import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.game.enums.GroundType;
 
-public abstract class Building {
+public abstract class Building implements Cloneable {
     public Texture image;
 
     protected int health;
@@ -45,5 +45,10 @@ public abstract class Building {
 
     public Point getLocation() {
         return location;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException{
+        return super.clone();
     }
 }

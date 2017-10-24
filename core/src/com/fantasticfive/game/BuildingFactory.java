@@ -44,20 +44,28 @@ public class BuildingFactory {
 
     public Building getBuildingPreset(BuildingType buildingType) {
         for (Building building : buildingPresets) {
-            switch (buildingType) {
-                case BARRACKS: if (building instanceof Barracks){
-                    return building;
+            try {
+                switch (buildingType) {
+                    case BARRACKS:
+                        if (building instanceof Barracks) {
+                            return (Building)building.clone();
+                        }
+                        break;
+                    case RESOURCE:
+                        if (building instanceof Resource) {
+                            return (Building)building.clone();
+                        }
+                        break;
+                    case FORTIFICATION:
+                        if (building instanceof Fortification) {
+                            return (Building)building.clone();
+                        }
+                        break;
+                    default:
+                        return null;
                 }
-                break;
-                case RESOURCE: if (building instanceof Resource){
-                    return building;
-                }
-                break;
-                case FORTIFICATION: if (building instanceof Fortification){
-                    return building;
-                }
-                break;
-                default: return null;
+            } catch (CloneNotSupportedException e) {
+                return null;
             }
         }
         return null;
