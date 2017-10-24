@@ -29,6 +29,8 @@ public abstract class Building {
         this.location = location;
     }
 
+    public Player getOwner() {return this.owner;}
+
     public void setOwner(Player owner){
         this.owner = owner;
     }

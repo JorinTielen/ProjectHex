@@ -3,6 +3,7 @@ package com.fantasticfive.game;
 import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.Color;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,18 +30,9 @@ public class Player {
     }
 
     public Building getBuildingAtLocation(Point location) {
-        for (Building building : buildings){
-                if (building.getLocation().equals(location)) {
+        for (Building building : buildings) {
+            if (building.getLocation().equals(location)) {
                 return building;
-            }
-        }
-        return null;
-    }
-
-    public Unit getUnitAtLocation(Point location){
-        for (Unit unit : units){
-            if (unit.getLocation().equals(location)) {
-                return unit;
             }
         }
         return null;
@@ -67,16 +59,23 @@ public class Player {
     }
 
     public void purchaseBuilding(Building building) {
-        this.buildings.add(building); //still need to remove gold
+        this.buildings.add(building);
+        if (building instanceof Resource) {
+            this.gold -= ((Resource) building).getPurchaseCost();
+        } else if (building instanceof Fortification) {
+            this.gold -= ((Fortification) building).getPurchaseCost();
+        } else if (building instanceof Barracks) {
+            this.gold -= ((Barracks) building).getPurchaseCost();
+        }
     }
 
     public void sellBuilding(Building building, int cost) {
         this.buildings.remove(building);
-        this.gold = gold + (int)Math.round(cost * 0.4);
+        this.gold += (int) Math.round(cost * 0.66);
     }
 
     public void purchaseUnit(Unit unit) {
-        if(this.gold - unit.getPurchaseCost() >= 0) {
+        if (this.gold - unit.getPurchaseCost() >= 0) {
             this.removeGold(unit.getPurchaseCost());
             this.units.add(unit);
         } else {
@@ -85,8 +84,8 @@ public class Player {
     }
 
     public void sellUnit(Unit unit) {
-        this.addGold((int)(unit.getPurchaseCost() * 0.66));
-        if(unit.getSelected()) {
+        this.addGold((int) (unit.getPurchaseCost() * 0.66));
+        if (unit.getSelected()) {
             unit.toggleSelected();
         }
         this.units.remove(unit);
@@ -101,10 +100,10 @@ public class Player {
     }
 
     public void endTurn() {
-        for(Unit u: units) {
+        for (Unit u : units) {
             u.resetMoves();
             this.removeGold(u.getCostPerTurn());
-            if(u.getSelected()) {
+            if (u.getSelected()) {
                 u.toggleSelected();
             }
         }
@@ -123,19 +122,19 @@ public class Player {
     }
 
     public void removeUnit(Unit unit) {
-        if(units.contains(unit)) {
+        if (units.contains(unit)) {
             units.remove(unit);
         }
     }
 
     public int getGoldPerTurn() {
         int gpt = 0;
-        for (Unit u: units) {
+        for (Unit u : units) {
             gpt -= u.getCostPerTurn();
         }
 
-        for (Building b: buildings) {
-            if(b instanceof Resource) {
+        for (Building b : buildings) {
+            if (b instanceof Resource) {
                 gpt += ((Resource) b).getProductionPerTurn();
             }
         }

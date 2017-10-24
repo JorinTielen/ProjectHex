@@ -54,8 +54,8 @@ public class Game {
             } else {
                 Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(1, 0), p); //Random Point???
                 p.purchaseBuilding(b);
-                Building b2 = buildingFactory.createBuilding(BuildingType.BARRACKS, new Point(2, 1), p); //Random Point???
-                p.purchaseBuilding(b2);
+                b = buildingFactory.createBuilding(BuildingType.BARRACKS, new Point(2, 1), p); //Random Point???
+                p.purchaseBuilding(b);
                 Unit u = unitFactory.createUnit(UnitType.SWORDSMAN, new Point(2, 0), p);
                 p.purchaseUnit(u);
                 u = unitFactory.createUnit(UnitType.SCOUT, new Point(3, 0), p);
@@ -79,23 +79,37 @@ public class Game {
     }
 
     public void endTurn() {
-        currentPlayer.endTurn();
-        int i = players.indexOf(currentPlayer);
-        if (i != players.size() - 1) {
-            currentPlayer = players.get(i + 1);
-        }
-        else{
-            currentPlayer = players.get(0);
-        }
+        if (players.size() != 0) {
+            currentPlayer.endTurn();
+            int i = players.indexOf(currentPlayer);
 
+            if (i != players.size() - 1) {
+                currentPlayer = players.get(i + 1);
+            } else {
+                currentPlayer = players.get(0);
+            }
+        }
     }
 
-    public void leaveGame(){
+    public void leaveGame() {
         players.remove(currentPlayer);
+        endTurn();
+
+        if(players.size() == 1){
+            System.out.println(currentPlayer.getUsername() + " has won the game!");
+        }
     }
 
     public void generateHash() {
         throw new NotImplementedException();
+    }
+
+    public Building getBuildingPreset(BuildingType buildingType){
+        return buildingFactory.getBuildingPreset(buildingType);
+    }
+
+    public Unit getUnitPreset(UnitType unitType){
+        return unitFactory.getUnitPreset(unitType);
     }
 
     public void createUnit(Player player, UnitType unitType, Point location) {
@@ -111,27 +125,25 @@ public class Game {
         }
     }
 
-    public void createBuilding(Player player, BuildingType buildingType, Point location) {
-        if (map.isHexBuildable(location, player)) {
-            player.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, player));
+    public void createBuilding(BuildingType buildingType, Point location) {
+//        if (map.isHexBuildable(location, currentPlayer)) {
+            currentPlayer.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, currentPlayer));
             map.createBuilding(buildingType, location);
-        }
+//        }
     }
 
-    public void sellBuilding(Player player, Point location){
-        Building building = player.getBuildingAtLocation(location);
+    public void sellBuilding(Point location){
+        Building building = currentPlayer.getBuildingAtLocation(location);
         if (building != null && !(building instanceof TownCentre)){
             int cost = 0;
-            if (building instanceof Barracks){
-                cost = ((Barracks)buildingFactory.getBuildingPreset(BuildingType.BARRACKS)).getPurchaseCost();
+            if (building instanceof Barracks) {
+                cost = ((Barracks) buildingFactory.getBuildingPreset(BuildingType.BARRACKS)).getPurchaseCost();
+            } else if (building instanceof Fortification) {
+                cost = ((Fortification) buildingFactory.getBuildingPreset(BuildingType.FORTIFICATION)).getPurchaseCost();
+            } else if (building instanceof Resource) {
+                cost = ((Resource) buildingFactory.getBuildingPreset(BuildingType.RESOURCE)).getPurchaseCost();
             }
-            else if (building instanceof Fortification){
-                cost = ((Fortification)buildingFactory.getBuildingPreset(BuildingType.FORTIFICATION)).getPurchaseCost();
-            }
-            else if (building instanceof Resource){
-                cost = ((Resource)buildingFactory.getBuildingPreset(BuildingType.RESOURCE)).getPurchaseCost();
-            }
-            player.sellBuilding(building, cost);
+            currentPlayer.sellBuilding(building, cost);
             Hexagon hex = map.getHexAtLocation(location);
             hex.removeObject();
             hex.removeObjectType();
@@ -194,28 +206,18 @@ public class Game {
         return unit;
     }
 
-    public void attackBuilding(Player player, Point locationUnit, Point locationBuilding){
-        Unit unit = getUnitAtLocation(locationUnit);
+    public void attackBuilding(Player player, Point locationUnit, Point locationBuilding) {
+        Unit unit = getUnitOnHex(map.getHexAtLocation(locationUnit));
         Building building = getBuildingAtLocation(locationBuilding);
-        if (unit != null && building != null){
+        if (unit != null && building != null) {
             unit.attack(building);
         }
     }
 
-    public Unit getUnitAtLocation(Point location){
-        for (Player player : players){
-            Unit unit = player.getUnitAtLocation(location);
-            if (unit != null){
-                return unit;
-            }
-        }
-        return null;
-    }
-
-    public Building getBuildingAtLocation(Point location){
-        for (Player player : players){
+    public Building getBuildingAtLocation(Point location) {
+        for (Player player : players) {
             Building building = player.getBuildingAtLocation(location);
-            if (building != null){
+            if (building != null) {
                 return building;
             }
 
@@ -224,8 +226,6 @@ public class Game {
     }
 
     public Player getCurrentPlayer() {
-        //TODO Ook echt de current player returnen
-        //return this.currentPlayer;
-        return players.get(0);
+        return this.currentPlayer;
     }
 }
