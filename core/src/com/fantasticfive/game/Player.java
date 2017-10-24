@@ -102,10 +102,14 @@ public class Player {
     public void endTurn() {
         for (Unit u : units) {
             u.resetMoves();
-            this.removeGold(u.getCostPerTurn());
             if (u.getSelected()) {
                 u.toggleSelected();
             }
+        }
+        if(getGoldPerTurn() > 0) {
+            this.addGold(getGoldPerTurn());
+        } else if(getGoldPerTurn() < 0) {
+            this.removeGold(getGoldPerTurn());
         }
     }
 
