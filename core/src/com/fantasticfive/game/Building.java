@@ -3,6 +3,9 @@ package com.fantasticfive.game;
 import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.game.enums.GroundType;
 
+/**
+ * The Buidling class contains all the base information and functionality that all buildings share.
+ */
 public abstract class Building implements Cloneable {
     public Texture image;
     protected int health;
@@ -40,6 +43,11 @@ public abstract class Building implements Cloneable {
         return this.owner;
     }
 
+    /**
+     * Damages the building. The amount of hp a building has can never go below 0
+     * @param hp The amount of hp to reduce from the building
+     * @return
+     */
     public boolean damageHealth(int hp) {
         health -= hp;
         if(health <= 0){

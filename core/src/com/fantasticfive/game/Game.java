@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The Game class is the main class of the game, and takes care of the core functionalities of the game.
+ */
 public class Game {
     private List<Player> players = new ArrayList<Player>();
     private Player currentPlayer;
@@ -18,6 +21,10 @@ public class Game {
     public Game() {
     }
 
+    /**
+     * Adds a player to the game. Checks if the username is already in use and gives the player a random colour and his towncentre
+     * @param username The user's username
+     */
     public void addPlayer(String username) {
         boolean available = true;
         ArrayList<Color> usedColors = new ArrayList<Color>();
@@ -101,6 +108,11 @@ public class Game {
         return unitFactory.getUnitPreset(unitType);
     }
 
+    /**
+     * Purchase a unit for the current player
+     * @param unitType The type of unit
+     * @param location The location to place the unit
+     */
     public void createUnit(UnitType unitType, Point location) {
         if (hexEmpty(location)) {
             Unit unit = unitFactory.getUnitPreset(unitType);
@@ -149,6 +161,11 @@ public class Game {
         return Collections.unmodifiableList(players);
     }
 
+    /**
+     * Checks if a specified Hex has a unit, building or mountain on it. Also checks if the hex is water.
+     * @param location The location of the hex to check.
+     * @return True if the hex is empty, false if it's not empty.
+     */
     public boolean hexEmpty(Point location) {
         //Check if unit is on hex
         for (Player player : players) {

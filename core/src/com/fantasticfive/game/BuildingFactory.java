@@ -7,6 +7,9 @@ import com.fantasticfive.game.enums.UnitType;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The BuildingFactory class contains all presets for buildings and produces instances of these buildings.
+ */
 public class BuildingFactory {
     private List<Building> buildingPresets;
 
@@ -18,6 +21,13 @@ public class BuildingFactory {
         buildingPresets.add(new Fortification(150, new Texture("tower.png"), 10, buildableOn));
     }
 
+    /**
+     * Create a building for a specific player at the specified location
+     * @param buildingType The type of the building
+     * @param location The location where the building is to be placed
+     * @param player The player who'se buying the building
+     * @return
+     */
     public Building createBuilding(BuildingType buildingType, Point location, Player player) {
         Building building;
         GroundType[] buildableOn = new GroundType[]{GroundType.GRASS, GroundType.DIRT, GroundType.SAND};
@@ -38,6 +48,11 @@ public class BuildingFactory {
         return building;
     }
 
+    /**
+     * Returns a building of the specified BuildingType
+     * @param buildingType The type of building needed
+     * @return A building of the specified BuildingType
+     */
     public Building getBuildingPreset(BuildingType buildingType) {
         for (Building building : buildingPresets) {
             try {
