@@ -39,11 +39,12 @@ public class Unit implements Cloneable{
         this.texture = image;
     }
 
-    public void attack(Unit unitToAttack) {
+    public boolean attack(Unit unitToAttack) {
         if(calculateDistance(this.location, unitToAttack.location) <= attackRange && this.allowedToMove >= 1) {
             unitToAttack.reduceHealth(attackPower - unitToAttack.getArmor());
             allowedToMove = 0;
-        }
+            return true;
+        } return false;
     }
 
     public boolean attack(Building buildingToAttack) {

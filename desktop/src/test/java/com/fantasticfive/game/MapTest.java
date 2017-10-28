@@ -1,14 +1,19 @@
 
 package com.fantasticfive.game;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.*;
 
 public class MapTest extends GameTest{
+    private Map map;
+
+    @Before
+    public void test() {
+        map = new Map(20,20);
+    }
+
     @Test
     public void hexHasOwner() throws Exception {
-        Map map = new Map(10,10);
-        Assert.assertNotNull(map);
+
     }
 
     @Test
