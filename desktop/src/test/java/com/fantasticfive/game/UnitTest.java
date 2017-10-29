@@ -40,14 +40,18 @@ public class UnitTest extends SettingsTest {
         BuildingFactory buildingFactory = new BuildingFactory();
 
         Building building = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(1,2), null);
+        for(int i = 0; i < 5; i++){
+            unit.attack(building);
+            unit.resetMoves();
+        }
         Boolean result = unit.attack(building);
-        assertFalse("Building should be within attack range", result);
+        assertTrue("Building should be within attack range and is destroyed", result);
 
         unit.resetMoves();
 
         building = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(5,5), null);
         result = unit.attack(building);
-        assertNull("Building should be outside of the attack range", result);
+        assertFalse("Building should be outside of the attack range", result);
     }
 
     @Test

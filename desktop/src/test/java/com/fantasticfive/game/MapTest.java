@@ -23,7 +23,7 @@ public class MapTest extends SettingsTest {
         assertNotNull("Hex should have an owner",hex.getLocation());
 
         assertNull("Hex at this location should not have an owner",
-                map.getHexAtLocation(new Point(2,6)));
+                map.getHexAtLocation(new Point(2,6)).getOwner());
     }
 
     @Test
