@@ -114,11 +114,13 @@ public class Player {
 
     //Sells unit
     public void sellUnit(Unit unit) {
-        this.addGold((int) (unit.getPurchaseCost() * 0.66));
-        if (unit.getSelected()) {
-            unit.toggleSelected();
+        if(units.contains(unit)) {
+            this.addGold((int) (unit.getPurchaseCost() * 0.66));
+            if (unit.getSelected()) {
+                unit.toggleSelected();
+            }
+            this.units.remove(unit);
         }
-        this.units.remove(unit);
     }
 
     //Removes unit when dead

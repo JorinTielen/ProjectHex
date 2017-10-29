@@ -39,11 +39,12 @@ public class Unit implements Cloneable{
         this.texture = image;
     }
 
-    public void attack(Unit unitToAttack) {
+    public boolean attack(Unit unitToAttack) {
         if(calculateDistance(this.location, unitToAttack.location) <= attackRange && this.allowedToMove >= 1) {
             unitToAttack.reduceHealth(attackPower - unitToAttack.getArmor());
             allowedToMove = 0;
-        }
+            return true;
+        } return false;
     }
 
     public boolean attack(Building buildingToAttack) {
@@ -136,12 +137,16 @@ public class Unit implements Cloneable{
     }
 
     //Calculates distance from 2 selected points
-    private int calculateDistance(Point p1, Point p2) {
+    public int calculateDistance(Point p1, Point p2) {
         //TODO This formula isn't 100% correct yet
 
         p1.z = -(p1.y + p1.x);
         p2.z = -(p2.y + p2.x);
 
         return (Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y) + Math.abs(p1.z - p2.z)) / 2;
+    }
+
+    public int getMovementLeft() {
+        return this.allowedToMove;
     }
 }
