@@ -1,55 +1,63 @@
 package com.fantasticfive.game;
 
-import org.junit.Test;
-
+import com.fantasticfive.game.enums.*;
+import org.junit.*;
 import static org.junit.Assert.*;
 
 /**
  * ProjectHex Created by Sven de Vries on 29-10-2017
  */
 public class HexagonTest extends SettingsTest {
-    @Test
-    public void getPos() throws Exception {
+    private Hexagon hexagonGrass;
+    private Hexagon hexagonWater;
+
+    @Before
+    public void initHexagon() {
+        hexagonGrass = new Hexagon(GroundType.GRASS, new Point(1,1), 62);
+        hexagonWater = new Hexagon(GroundType.WATER, new Point(2,2), 62);
     }
 
     @Test
-    public void setOwner() throws Exception {
+    public void testGetPos() throws Exception {
     }
 
     @Test
-    public void getOwner() throws Exception {
+    public void testSetOwner() throws Exception {
     }
 
     @Test
-    public void getObjectType() throws Exception {
+    public void testGetOwner() throws Exception {
     }
 
     @Test
-    public void getLocation() throws Exception {
+    public void testGetObjectType() throws Exception {
     }
 
     @Test
-    public void addObjectType() throws Exception {
+    public void testGetLocation() throws Exception {
     }
 
     @Test
-    public void removeObjectType() throws Exception {
+    public void testAddObjectType() throws Exception {
     }
 
     @Test
-    public void removeObject() throws Exception {
+    public void testRemoveObjectType() throws Exception {
     }
 
     @Test
-    public void deleteOwner() throws Exception {
+    public void testRemoveObject() throws Exception {
     }
 
     @Test
-    public void hasOwner() throws Exception {
+    public void testDeleteOwner() throws Exception {
     }
 
     @Test
-    public void getGroundType() throws Exception {
+    public void testHasOwner() throws Exception {
     }
 
+    @Test
+    public void testGetGroundType() throws Exception {
+    }
 }

@@ -1,95 +1,132 @@
 package com.fantasticfive.game;
 
-import org.junit.Test;
-
+import org.junit.*;
+import java.util.List;
 import static org.junit.Assert.*;
 
 /**
  * ProjectHex Created by Sven de Vries on 29-10-2017
  */
 public class GameTest extends SettingsTest {
-    @Test
-    public void addPlayer() throws Exception {
+    private Game game;
+
+    @Before
+    public void initGame() {
+        game = new Game();
     }
 
     @Test
-    public void removePlayer() throws Exception {
+    public void testAddPlayer() throws Exception {
+        game.addPlayer("testPlayer");
+        List<Player> players = game.getPlayers();
+        assertEquals("testPlayer", players.get(0).getUsername());
     }
 
     @Test
-    public void setMap() throws Exception {
+    public void testRemovePlayer() throws Exception {
+        game.addPlayer("testPlayer");
+        Player p = game.getPlayers().get(0);
+        game.removePlayer(p);
+        assertFalse(game.getPlayers().contains(p));
     }
 
     @Test
-    public void startGame() throws Exception {
+    public void testStartGame() throws Exception {
+        game.addPlayer("testPlayer");
+        game.addPlayer("testPlayer2");
+        Player p = game.getPlayers().get(0);
+        game.startGame();
+        assertEquals(p, game.getCurrentPlayer());
     }
 
     @Test
-    public void endTurn() throws Exception {
+    public void testEndTurnLastPlayer() throws Exception {
+        game.addPlayer("testPlayer");
+        game.addPlayer("testPlayer2");
+        Player p = game.getPlayers().get(1);
+        game.startGame();
+        game.endTurn();
+        assertEquals(p, game.getCurrentPlayer());
     }
 
     @Test
-    public void leaveGame() throws Exception {
+    public void testEndTurnFirstPlayerAgain() throws Exception {
+        game.addPlayer("testPlayer");
+        game.addPlayer("testPlayer2");
+        Player p = game.getPlayers().get(0);
+        game.startGame();
+        game.endTurn();
+        game.endTurn();
+        assertEquals(p, game.getCurrentPlayer());
     }
 
     @Test
-    public void generateHash() throws Exception {
+    public void testLeaveGame() throws Exception {
+        game.addPlayer("testPlayer");
+        game.addPlayer("testPlayer2");
+        Player p = game.getPlayers().get(1);
+        game.startGame();
+        game.leaveGame();
+        assertEquals(p, game.getCurrentPlayer());
     }
 
     @Test
-    public void getBuildingPreset() throws Exception {
+    public void testGenerateHash() throws Exception {
     }
 
     @Test
-    public void getUnitPreset() throws Exception {
+    public void testGetBuildingPreset() throws Exception {
     }
 
     @Test
-    public void createUnit() throws Exception {
+    public void testGetUnitPreset() throws Exception {
     }
 
     @Test
-    public void createBuilding() throws Exception {
+    public void testCreateUnit() throws Exception {
     }
 
     @Test
-    public void sellBuilding() throws Exception {
+    public void testCreateBuilding() throws Exception {
     }
 
     @Test
-    public void claimLand() throws Exception {
+    public void testSellBuilding() throws Exception {
     }
 
     @Test
-    public void update() throws Exception {
+    public void testClaimLand() throws Exception {
     }
 
     @Test
-    public void getPlayers() throws Exception {
+    public void testUpdate() throws Exception {
     }
 
     @Test
-    public void hexEmpty() throws Exception {
+    public void testGetPlayers() throws Exception {
     }
 
     @Test
-    public void getUnitOnHex() throws Exception {
+    public void testHexEmpty() throws Exception {
     }
 
     @Test
-    public void getSelectedUnit() throws Exception {
+    public void testGetUnitOnHex() throws Exception {
     }
 
     @Test
-    public void attackBuilding() throws Exception {
+    public void testGetSelectedUnit() throws Exception {
     }
 
     @Test
-    public void getBuildingAtLocation() throws Exception {
+    public void testAttackBuilding() throws Exception {
     }
 
     @Test
-    public void getCurrentPlayer() throws Exception {
+    public void testGetBuildingAtLocation() throws Exception {
     }
 
+    @Test
+    public void testGetCurrentPlayer() throws Exception {
+    }
 }

@@ -75,13 +75,17 @@ public class Game {
     }
 
     public void endTurn() {
+        //If players list is not empty
         if (players.size() != 0) {
             currentPlayer.endTurn();
             int i = players.indexOf(currentPlayer);
 
+            //If current player is not the last in the list
             if (i != players.size() - 1) {
                 currentPlayer = players.get(i + 1);
-            } else {
+            }
+            //If current player is the last in the list
+            else {
                 currentPlayer = players.get(0);
             }
         }

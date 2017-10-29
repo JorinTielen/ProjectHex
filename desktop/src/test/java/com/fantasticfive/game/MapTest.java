@@ -1,31 +1,29 @@
-
 package com.fantasticfive.game;
 
 import org.junit.*;
+import static org.junit.Assert.*;
 
 public class MapTest extends SettingsTest {
     private Map map;
 
     @Before
-    public void test() {
+    public void initMap() {
         map = new Map(20,20);
     }
 
     @Test
-    public void hexHasOwner() throws Exception {
-
+    public void testHexHasOwner() throws Exception {
     }
 
     @Test
-    public void getHexagons() throws Exception {
+    public void testGetHexagons() throws Exception {
     }
 
     @Test
-    public void isHexBuildable() throws Exception {
+    public void testIsHexBuildable() throws Exception {
     }
 
     @Test
-    public void getHexAtLocation() throws Exception {
+    public void testGetHexAtLocation() throws Exception {
     }
-
 }
