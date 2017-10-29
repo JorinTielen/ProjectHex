@@ -1,5 +1,8 @@
 package com.fantasticfive.game;
 
+import com.fantasticfive.game.enums.BuildingType;
+import com.fantasticfive.game.enums.GroundType;
+import com.fantasticfive.game.enums.UnitType;
 import org.junit.*;
 import java.util.List;
 import static org.junit.Assert.*;
@@ -71,62 +74,104 @@ public class GameTest extends SettingsTest {
     }
 
     @Test
-    public void testGenerateHash() throws Exception {
-    }
-
-    @Test
-    public void testGetBuildingPreset() throws Exception {
-    }
-
-    @Test
-    public void testGetUnitPreset() throws Exception {
-    }
-
-    @Test
     public void testCreateUnit() throws Exception {
+        game.addPlayer("testPlayer");
+        game.startGame();
+        game.setMap(new Map(20,20));
+        game.createUnit(UnitType.SWORDSMAN, new Point(1,1));
+        Player p = game.getCurrentPlayer();
+        assertEquals(1, p.getUnits().size());
     }
 
     @Test
     public void testCreateBuilding() throws Exception {
+        game.addPlayer("testPlayer");
+        game.startGame();
+        game.setMap(new Map(20,20));
+        game.createBuilding(BuildingType.BARRACKS, new Point(1,1));
+        Player p = game.getCurrentPlayer();
+        assertEquals(2, p.getBuildings().size());
     }
 
     @Test
     public void testSellBuilding() throws Exception {
-    }
-
-    @Test
-    public void testClaimLand() throws Exception {
-    }
-
-    @Test
-    public void testUpdate() throws Exception {
+        game.addPlayer("testPlayer");
+        game.startGame();
+        game.setMap(new Map(20,20));
+        game.createBuilding(BuildingType.BARRACKS, new Point(1,1));
+        game.sellBuilding(new Point(1,1));
+        Player p = game.getCurrentPlayer();
+        assertEquals(1, p.getBuildings().size());
     }
 
     @Test
     public void testGetPlayers() throws Exception {
+        game.addPlayer("testPlayer");
+        assertEquals(1,game.getPlayers().size());
     }
 
     @Test
-    public void testHexEmpty() throws Exception {
+    public void testHexEmptyTrue() throws Exception {
+        game.addPlayer("testPlayer");
+        game.startGame();
+        game.setMap(new Map(20,20));
+        assertTrue(game.hexEmpty(new Point(1,1)));
+    }
+
+    @Test
+    public void testHexEmptyFalse() throws Exception {
+        game.addPlayer("testPlayer");
+        game.startGame();
+        game.setMap(new Map(20,20));
+        game.createUnit(UnitType.SWORDSMAN, new Point(1,1));
+        assertFalse(game.hexEmpty(new Point(1,1)));
     }
 
     @Test
     public void testGetUnitOnHex() throws Exception {
+        game.addPlayer("testPlayer");
+        game.startGame();
+        game.setMap(new Map(20,20));
+        game.createUnit(UnitType.SWORDSMAN, new Point(1,1));
+        Hexagon hex = new Hexagon(GroundType.GRASS, new Point(1,1), 62);
+        Unit unit = game.getUnitOnHex(hex);
+        assertEquals(UnitType.SWORDSMAN, unit.getUnitType());
     }
 
     @Test
     public void testGetSelectedUnit() throws Exception {
+        game.addPlayer("testPlayer");
+        game.startGame();
+        game.setMap(new Map(20,20));
+        game.createUnit(UnitType.SWORDSMAN, new Point(1,1));
+        Player p = game.getCurrentPlayer();
+        Unit unit = p.getUnits().get(0);
+        unit.toggleSelected();
+        assertEquals(unit, game.getSelectedUnit());
     }
 
     @Test
     public void testAttackBuilding() throws Exception {
+        game.addPlayer("testPlayer");
+        game.setMap(new Map(20,20));
+        game.startGame();
+        game.createUnit(UnitType.ARCHER, new Point(0,0));
+        game.createBuilding(BuildingType.BARRACKS, new Point(1,1));
+        Player p = game.getCurrentPlayer();
+        Unit unit = p.getUnits().get(0);
+        game.attackBuilding(unit, new Point(1,1));
+        Building building = p.getBuildings().get(1);
+        assertEquals(100, building.health);
     }
 
     @Test
     public void testGetBuildingAtLocation() throws Exception {
-    }
-
-    @Test
-    public void testGetCurrentPlayer() throws Exception {
+        game.addPlayer("testPlayer");
+        game.setMap(new Map(20,20));
+        game.startGame();
+        game.createBuilding(BuildingType.BARRACKS, new Point(1,1));
+        Player p = game.getCurrentPlayer();
+        Building building = p.getBuildings().get(1);
+        assertEquals(building, game.getBuildingAtLocation(new Point(1,1)));
     }
 }

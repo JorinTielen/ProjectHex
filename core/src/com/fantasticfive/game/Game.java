@@ -118,14 +118,18 @@ public class Game {
      * @param location The location to place the unit
      */
     public void createUnit(UnitType unitType, Point location) {
+        //When hex is empty
         if (hexEmpty(location)) {
             Unit unit = unitFactory.getUnitPreset(unitType);
+            //When player has enough gold to buy unit
             if (currentPlayer.getGold() - unit.getPurchaseCost() > 0) {
                 currentPlayer.purchaseUnit(unitFactory.createUnit(unitType, location, currentPlayer));
             } else {
                 System.out.println("Not enough gold");
             }
-        } else {
+        }
+        //When hex is not empty
+        else {
             System.out.println("Hex not empty");
         }
     }
