@@ -1,6 +1,7 @@
 package com.fantasticfive.game;
 
 import com.fantasticfive.game.enums.BuildingType;
+import com.fantasticfive.game.enums.Color;
 import com.fantasticfive.game.enums.UnitType;
 import org.junit.After;
 import org.junit.Assert;
@@ -73,67 +74,33 @@ public class UnitTest extends SettingsTest {
 
     @Test
     public void testResetMoves() {
-
-    }
-
-    @Test
-    public void testGetArmor() {
-
+        unit.move(new Point(2, 2));
+        unit.resetMoves();
+        int expectedMoves = 2;
+        int actualMoves = unit.getMovementLeft();
+        Assert.assertEquals(expectedMoves, actualMoves);
     }
 
     @Test
     public void testSetOwner() {
-
-    }
-
-    @Test
-    public void testGetOwner() {
-
-    }
-
-    @Test
-    public void testGetPurchaseCost() {
-
-    }
-
-    @Test
-    public void testGetCostPerTurn() {
-
-    }
-
-    @Test
-    public void testSetLocation() {
-
-    }
-
-    @Test
-    public void testGetLocation() {
-
-    }
-
-    @Test
-    public void testGetHealt() {
-
-    }
-
-    @Test
-    public void testGetUnitType() {
-
+        Player p = new Player("test", Color.RED);
+        unit.setOwner(p);
+        Assert.assertTrue(unit.getOwner().getUsername().equals(p.getUsername()));
     }
 
     @Test
     public void testToggleSelected() {
-
-    }
-
-    @Test
-    public void testGetSelected() {
-
+        unit.toggleSelected();
+        Assert.assertTrue(unit.getSelected());
     }
 
     @Test
     public void testCalculateDistance() {
-
+        Point p1 = unit.getLocation();
+        Point p2 = new Point(2,1);
+        int expectedDistance = 1;
+        int actualDistance = unit.calculateDistance(p1,p2);
+        Assert.assertEquals(expectedDistance, actualDistance);
     }
 
 }
