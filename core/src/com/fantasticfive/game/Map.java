@@ -20,6 +20,7 @@ public class Map {
     }
 
     public boolean hexHasOwner(Point location){
+        //TODO Daadwerkelijk checken of de tile een owner heeft
         for(Hexagon h : hexagons){
             if(h.getLocation() == location){
                 return h.hasOwner();
