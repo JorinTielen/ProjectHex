@@ -137,12 +137,16 @@ public class Unit implements Cloneable{
     }
 
     //Calculates distance from 2 selected points
-    private int calculateDistance(Point p1, Point p2) {
+    public int calculateDistance(Point p1, Point p2) {
         //TODO This formula isn't 100% correct yet
 
         p1.z = -(p1.y + p1.x);
         p2.z = -(p2.y + p2.x);
 
         return (Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y) + Math.abs(p1.z - p2.z)) / 2;
+    }
+
+    public int getMovementLeft() {
+        return this.allowedToMove;
     }
 }

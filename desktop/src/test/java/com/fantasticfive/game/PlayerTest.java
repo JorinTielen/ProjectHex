@@ -196,6 +196,4 @@ public class PlayerTest extends SettingsTest {
         int actualGoldPerTurn = player.getGoldPerTurn();
         assertEquals("Should return 2", expectedGoldPerTurn, actualGoldPerTurn);
     }
-
-
 }

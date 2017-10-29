@@ -20,9 +20,9 @@ public class MapTest extends SettingsTest {
         Player p = new Player("test", Color.RED);
         hex.setOwner(p);
 
-        Assert.assertNotNull("Hex should have an owner",hex.getLocation());
+        assertNotNull("Hex should have an owner",hex.getLocation());
 
-        Assert.assertNull("Hex at this location should not have an owner",
+        assertNull("Hex at this location should not have an owner",
                 map.getHexAtLocation(new Point(2,6)));
     }
 
@@ -46,22 +46,22 @@ public class MapTest extends SettingsTest {
             }
         }
 
-        Assert.assertFalse("grassHex shouldn't be buildable without owner",
+        assertFalse("grassHex shouldn't be buildable without owner",
                 map.isHexBuildable(grassHex.getLocation(), p));
-        Assert.assertFalse("mountainHex should always return false",
+        assertFalse("mountainHex should always return false",
                 map.isHexBuildable(mountainHex.getLocation(), p));
-        Assert.assertFalse("waterHex should always return false",
+        assertFalse("waterHex should always return false",
                 map.isHexBuildable(waterHex.getLocation(), p));
 
         grassHex.setOwner(p);
         mountainHex.setOwner(p);
         waterHex.setOwner(p);
 
-        Assert.assertTrue("grassHex should be buildable with owner",
+        assertTrue("grassHex should be buildable with owner",
                 map.isHexBuildable(grassHex.getLocation(), p));
-        Assert.assertFalse("mountainHex shouldn't be buildable with owner",
+        assertFalse("mountainHex shouldn't be buildable with owner",
                 map.isHexBuildable(mountainHex.getLocation(), p));
-        Assert.assertFalse("waterHex shouldn't be buildable with owner",
+        assertFalse("waterHex shouldn't be buildable with owner",
                 map.isHexBuildable(waterHex.getLocation(), p));
 
     }
@@ -69,11 +69,11 @@ public class MapTest extends SettingsTest {
     @Test
     public void testGetHexAtLocation() throws Exception {
         Point point = new Point(2,2);
-        Assert.assertNotNull("Map should have returned a hex with location 2,2",
+        assertNotNull("Map should have returned a hex with location 2,2",
                 map.getHexAtLocation(point));
 
         point = new Point(50,30);
-        Assert.assertNull("There should not be a hex at location 50, 50",
+        assertNull("There should not be a hex at location 50, 50",
                 map.getHexAtLocation(point));
     }
 }
