@@ -1,41 +1,95 @@
 package com.fantasticfive.game;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.backends.headless.HeadlessApplication;
-import com.badlogic.gdx.graphics.GL20;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.mockito.Mockito;
+import org.junit.Test;
 
-public class GameTest {
-    // This is our "test" application
-    private static Application application;
+import static org.junit.Assert.*;
 
-    // Before running any tests, initialize the application with the headless backend
-    @BeforeClass
-    public static void init() {
-        // Note that we don't need to implement any of the listener's methods
-        application = new HeadlessApplication(new ApplicationListener() {
-            @Override public void create() {}
-            @Override public void resize(int width, int height) {}
-            @Override public void render() {}
-            @Override public void pause() {}
-            @Override public void resume() {}
-            @Override public void dispose() {}
-        });
-
-        // Use Mockito to mock the OpenGL methods since we are running headlessly
-        Gdx.gl20 = Mockito.mock(GL20.class);
-        Gdx.gl = Gdx.gl20;
+/**
+ * ProjectHex Created by Sven de Vries on 29-10-2017
+ */
+public class GameTest extends SettingsTest {
+    @Test
+    public void addPlayer() throws Exception {
     }
 
-    // After we are done, clean up the application
-    @AfterClass
-    public static void cleanUp() {
-        // Exit the application first
-        application.exit();
-        application = null;
+    @Test
+    public void removePlayer() throws Exception {
     }
+
+    @Test
+    public void setMap() throws Exception {
+    }
+
+    @Test
+    public void startGame() throws Exception {
+    }
+
+    @Test
+    public void endTurn() throws Exception {
+    }
+
+    @Test
+    public void leaveGame() throws Exception {
+    }
+
+    @Test
+    public void generateHash() throws Exception {
+    }
+
+    @Test
+    public void getBuildingPreset() throws Exception {
+    }
+
+    @Test
+    public void getUnitPreset() throws Exception {
+    }
+
+    @Test
+    public void createUnit() throws Exception {
+    }
+
+    @Test
+    public void createBuilding() throws Exception {
+    }
+
+    @Test
+    public void sellBuilding() throws Exception {
+    }
+
+    @Test
+    public void claimLand() throws Exception {
+    }
+
+    @Test
+    public void update() throws Exception {
+    }
+
+    @Test
+    public void getPlayers() throws Exception {
+    }
+
+    @Test
+    public void hexEmpty() throws Exception {
+    }
+
+    @Test
+    public void getUnitOnHex() throws Exception {
+    }
+
+    @Test
+    public void getSelectedUnit() throws Exception {
+    }
+
+    @Test
+    public void attackBuilding() throws Exception {
+    }
+
+    @Test
+    public void getBuildingAtLocation() throws Exception {
+    }
+
+    @Test
+    public void getCurrentPlayer() throws Exception {
+    }
+
 }

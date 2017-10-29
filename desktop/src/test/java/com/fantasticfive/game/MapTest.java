@@ -3,7 +3,7 @@ package com.fantasticfive.game;
 
 import org.junit.*;
 
-public class MapTest extends GameTest{
+public class MapTest extends SettingsTest {
     private Map map;
 
     @Before

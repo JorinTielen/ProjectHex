@@ -1,6 +1,5 @@
 package com.fantasticfive.game;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.UnitType;
 import org.junit.After;
@@ -8,7 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class UnitTest extends GameTest{
+public class UnitTest extends SettingsTest {
     private Unit unit;
     private UnitFactory unitFactory;
 
