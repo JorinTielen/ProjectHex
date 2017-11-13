@@ -1,6 +1,6 @@
 package com.fantasticfive.shared;
 
 public interface IMap {
-    boolean isHexBuildable(Point Location, Player currentPlayer);
+    boolean isHexBuildable(Point location, Player currentPlayer);
     Hexagon getHexAtLocation(Point location);
 }
