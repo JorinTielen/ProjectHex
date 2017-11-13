@@ -6,7 +6,7 @@ import com.fantasticfive.shared.enums.*;
 /**
  * The Buidling class contains all the base information and functionality that all buildings share.
  */
-public abstract class Building implements Cloneable {
+public abstract class Building implements Cloneable, IBuilding {
     public Texture image;
     protected int health;
     protected GroundType[] buildableOn;

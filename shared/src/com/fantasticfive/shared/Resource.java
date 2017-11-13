@@ -1,7 +1,7 @@
 package com.fantasticfive.shared;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.fantasticfive.game.enums.GroundType;
+import com.fantasticfive.shared.enums.*;
 
 public class Resource extends Building {
     private int productionPerTurn;
