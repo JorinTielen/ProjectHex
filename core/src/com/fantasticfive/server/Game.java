@@ -1,7 +1,6 @@
 package com.fantasticfive.server;
 
 import com.fantasticfive.shared.*;
-import com.fantasticfive.shared.enums.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.rmi.RemoteException;

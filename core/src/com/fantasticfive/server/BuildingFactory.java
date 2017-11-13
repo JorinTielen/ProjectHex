@@ -1,7 +1,6 @@
 package com.fantasticfive.server;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.fantasticfive.shared.enums.*;
 import com.fantasticfive.shared.*;
 
 import java.util.ArrayList;
