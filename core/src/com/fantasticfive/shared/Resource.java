@@ -7,8 +7,8 @@ public class Resource extends Building {
     private int productionPerTurn;
     private int purchaseCost;
 
-    public Resource(int health, Texture image, int purchaseCost, int productionPerTurn, GroundType[] buildableOn) {
-        super(health, image, buildableOn);
+    public Resource(int health, int purchaseCost, int productionPerTurn, GroundType[] buildableOn) {
+        super(health, buildableOn);
         this.purchaseCost = purchaseCost;
         this.productionPerTurn = productionPerTurn;
     }
@@ -22,5 +22,10 @@ public class Resource extends Building {
     @Override
     public void setOwner(IPlayer owner) {
         this.owner = owner;
+    }
+
+    @Override
+    public void setImage() {
+        this.image = new Texture("mine.png");
     }
 }
