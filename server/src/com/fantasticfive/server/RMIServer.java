@@ -24,9 +24,9 @@ public class RMIServer {
 
         try{
             game = new Game();
-            System.out.println("Server: Effectenbeurs created");
+            System.out.println("Server: Game created");
         } catch (RemoteException e) {
-            System.out.println("Server: Cannot create effectenbeurs");
+            System.out.println("Server: Cannot create Game");
             System.out.println("Server: RemoteException: " + e.getMessage());
             game = null;
         }
@@ -44,9 +44,9 @@ public class RMIServer {
         //Bind effectenbeurs using registry
         try {
             registry.rebind(bindingName, game);
-            System.out.println("Server: Effectenbeurs binded to registry");
+            System.out.println("Server: Game binded to registry");
         } catch (RemoteException e) {
-            System.out.println("Server: Cannot bind effectenbeurs");
+            System.out.println("Server: Cannot bind Game");
             System.out.println("Server: RemoteException: " + e.getMessage());
         } catch (NullPointerException e) {
             System.out.println("Server: Port already in use. \nServer: Please check if the server isn't already running");
@@ -59,6 +59,10 @@ public class RMIServer {
             System.out.println("Server: Something went wrong with starting the server");
             System.exit(0);
         }
+    }
+
+    public static void main(String[] args){
+        RMIServer server = new RMIServer();
     }
 
 }
