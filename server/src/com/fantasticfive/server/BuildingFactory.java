@@ -1,3 +1,5 @@
+package com.fantasticfive.server;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.GroundType;
@@ -8,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The BuildingFactory class contains all presets for buildings and produces instances of these buildings.
+ * The com.fantasticfive.server.BuildingFactory class contains all presets for buildings and produces instances of these buildings.
  */
 public class BuildingFactory {
     private List<Building> buildingPresets;

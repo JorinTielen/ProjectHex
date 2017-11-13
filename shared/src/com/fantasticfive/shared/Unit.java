@@ -1,7 +1,7 @@
 package com.fantasticfive.shared;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.fantasticfive.game.enums.UnitType;
+
 
 public class Unit implements Cloneable, IUnit{
     public Texture texture;

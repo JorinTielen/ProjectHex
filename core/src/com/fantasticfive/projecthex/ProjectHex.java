@@ -13,11 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.fantasticfive.game.*;
-import com.fantasticfive.game.enums.BuildingType;
-import com.fantasticfive.game.enums.GroundType;
-import com.fantasticfive.game.enums.ObjectType;
-import com.fantasticfive.game.enums.UnitType;
+import com.fantasticfive.shared.*;
+import com.fantasticfive.shared.enums.BuildingType;
+import com.fantasticfive.shared.enums.UnitType;
 
 public class ProjectHex extends ApplicationAdapter {
     private InputManager input = new InputManager(this);
@@ -34,7 +32,7 @@ public class ProjectHex extends ApplicationAdapter {
     private Table unitSellTable;
     private Table buildingSellTable;
     private Table optionsTable;
-    private Game game;
+    private IGame game;
 
     @Override
     public void create() {
@@ -46,7 +44,8 @@ public class ProjectHex extends ApplicationAdapter {
         map = new Map(20, 15);
 
         //Setup test game
-        game = new Game();
+        //TODO game ophalen van RMIServer
+        game = null;
         game.setMap(map);
         game.addPlayer("maxim");
         game.addPlayer("enemy");
@@ -116,8 +115,8 @@ public class ProjectHex extends ApplicationAdapter {
         }
 
         //draw all buildings and units from all players
-        for (Player p : game.getPlayers()) {
-            for (Building b : p.getBuildings()) {
+        for (IPlayer p : game.getPlayers()) {
+            for (IBuilding b : p.getBuildings()) {
                 Hexagon h = map.getHexAtLocation(b.getLocation());
                 batch.draw(b.image, h.getPos().x, h.getPos().y);
             }

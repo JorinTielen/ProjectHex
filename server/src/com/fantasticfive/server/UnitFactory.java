@@ -1,5 +1,7 @@
+package com.fantasticfive.server;
+
 import com.badlogic.gdx.graphics.Texture;
-import com.fantasticfive.game.enums.UnitType;
+import com.fantasticfive.shared.enums.UnitType;
 import com.fantasticfive.shared.Player;
 import com.fantasticfive.shared.Point;
 import com.fantasticfive.shared.Unit;

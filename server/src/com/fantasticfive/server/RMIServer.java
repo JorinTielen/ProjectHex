@@ -1,3 +1,5 @@
+package com.fantasticfive.server;
+
 import com.fantasticfive.shared.IGame;
 
 import java.rmi.RemoteException;

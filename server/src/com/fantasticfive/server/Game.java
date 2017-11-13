@@ -1,6 +1,7 @@
+package com.fantasticfive.server;
+
 import com.fantasticfive.shared.*;
-import com.fantasticfive.shared.enums.BuildingType;
-import com.fantasticfive.shared.enums.Color;
+import com.fantasticfive.shared.enums.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.rmi.RemoteException;
@@ -10,12 +11,12 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * The Game class is the main class of the game, and takes care of the core functionalities of the game.
+ * The com.fantasticfive.server.Game class is the main class of the game, and takes care of the core functionalities of the game.
  */
 public class Game extends UnicastRemoteObject implements IGame {
     private List<IPlayer> players = new ArrayList<IPlayer>();
     private IPlayer currentPlayer;
-    private Map map;
+    private IMap map;
     private UnitFactory unitFactory = new UnitFactory();
     private BuildingFactory buildingFactory = new BuildingFactory();
     private String hash;
@@ -160,7 +161,7 @@ public class Game extends UnicastRemoteObject implements IGame {
         }
     }
 
-    public void claimLand(Unit unit) {
+    public void claimLand(IUnit unit) {
         throw new NotImplementedException();
     }
 
@@ -180,7 +181,7 @@ public class Game extends UnicastRemoteObject implements IGame {
     public boolean hexEmpty(Point location) {
         //Check if unit is on hex
         for (IPlayer player : players) {
-            for (Unit unit : player.getUnits()) {
+            for (IUnit unit : player.getUnits()) {
                 if (unit.getLocation().equals(location)) {
                     return false;
                 }
@@ -199,10 +200,10 @@ public class Game extends UnicastRemoteObject implements IGame {
         }
     }
 
-    public Unit getUnitOnHex(Hexagon hex) {
-        Unit unit = null;
-        for (Player p : getPlayers()) {
-            for (Unit u : p.getUnits()) {
+    public IUnit getUnitOnHex(Hexagon hex) {
+        IUnit unit = null;
+        for (IPlayer p : getPlayers()) {
+            for (IUnit u : p.getUnits()) {
                 if (u.getLocation().x == hex.getLocation().x && u.getLocation().y == hex.getLocation().y) {
                     unit = u;
                 }

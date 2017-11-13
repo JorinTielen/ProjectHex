@@ -162,11 +162,11 @@ public class Player implements IPlayer{
 
     public int getGoldPerTurn() {
         int gpt = 0;
-        for (Unit u : units) {
+        for (IUnit u : units) {
             gpt -= u.getCostPerTurn();
         }
 
-        for (Building b : buildings) {
+        for (IBuilding b : buildings) {
             if (b instanceof Resource) {
                 gpt += ((Resource) b).getProductionPerTurn();
             }

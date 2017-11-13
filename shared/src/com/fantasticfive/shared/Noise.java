@@ -21,7 +21,7 @@
             }
 * */
 
-package com.fantasticfive.projecthex;
+package com.fantasticfive.shared;
 
 import java.util.Random;
 

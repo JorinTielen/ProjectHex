@@ -1,4 +1,4 @@
-package com.fantasticfive.projecthex;
+package com.fantasticfive.shared;
 
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.enums.*;
@@ -6,7 +6,7 @@ import com.fantasticfive.shared.enums.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Map {
+public class Map implements IMap {
     private List<Hexagon> hexagons;
     private int id;
     private int width;

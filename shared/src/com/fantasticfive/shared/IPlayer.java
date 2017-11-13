@@ -15,4 +15,6 @@ public interface IPlayer extends Serializable {
     void sellBuilding(IBuilding building, int cost);
     int getGold();
     void purchaseUnit(UnitType unitType);
+    List<IBuilding> getBuildings();
+
 }
