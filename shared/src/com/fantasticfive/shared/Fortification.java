@@ -6,8 +6,8 @@ import com.fantasticfive.shared.enums.*;
 public class Fortification extends Building {
     private int purchaseCost;
 
-    public Fortification(int health, Texture image, int purchaseCost, GroundType[] buildableOn) {
-        super(health, image, buildableOn);
+    public Fortification(int health, int purchaseCost, GroundType[] buildableOn) {
+        super(health, buildableOn);
         this.purchaseCost = purchaseCost;
     }
 
@@ -16,5 +16,10 @@ public class Fortification extends Building {
     @Override
     public void setOwner(IPlayer owner) {
         this.owner = owner;
+    }
+
+    @Override
+    public void setImage() {
+        this.image = new Texture("tower.png");
     }
 }

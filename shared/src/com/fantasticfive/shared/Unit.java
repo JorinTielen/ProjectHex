@@ -1,11 +1,12 @@
 package com.fantasticfive.shared;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.fantasticfive.shared.enums.UnitType;
 
 
 public class Unit implements Cloneable, IUnit{
     public Texture texture;
-    private com.fantasticfive.shared.enums.UnitType unitType;
+    private UnitType unitType;
     private int health;
     private int armor;
     private int attackPower;
@@ -24,7 +25,7 @@ public class Unit implements Cloneable, IUnit{
     public Unit(com.fantasticfive.shared.enums.UnitType unitType, int health, int armor,
                 int attackPower, int attackRange, int movementRange,
                 int purchaseCost, int costPerTurn, Boolean canTakeLand,
-                int upgradeCost, Texture image) {
+                int upgradeCost) {
         this.unitType = unitType;
         this.health = health;
         this.armor = armor;
@@ -36,7 +37,6 @@ public class Unit implements Cloneable, IUnit{
         this.costPerTurn = costPerTurn;
         this.canTakeLand = canTakeLand;
         this.upgradeCost = upgradeCost;
-        this.texture = image;
     }
 
     public boolean attack(IUnit unitToAttack) {
@@ -148,6 +148,20 @@ public class Unit implements Cloneable, IUnit{
 
     public int getMovementLeft() {
         return this.allowedToMove;
+    }
+
+    public void setTexture(){
+        switch (unitType){
+            case ARCHER:
+                this.texture = new Texture("characterArcher.png");
+                break;
+            case SCOUT:
+                this.texture = new Texture("characterScout.png");
+                break;
+            case SWORDSMAN:
+                this.texture = new Texture("characterSwordsman.png");
+                break;
+        }
     }
 
     public Texture getTexture() {

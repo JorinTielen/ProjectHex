@@ -12,4 +12,9 @@ public class TownCentre extends Building {
     public void setOwner(IPlayer owner) {
         this.owner = owner;
     }
+
+    @Override
+    public void setImage() {
+        this.image = new Texture("townCentre.png");
+    }
 }
