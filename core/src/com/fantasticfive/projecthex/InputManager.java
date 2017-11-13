@@ -56,12 +56,12 @@ public class InputManager implements InputProcessor {
         //Left mouse button down
         if(button == Input.Buttons.LEFT) {
             projectHex.screenLeftClick(screenX, screenY);
-            return false;
+            return true;
         }
         //Right mouse button down
         else if(button == Input.Buttons.RIGHT) {
             projectHex.screenRightClick(screenX, screenY);
-            return false;
+            return true;
         }
         return false;
     }

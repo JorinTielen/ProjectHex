@@ -8,44 +8,51 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.fantasticfive.shared.*;
-import com.fantasticfive.shared.enums.BuildingType;
-import com.fantasticfive.shared.enums.UnitType;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.fantasticfive.game.*;
+import com.fantasticfive.game.enums.BuildingType;
+import com.fantasticfive.projecthex.tables.*;
 
 public class ProjectHex extends ApplicationAdapter {
+    //lib gdx
     private InputManager input = new InputManager(this);
     private OrthographicCamera camera;
     private SpriteBatch batch;
+
+    //game
+    private Game game;
     private Map map;
+
+    //ui
     private Skin skin;
     private Stage stage;
     private Table table;
+
+    //tables
     private Table unitShopTable;
     private Table playerTable;
     private Table buildingShopTable;
-    private Building buildingToBuild;
     private Table unitSellTable;
     private Table buildingSellTable;
     private Table optionsTable;
-    private IGame game;
+
+    private Building buildingToBuild;
 
     @Override
     public void create() {
-        //Setup the camera
+        //Setup Camera
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        //Setup map
+        //Setup Map
         map = new Map(20, 15);
 
-        //Setup test game
-        //TODO game ophalen van RMIServer
-        game = null;
+        //Setup Game
+        game = new Game();
         game.setMap(map);
         game.addPlayer("maxim");
         game.addPlayer("enemy");
@@ -53,9 +60,8 @@ public class ProjectHex extends ApplicationAdapter {
 
         //Setup window
         batch = new SpriteBatch();
-        ExtendViewport viewport = new ExtendViewport(1280, 720, camera);
 
-        //UI
+        //Setup UI
         skin = new Skin();
         stage = new Stage();
         table = new Table();
@@ -63,24 +69,44 @@ public class ProjectHex extends ApplicationAdapter {
         stage.addActor(table);
         table.setDebug(true);
 
-        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap.setColor(Color.WHITE);
-        pixmap.fill();
-        skin.add("white", new Texture(pixmap));
-        skin.add("default", new BitmapFont());
+        createSkin();
 
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.up = skin.newDrawable("white", Color.DARK_GRAY);
-        textButtonStyle.down = skin.newDrawable("white", Color.DARK_GRAY);
-        textButtonStyle.checked = skin.newDrawable("white", Color.BLUE);
-        textButtonStyle.over = skin.newDrawable("white", Color.LIGHT_GRAY);
-        textButtonStyle.font = skin.getFont("default");
-        skin.add("default", textButtonStyle);
+        //Create UI
+        createPlayerUI();
+        if (playerTable != null) {
+            table.addActor(playerTable);
+        }
 
-        Label.LabelStyle labelStyle = new Label.LabelStyle();
-        labelStyle.background = skin.newDrawable("white", Color.LIGHT_GRAY);
-        labelStyle.font = skin.getFont("default");
-        skin.add("default", labelStyle);
+        createGameUI();
+        if (optionsTable != null) {
+            table.addActor(optionsTable);
+        }
+
+        createBuildingShopUI();
+        if (buildingShopTable != null) {
+            table.addActor(buildingShopTable);
+        }
+
+        createUnitShopUI();
+        if (unitShopTable != null) {
+            table.addActor(unitShopTable);
+        }
+
+        createUnitSellUI();
+        if (unitSellTable != null) {
+            table.addActor(unitSellTable);
+        }
+
+        createBuildingSellUI();
+        if(buildingSellTable != null) {
+            table.addActor(buildingSellTable);
+        }
+
+        createGameUI();
+        createOptionsUI();
+        if(optionsTable != null) {
+            table.addActor(optionsTable);
+        }
 
         //Input processor
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
@@ -126,6 +152,7 @@ public class ProjectHex extends ApplicationAdapter {
             }
         }
 
+        //draw building when trying to place it on a Hexagon
         if (buildingToBuild != null) {
             Vector3 mousePos = new Vector3(Gdx.input.getX() - 80, Gdx.input.getY() + 80, 0); //Image position gets set hard-coded to get it under the cursor.
             camera.unproject(mousePos);
@@ -134,36 +161,9 @@ public class ProjectHex extends ApplicationAdapter {
 
         batch.end();
 
-        //Clear table
-        table.clearChildren();
+        //update UI information
+        updatePlayerUI();
 
-        if (unitShopTable != null) {
-            table.addActor(unitShopTable);
-        }
-
-        if (buildingShopTable != null) {
-            table.addActor(buildingShopTable);
-        }
-
-        createPlayerUI();
-        if (playerTable != null) {
-            table.addActor(playerTable);
-        }
-
-        createGameUI();
-        if (optionsTable != null) {
-            table.addActor(optionsTable);
-        }
-
-        if (unitSellTable != null) {
-            table.addActor(unitSellTable);
-        }
-
-        if (buildingSellTable != null) {
-            table.addActor(buildingSellTable);
-        }
-
-        stage.addActor(table);
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
     }
@@ -173,15 +173,12 @@ public class ProjectHex extends ApplicationAdapter {
         batch.dispose();
     }
 
-    public void screenLeftClick(int x, int y) {
-        unitShopTable = null;
-        buildingShopTable = null;
-        unitSellTable = null;
-        buildingSellTable = null;
-        optionsTable = null;
+    void screenLeftClick(int x, int y) {
+        clearUI();
 
         Vector3 tmp = new Vector3(x, y, 0);
         camera.unproject(tmp);
+
         for (Hexagon hex : map.getHexagons()) {
             Rectangle clickArea = new Rectangle(hex.getPos().x, hex.getPos().y,
                     hex.groundImage.getWidth(), hex.groundImage.getHeight());
@@ -211,13 +208,12 @@ public class ProjectHex extends ApplicationAdapter {
         }
     }
 
-    public void screenRightClick(int x, int y) {
-        unitShopTable = null;
-        buildingShopTable = null;
-        buildingToBuild = null;
-        buildingSellTable = null;
+    void screenRightClick(int x, int y) {
+        clearUI();
+
         Vector3 tmp = new Vector3(x, y, 0);
         camera.unproject(tmp);
+
         for (Hexagon hex : map.getHexagons()) {
             Rectangle clickArea = new Rectangle(hex.getPos().x, hex.getPos().y,
                     hex.groundImage.getWidth(), hex.groundImage.getHeight());
@@ -228,24 +224,24 @@ public class ProjectHex extends ApplicationAdapter {
                 Building b = game.getBuildingAtLocation(hex.getLocation());
                 if (b != null && b.getOwner() == game.getCurrentPlayer()) {
                     if (b instanceof Barracks) {
-                        System.out.println("You clicked on a com.fantasticfive.shared.Barracks");
-                        createUnitShopUI(x, y, b);
+                        System.out.println("You clicked on a Barracks");
+                        showUnitShopUI(x, y, b);
                     } else if (b instanceof TownCentre) {
-                        System.out.println("You clicked on a com.fantasticfive.shared.TownCentre");
-                        createBuildingShopUI(x, y);
+                        System.out.println("You clicked on a TownCentre");
+                        showBuildingShopUI(x, y);
                     } else if (b instanceof Resource) {
-                        System.out.println("You clicked on a com.fantasticfive.shared.Resource");
-                        createSellBuildingUI(x, y, b);
+                        System.out.println("You clicked on a Resource");
+                        showBuildingSellUI(x, y, b);
                     } else if (b instanceof Fortification) {
-                        System.out.println("You clicked on a com.fantasticfive.shared.Fortification");
-                        createSellBuildingUI(x, y, b);
+                        System.out.println("You clicked on a Fortification");
+                        showBuildingSellUI(x, y, b);
                     }
                 }
                 //Right click on own unit
                 Unit u = game.getUnitOnHex(hex);
                 if (u != null) {
                     if (u.getOwner() == game.getCurrentPlayer())
-                        createSellUnitUI(x, y, u);
+                        showUnitSellUI(x, y, u);
                     System.out.println("You clicked on a unit!");
                 }
             }
@@ -293,240 +289,115 @@ public class ProjectHex extends ApplicationAdapter {
         }
     }
 
-    public void createUnitShopUI(float x, float y, final Building building) {
-        System.out.println(x + ", " + y);
-        Table t = new Table();
-        t.add(new Label("Buy com.fantasticfive.shared.Unit", skin)).fill();
-        t.row();
-
-        final TextButton buttonBuyArcher = new TextButton("Archer - Cost: " + game.getUnitPreset(UnitType.ARCHER).getPurchaseCost(), skin);
-        t.add(buttonBuyArcher).fill();
-        t.row();
-
-        final TextButton buttonBuySwordsman = new TextButton("Swordsman - Cost: " + game.getUnitPreset(UnitType.SWORDSMAN).getPurchaseCost(), skin);
-        t.add(buttonBuySwordsman).fill();
-        t.row();
-
-        final TextButton buttonBuyScout = new TextButton("Scout - Cost: " + game.getUnitPreset(UnitType.SCOUT).getPurchaseCost(), skin);
-        t.add(buttonBuyScout).fill();
-        t.row();
-
-        final TextButton buttonSellBarracks = new TextButton("Sell com.fantasticfive.shared.Barracks", skin);
-        t.add(buttonSellBarracks).fill();
-        t.row();
-
-        t.setPosition(x, Gdx.graphics.getHeight() - y);
-
-        buttonBuyArcher.addListener(new ChangeListener() {
-            public void changed(ChangeEvent event, Actor actor) {
-                //Method for buying archer
-                System.out.println("you bought an archer");
-                game.createUnit(UnitType.ARCHER, new Point(building.getLocation().x + 1, building.getLocation().y));
-                unitShopTable = null;
-            }
-        });
-
-        buttonBuySwordsman.addListener(new ChangeListener() {
-            public void changed(ChangeEvent event, Actor actor) {
-                //Method for buying swordsman
-                System.out.println("you bought a swordsman");
-                game.createUnit(UnitType.SWORDSMAN, new Point(building.getLocation().x + 1, building.getLocation().y));
-                unitShopTable = null;
-            }
-        });
-
-        buttonBuyScout.addListener(new ChangeListener() {
-            public void changed(ChangeEvent event, Actor actor) {
-                //Method for buying scout
-                System.out.println("you bought a scout");
-                game.createUnit(UnitType.SCOUT, new Point(building.getLocation().x + 1, building.getLocation().y));
-                unitShopTable = null;
-            }
-        });
-
-        buttonSellBarracks.addListener(new ChangeListener() {
-            public void changed(ChangeEvent event, Actor actor) {
-                //Method for selling barracks
-                game.sellBuilding(building.getLocation());
-                System.out.println("You sold your com.fantasticfive.shared.Barracks.");
-                unitShopTable = null;
-            }
-        });
-
-        unitShopTable = t;
+    private void clearUI() {
+        optionsTable.setVisible(false);
+        buildingSellTable.setVisible(false);
+        buildingShopTable.setVisible(false);
+        unitSellTable.setVisible(false);
+        unitShopTable.setVisible(false);
     }
 
-    public void createBuildingShopUI(float x, float y) {
-        //Deselect unit if one has been selected
-        if(game.getSelectedUnit() != null) {
-            game.getSelectedUnit().toggleSelected();
-        }
-
-        System.out.println(x + ", " + y);
-        Table t = new Table();
-        t.add(new Label("Buy com.fantasticfive.shared.Building", skin)).fill();
-        t.row();
-
-        final TextButton buttonBuyResource = new TextButton("com.fantasticfive.shared.Resource - Cost: " + ((Resource) game.getBuildingPreset(BuildingType.RESOURCE)).getPurchaseCost(), skin);
-        t.add(buttonBuyResource).fill();
-        t.row();
-
-        final TextButton buttonBuyFortification = new TextButton("com.fantasticfive.shared.Fortification - Cost: " + ((Fortification) game.getBuildingPreset(BuildingType.FORTIFICATION)).getPurchaseCost(), skin);
-        t.add(buttonBuyFortification).fill();
-        t.row();
-
-        final TextButton buttonBuyBarracks = new TextButton("com.fantasticfive.shared.Barracks - Cost: " + ((Barracks) game.getBuildingPreset(BuildingType.BARRACKS)).getPurchaseCost(), skin);
-        t.add(buttonBuyBarracks).fill();
-        t.row();
-
-        t.setPosition(x, Gdx.graphics.getHeight() - y);
-
-        buttonBuyResource.addListener(new ChangeListener() {
-            public void changed(ChangeEvent event, Actor actor) {
-                //Method for buying com.fantasticfive.shared.Resource
-                System.out.println("You bought a com.fantasticfive.shared.Resource");
-                buildingToBuild = game.getBuildingPreset(BuildingType.RESOURCE);
-                buildingShopTable = null;
-            }
-        });
-
-        buttonBuyFortification.addListener(new ChangeListener() {
-            public void changed(ChangeEvent event, Actor actor) {
-                //Method for buying com.fantasticfive.shared.Fortification
-                System.out.println("You bought a com.fantasticfive.shared.Fortification");
-                buildingToBuild = game.getBuildingPreset(BuildingType.FORTIFICATION);
-                buildingShopTable = null;
-            }
-        });
-
-        buttonBuyBarracks.addListener(new ChangeListener() {
-            public void changed(ChangeEvent event, Actor actor) {
-                //Method for buying com.fantasticfive.shared.Barracks
-                System.out.println("You bought a com.fantasticfive.shared.Barracks");
-                buildingToBuild = game.getBuildingPreset(BuildingType.BARRACKS);
-                buildingShopTable = null;
-            }
-        });
-
-        buildingShopTable = t;
+    // ====================
+    //  Unit Shop (Barracks)
+    // ====================
+    private void createUnitShopUI() {
+        unitShopTable = new UnitShopTable(game, skin);
     }
 
-    private void createSellUnitUI(float x, float y, final Unit unit) {
-        Table t = new Table();
-
-        t.add(new Label(unit.getUnitType().toString(), skin)).fill();
-        t.row();
-
-        final TextButton buttonSellUnit = new TextButton("Sell", skin);
-        t.add(buttonSellUnit).fill();
-        t.row();
-
-        t.setPosition(x, Gdx.graphics.getHeight() - y);
-
-        buttonSellUnit.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                //Method for selling unit
-                System.out.println("Selling unit");
-                game.getCurrentPlayer().sellUnit(unit);
-                unitSellTable = null;
-            }
-        });
-
-        unitSellTable = t;
+    private void showUnitShopUI(float x, float y, Building building) {
+        ((UnitShopTable) unitShopTable).setBuilding(building);
+        unitShopTable.setPosition(x, Gdx.graphics.getHeight() - y);
+        unitShopTable.setVisible(true);
     }
 
-    private void createSellBuildingUI(float x, float y, final Building building) {
-        Table t = new Table();
-
-        t.add(new Label("Sell com.fantasticfive.shared.Building", skin)).fill();
-        t.row();
-
-        final TextButton buttonSellBuilding = new TextButton("Sell", skin);
-        t.add(buttonSellBuilding).fill();
-        t.row();
-
-        t.setPosition(x, Gdx.graphics.getHeight() - y);
-
-        buttonSellBuilding.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                //Method for selling a building
-                System.out.println("Selling building");
-                game.sellBuilding(building.getLocation());
-                buildingSellTable = null;
-            }
-        });
-
-        buildingSellTable = t;
+    // ====================
+    //  Building Shop (Town Centre)
+    // ====================
+    private void createBuildingShopUI() {
+        buildingShopTable = new BuildingShopTable(this, game, skin);
     }
 
-    //Shows the amount of gold and gold per turn cost
-    public void createPlayerUI() {
-        Table t = new Table();
-        Label l = new Label("GOLD: " + game.getCurrentPlayer().getGold(), skin);
-        t.add(l).width(90);
-
-        Label gpt = new Label("GPT: " + game.getCurrentPlayer().getGoldPerTurn(), skin);
-        if (game.getCurrentPlayer().getGoldPerTurn() < 0) {
-            gpt.setColor(Color.RED);
-        } else {
-            gpt.setColor(Color.WHITE);
-        }
-        t.add(gpt).width(90);
-
-        t.setPosition(100, Gdx.graphics.getHeight() - 10);
-
-        playerTable = t;
+    private void showBuildingShopUI(float x, float y) {
+        buildingShopTable.setPosition(x, Gdx.graphics.getHeight() - y);
+        buildingShopTable.setVisible(true);
     }
 
-    public void createGameUI() {
-        TextButton buttonOptions = new TextButton("Options", skin);
-        buttonOptions.setPosition(Gdx.graphics.getWidth() - 60, 15);
-
-        buttonOptions.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Options");
-                //Opens options menu
-                createOptionsUI();
-            }
-        });
-
-        stage.addActor(buttonOptions);
+    public void updateBuildingToBuild(Building b) {
+        buildingToBuild = b;
     }
 
-    public void createOptionsUI() {
-        Table t = new Table();
+    // ====================
+    //  Unit UI
+    // ====================
+    private void createUnitSellUI() {
+        unitSellTable = new UnitSellTable(game, skin);
+    }
 
-        final TextButton buttonEndTurn = new TextButton("End turn", skin);
-        t.add(buttonEndTurn).fill();
-        t.row();
+    private void showUnitSellUI(float x, float y, Unit unit) {
+        ((UnitSellTable) unitSellTable).setUnit(unit);
+        unitSellTable.setPosition(x, Gdx.graphics.getHeight() - y);
+        unitSellTable.setVisible(true);
+    }
 
-        final TextButton buttonLeaveGame = new TextButton("Leave game", skin);
-        t.add(buttonLeaveGame).fill();
-        t.row();
+    // ====================
+    //  Building UI
+    // ====================
+    private void createBuildingSellUI() {
+        buildingSellTable = new BuildingSellTable(game, skin);
+    }
 
-        t.setPosition(Gdx.graphics.getWidth() - 40, 55);
+    private void showBuildingSellUI(float x, float y, final Building building) {
+        ((BuildingSellTable)buildingSellTable).setBuilding(building);
+        buildingSellTable.setPosition(x, Gdx.graphics.getHeight() - y);
+        buildingSellTable.setVisible(true);
+    }
 
-        buttonEndTurn.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Ending turn");
-                game.endTurn();
-                optionsTable = null;
-            }
-        });
+    // ====================
+    //  Player UI
+    //  (Shows the amount of gold and GPT cost)
+    // ====================
+    private void createPlayerUI() {
+        playerTable = new PlayerTable(game, skin);
+    }
 
-        buttonLeaveGame.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Leaving game");
-                game.leaveGame();
-                optionsTable = null;
-            }
-        });
+    private void updatePlayerUI() {
+        ((PlayerTable)playerTable).update();
+    }
 
-        optionsTable = t;
+    // ====================
+    //  Game UI
+    //  (Shows the next turn button and options)
+    // ====================
+    private void createGameUI() {
+        table.addActor(new GameTable(this, skin));
+    }
+
+    private void createOptionsUI() {
+        optionsTable = new OptionsTable(game, skin);
+    }
+
+    public void showOptionsUI() {
+        optionsTable.setVisible(true);
+    }
+
+    private void createSkin() {
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.WHITE);
+        pixmap.fill();
+        skin.add("white", new Texture(pixmap));
+        skin.add("default", new BitmapFont());
+
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.up = skin.newDrawable("white", Color.DARK_GRAY);
+        textButtonStyle.down = skin.newDrawable("white", Color.DARK_GRAY);
+        textButtonStyle.checked = skin.newDrawable("white", Color.BLUE);
+        textButtonStyle.over = skin.newDrawable("white", Color.LIGHT_GRAY);
+        textButtonStyle.font = skin.getFont("default");
+        skin.add("default", textButtonStyle);
+
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.background = skin.newDrawable("white", Color.LIGHT_GRAY);
+        labelStyle.font = skin.getFont("default");
+        skin.add("default", labelStyle);
     }
 }
