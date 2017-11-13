@@ -61,4 +61,8 @@ public abstract class Building implements Cloneable, IBuilding {
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+
+    public Texture getImage() {
+        return image;
+    }
 }

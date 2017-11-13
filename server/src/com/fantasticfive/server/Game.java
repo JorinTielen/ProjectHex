@@ -112,7 +112,7 @@ public class Game extends UnicastRemoteObject implements IGame {
         return buildingFactory.getBuildingPreset(buildingType);
     }
 
-    public Unit getUnitPreset(com.fantasticfive.shared.enums.UnitType unitType){
+    public IUnit getUnitPreset(UnitType unitType){
         return unitFactory.getUnitPreset(unitType);
     }
 
@@ -121,7 +121,7 @@ public class Game extends UnicastRemoteObject implements IGame {
      * @param unitType The type of unit
      * @param location The location to place the unit
      */
-    public void createUnit(com.fantasticfive.shared.enums.UnitType unitType, Point location) {
+    public void createUnit(UnitType unitType, Point location) {
         //When hex is empty
         if (hexEmpty(location)) {
             Unit unit = unitFactory.getUnitPreset(unitType);
@@ -224,7 +224,7 @@ public class Game extends UnicastRemoteObject implements IGame {
         return unit;
     }
 
-    public void attackBuilding(Unit selectedUnit, Point locationBuilding) {
+    public void attackBuilding(IUnit selectedUnit, Point locationBuilding) {
         IBuilding building = getBuildingAtLocation(locationBuilding);
         if (selectedUnit != null && building != null) {
             if(selectedUnit.attack(building)){

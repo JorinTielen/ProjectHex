@@ -39,8 +39,8 @@ public class Unit implements Cloneable, IUnit{
         this.texture = image;
     }
 
-    public boolean attack(Unit unitToAttack) {
-        if(calculateDistance(this.location, unitToAttack.location) <= attackRange && this.allowedToMove >= 1) {
+    public boolean attack(IUnit unitToAttack) {
+        if(calculateDistance(this.location, unitToAttack.getLocation()) <= attackRange && this.allowedToMove >= 1) {
             unitToAttack.reduceHealth(attackPower - unitToAttack.getArmor());
             allowedToMove = 0;
             return true;
@@ -148,5 +148,9 @@ public class Unit implements Cloneable, IUnit{
 
     public int getMovementLeft() {
         return this.allowedToMove;
+    }
+
+    public Texture getTexture() {
+        return texture;
     }
 }

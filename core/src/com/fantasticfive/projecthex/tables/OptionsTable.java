@@ -6,15 +6,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.fantasticfive.game.Game;
+import com.fantasticfive.shared.IGame;
 
 public class OptionsTable extends Table {
     private Table t;
 
-    final private Game game;
+    final private IGame game;
     private Skin skin;
 
-    public OptionsTable(Game game, Skin skin) {
+    public OptionsTable(IGame game, Skin skin) {
         setVisible(false);
 
         this.game = game;

@@ -13,9 +13,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.fantasticfive.game.*;
-import com.fantasticfive.game.enums.BuildingType;
+import com.fantasticfive.shared.*;
+import com.fantasticfive.shared.enums.BuildingType;
 import com.fantasticfive.projecthex.tables.*;
+
+import java.rmi.RemoteException;
 
 public class ProjectHex extends ApplicationAdapter {
     //lib gdx
@@ -24,7 +26,7 @@ public class ProjectHex extends ApplicationAdapter {
     private SpriteBatch batch;
 
     //game
-    private Game game;
+    private IGame game;
     private Map map;
 
     //ui
@@ -40,7 +42,7 @@ public class ProjectHex extends ApplicationAdapter {
     private Table buildingSellTable;
     private Table optionsTable;
 
-    private Building buildingToBuild;
+    private IBuilding buildingToBuild;
 
     @Override
     public void create() {
@@ -52,11 +54,16 @@ public class ProjectHex extends ApplicationAdapter {
         map = new Map(20, 15);
 
         //Setup Game
-        game = new Game();
-        game.setMap(map);
-        game.addPlayer("maxim");
-        game.addPlayer("enemy");
-        game.startGame();
+        try {
+            //TODO Ophalen van RMI Server
+            game = null;
+            game.setMap(map);
+            game.addPlayer("maxim");
+            game.addPlayer("enemy");
+            game.startGame();
+        } catch (RemoteException e) {
+            System.out.println("Remote exception enzo");
+        }
 
         //Setup window
         batch = new SpriteBatch();
@@ -141,22 +148,26 @@ public class ProjectHex extends ApplicationAdapter {
         }
 
         //draw all buildings and units from all players
-        for (IPlayer p : game.getPlayers()) {
-            for (IBuilding b : p.getBuildings()) {
-                Hexagon h = map.getHexAtLocation(b.getLocation());
-                batch.draw(b.image, h.getPos().x, h.getPos().y);
+        try {
+            for (IPlayer p : game.getPlayers()) {
+                for (IBuilding b : p.getBuildings()) {
+                    Hexagon h = map.getHexAtLocation(b.getLocation());
+                    batch.draw(b.getImage(), h.getPos().x, h.getPos().y);
+                }
+                for (IUnit u : p.getUnits()) {
+                    Hexagon h = map.getHexAtLocation(u.getLocation());
+                    batch.draw(u.getTexture(), h.getPos().x, h.getPos().y);
+                }
             }
-            for (Unit u : p.getUnits()) {
-                Hexagon h = map.getHexAtLocation(u.getLocation());
-                batch.draw(u.texture, h.getPos().x, h.getPos().y);
-            }
+        } catch (RemoteException e) {
+            System.out.println("Heeeuuuuhhhh. Leuke remote exception enzo je weet zelluf");
         }
 
         //draw building when trying to place it on a Hexagon
         if (buildingToBuild != null) {
             Vector3 mousePos = new Vector3(Gdx.input.getX() - 80, Gdx.input.getY() + 80, 0); //Image position gets set hard-coded to get it under the cursor.
             camera.unproject(mousePos);
-            batch.draw(buildingToBuild.image, mousePos.x, mousePos.y);
+            batch.draw(buildingToBuild.getImage(), mousePos.x, mousePos.y);
         }
 
         batch.end();
@@ -186,23 +197,27 @@ public class ProjectHex extends ApplicationAdapter {
                 System.out.println("clicked hex: " + hex.getLocation().x + " " + hex.getLocation().y);
 
                 //When clicked on unit or unit is selected
-                if (game.getUnitOnHex(hex) != null || game.getSelectedUnit() != null) {
-                    buildingToBuild = null;
-                    unitClick(hex);
-                }
-                //Create building on hex
-                else if (buildingToBuild != null) {
-                    if (buildingToBuild instanceof Resource) {
-                        game.createBuilding(BuildingType.RESOURCE, hex.getLocation());
-                        System.out.println("com.fantasticfive.shared.Resource built");
-                    } else if (buildingToBuild instanceof Fortification) {
-                        game.createBuilding(BuildingType.FORTIFICATION, hex.getLocation());
-                        System.out.println("com.fantasticfive.shared.Fortification built");
-                    } else if (buildingToBuild instanceof Barracks) {
-                        game.createBuilding(BuildingType.BARRACKS, hex.getLocation());
-                        System.out.println("com.fantasticfive.shared.Barracks built");
+                try {
+                    if (game.getUnitOnHex(hex) != null || game.getSelectedUnit() != null) {
+                        buildingToBuild = null;
+                        unitClick(hex);
                     }
-                    buildingToBuild = null;
+                    //Create building on hex
+                    else if (buildingToBuild != null) {
+                        if (buildingToBuild instanceof Resource) {
+                            game.createBuilding(BuildingType.RESOURCE, hex.getLocation());
+                            System.out.println("com.fantasticfive.shared.Resource built");
+                        } else if (buildingToBuild instanceof Fortification) {
+                            game.createBuilding(BuildingType.FORTIFICATION, hex.getLocation());
+                            System.out.println("com.fantasticfive.shared.Fortification built");
+                        } else if (buildingToBuild instanceof Barracks) {
+                            game.createBuilding(BuildingType.BARRACKS, hex.getLocation());
+                            System.out.println("com.fantasticfive.shared.Barracks built");
+                        }
+                        buildingToBuild = null;
+                    }
+                } catch (RemoteException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -221,7 +236,7 @@ public class ProjectHex extends ApplicationAdapter {
                 System.out.println("clicked hex: " + hex.getLocation().x + " " + hex.getLocation().y);
 
                 //Right click on own building
-                Building b = game.getBuildingAtLocation(hex.getLocation());
+                IBuilding b = game.getBuildingAtLocation(hex.getLocation());
                 if (b != null && b.getOwner() == game.getCurrentPlayer()) {
                     if (b instanceof Barracks) {
                         System.out.println("You clicked on a Barracks");
@@ -238,7 +253,12 @@ public class ProjectHex extends ApplicationAdapter {
                     }
                 }
                 //Right click on own unit
-                Unit u = game.getUnitOnHex(hex);
+                IUnit u = null;
+                try {
+                    u = game.getUnitOnHex(hex);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 if (u != null) {
                     if (u.getOwner() == game.getCurrentPlayer())
                         showUnitSellUI(x, y, u);
@@ -250,42 +270,46 @@ public class ProjectHex extends ApplicationAdapter {
 
     private void unitClick(Hexagon hex) {
         //If clicked on unit and no unit is selected
-        if (game.getUnitOnHex(hex) != null && game.getSelectedUnit() == null && game.getUnitOnHex(hex).getOwner() == game.getCurrentPlayer()) {
-            Unit u = game.getUnitOnHex(hex);
-            u.toggleSelected();
-            //If not clicked on unit and unit is selected
-        } else if (game.getUnitOnHex(hex) == null && game.getSelectedUnit() != null) {
-            Unit u = game.getSelectedUnit();
-            //Move unit to free hex
-            if (game.hexEmpty(hex.getLocation())) {
-                u.move(new Point(hex.getLocation().x, hex.getLocation().y));
+        try {
+            if (game.getUnitOnHex(hex) != null && game.getSelectedUnit() == null && game.getUnitOnHex(hex).getOwner() == game.getCurrentPlayer()) {
+                IUnit u = game.getUnitOnHex(hex);
                 u.toggleSelected();
-            }
-            //com.fantasticfive.shared.Unit attacks enemy building
-            else if (game.getBuildingAtLocation(hex.getLocation()) != null
-                    && game.getBuildingAtLocation(hex.getLocation()).getOwner() != game.getCurrentPlayer()) {
-                game.attackBuilding(game.getSelectedUnit(), hex.getLocation());
-                u.toggleSelected();
-            }
-            //If clicked on unit and unit is selected
-        } else if (game.getUnitOnHex(hex) != null && game.getSelectedUnit() != null) {
-            //If clicked on the selected unit
-            if (game.getUnitOnHex(hex) == game.getSelectedUnit()) {
-                game.getSelectedUnit().toggleSelected();
-                //If clicked on a different unit with the same owner
-            } else if (game.getUnitOnHex(hex).getOwner() == game.getSelectedUnit().getOwner()) {
-                game.getSelectedUnit().toggleSelected();
-                game.getUnitOnHex(hex).toggleSelected();
-                //If clicked on a unit with a different owner than the selected unit
-            } else if (game.getUnitOnHex(hex).getOwner() != game.getSelectedUnit().getOwner()) {
-                Unit enemy = game.getUnitOnHex(hex);
-                Unit playerUnit = game.getSelectedUnit();
-                playerUnit.attack(enemy);
-                playerUnit.toggleSelected();
-                if (enemy.getHealth() == 0) {
-                    enemy.getOwner().removeUnit(enemy);
+                //If not clicked on unit and unit is selected
+            } else if (game.getUnitOnHex(hex) == null && game.getSelectedUnit() != null) {
+                IUnit u = game.getSelectedUnit();
+                //Move unit to free hex
+                if (game.hexEmpty(hex.getLocation())) {
+                    u.move(new Point(hex.getLocation().x, hex.getLocation().y));
+                    u.toggleSelected();
+                }
+                //com.fantasticfive.shared.Unit attacks enemy building
+                else if (game.getBuildingAtLocation(hex.getLocation()) != null
+                        && game.getBuildingAtLocation(hex.getLocation()).getOwner() != game.getCurrentPlayer()) {
+                    game.attackBuilding(game.getSelectedUnit(), hex.getLocation());
+                    u.toggleSelected();
+                }
+                //If clicked on unit and unit is selected
+            } else if (game.getUnitOnHex(hex) != null && game.getSelectedUnit() != null) {
+                //If clicked on the selected unit
+                if (game.getUnitOnHex(hex) == game.getSelectedUnit()) {
+                    game.getSelectedUnit().toggleSelected();
+                    //If clicked on a different unit with the same owner
+                } else if (game.getUnitOnHex(hex).getOwner() == game.getSelectedUnit().getOwner()) {
+                    game.getSelectedUnit().toggleSelected();
+                    game.getUnitOnHex(hex).toggleSelected();
+                    //If clicked on a unit with a different owner than the selected unit
+                } else if (game.getUnitOnHex(hex).getOwner() != game.getSelectedUnit().getOwner()) {
+                    IUnit enemy = game.getUnitOnHex(hex);
+                    IUnit playerUnit = game.getSelectedUnit();
+                    playerUnit.attack(enemy);
+                    playerUnit.toggleSelected();
+                    if (enemy.getHealth() == 0) {
+                        enemy.getOwner().removeUnit(enemy);
+                    }
                 }
             }
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
 
@@ -304,7 +328,7 @@ public class ProjectHex extends ApplicationAdapter {
         unitShopTable = new UnitShopTable(game, skin);
     }
 
-    private void showUnitShopUI(float x, float y, Building building) {
+    private void showUnitShopUI(float x, float y, IBuilding building) {
         ((UnitShopTable) unitShopTable).setBuilding(building);
         unitShopTable.setPosition(x, Gdx.graphics.getHeight() - y);
         unitShopTable.setVisible(true);
@@ -322,7 +346,7 @@ public class ProjectHex extends ApplicationAdapter {
         buildingShopTable.setVisible(true);
     }
 
-    public void updateBuildingToBuild(Building b) {
+    public void updateBuildingToBuild(IBuilding b) {
         buildingToBuild = b;
     }
 
@@ -333,7 +357,7 @@ public class ProjectHex extends ApplicationAdapter {
         unitSellTable = new UnitSellTable(game, skin);
     }
 
-    private void showUnitSellUI(float x, float y, Unit unit) {
+    private void showUnitSellUI(float x, float y, IUnit unit) {
         ((UnitSellTable) unitSellTable).setUnit(unit);
         unitSellTable.setPosition(x, Gdx.graphics.getHeight() - y);
         unitSellTable.setVisible(true);
@@ -346,7 +370,7 @@ public class ProjectHex extends ApplicationAdapter {
         buildingSellTable = new BuildingSellTable(game, skin);
     }
 
-    private void showBuildingSellUI(float x, float y, final Building building) {
+    private void showBuildingSellUI(float x, float y, final IBuilding building) {
         ((BuildingSellTable)buildingSellTable).setBuilding(building);
         buildingSellTable.setPosition(x, Gdx.graphics.getHeight() - y);
         buildingSellTable.setVisible(true);

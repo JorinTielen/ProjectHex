@@ -6,8 +6,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.fantasticfive.game.*;
-import com.fantasticfive.game.enums.BuildingType;
+import com.fantasticfive.shared.*;
+import com.fantasticfive.shared.enums.BuildingType;
 import com.fantasticfive.projecthex.ProjectHex;
 
 public class BuildingShopTable extends Table {
@@ -15,11 +15,11 @@ public class BuildingShopTable extends Table {
 
     final private ProjectHex projectHex;
 
-    final private Game game;
+    final private IGame game;
     private Skin skin;
-    private Building buildingToBuild;
+    private IBuilding buildingToBuild;
 
-    public BuildingShopTable(ProjectHex projectHex, Game game, Skin skin) {
+    public BuildingShopTable(ProjectHex projectHex, IGame game, Skin skin) {
         setVisible(false);
         t = new Table();
         this.projectHex = projectHex;

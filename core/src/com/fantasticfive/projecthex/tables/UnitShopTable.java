@@ -6,20 +6,21 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.fantasticfive.game.Game;
-import com.fantasticfive.game.Building;
-import com.fantasticfive.game.Point;
-import com.fantasticfive.game.enums.UnitType;
+import com.fantasticfive.shared.Building;
+import com.fantasticfive.shared.Point;
+import com.fantasticfive.shared.enums.UnitType;
+import com.fantasticfive.shared.IBuilding;
+import com.fantasticfive.shared.IGame;
 
 
 public class UnitShopTable extends Table {
     private Table t;
 
-    final private Game game;
+    final private IGame game;
     private Skin skin;
-    private Building building;
+    private IBuilding building;
 
-    public UnitShopTable(Game game, Skin skin) {
+    public UnitShopTable(IGame game, Skin skin) {
         setVisible(false);
         this.t = new Table();
         this.game = game;
@@ -83,7 +84,7 @@ public class UnitShopTable extends Table {
         addActor(t);
     }
 
-    public void setBuilding(Building b) {
+    public void setBuilding(IBuilding b) {
         this.building = b;
     }
 }

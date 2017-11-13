@@ -6,18 +6,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.fantasticfive.game.Game;
-import com.fantasticfive.game.Building;
+import com.fantasticfive.shared.IBuilding;
+import com.fantasticfive.shared.IGame;
 
 public class BuildingSellTable extends Table {
     private Table t;
     private Label l;
 
-    final private Game game;
+    final private IGame game;
     private Skin skin;
-    private Building building;
+    private IBuilding building;
 
-    public BuildingSellTable(Game game, Skin skin) {
+    public BuildingSellTable(IGame game, Skin skin) {
         setVisible(false);
 
         this.game = game;
@@ -44,7 +44,7 @@ public class BuildingSellTable extends Table {
         addActor(t);
     }
 
-    public void setBuilding(Building building) {
+    public void setBuilding(IBuilding building) {
         this.building = building;
     }
 }

@@ -114,7 +114,7 @@ public class Player implements IPlayer{
     }
 
     //Sells unit
-    public void sellUnit(Unit unit) {
+    public void sellUnit(IUnit unit) {
         if(units.contains(unit)) {
             this.addGold((int) (unit.getPurchaseCost() * 0.66));
             if (unit.getSelected()) {
@@ -125,7 +125,7 @@ public class Player implements IPlayer{
     }
 
     //Removes unit when dead
-    public void removeUnit(Unit unit) {
+    public void removeUnit(IUnit unit) {
         if (units.contains(unit)) {
             units.remove(unit);
         }

@@ -5,17 +5,17 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.fantasticfive.game.Game;
+import com.fantasticfive.shared.IGame;
 
 public class PlayerTable extends Table {
     private Table t;
     private Label lGold;
     private Label lGpt;
 
-    final private Game game;
+    final private IGame game;
     private Skin skin;
 
-    public PlayerTable(Game game, Skin skin) {
+    public PlayerTable(IGame game, Skin skin) {
         this.game = game;
         this.skin = skin;
 

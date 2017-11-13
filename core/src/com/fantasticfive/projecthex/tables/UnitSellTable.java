@@ -6,19 +6,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.fantasticfive.game.Game;
-import com.fantasticfive.game.Unit;
+import com.fantasticfive.shared.IGame;
+import com.fantasticfive.shared.IUnit;
 
 
 public class UnitSellTable extends Table {
     private Table t;
     private Label l;
 
-    final private Game game;
+    final private IGame game;
     private Skin skin;
-    private Unit unit;
+    private IUnit unit;
 
-    public UnitSellTable(Game game, Skin skin) {
+    public UnitSellTable(IGame game, Skin skin) {
         setVisible(false);
         this.t = new Table();
         this.game = game;
@@ -45,7 +45,7 @@ public class UnitSellTable extends Table {
         addActor(t);
     }
 
-    public void setUnit (Unit u) {
+    public void setUnit (IUnit u) {
         this.unit = u;
         this.l.setText(this.unit.getUnitType().toString());
     }
