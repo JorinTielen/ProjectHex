@@ -1,10 +1,16 @@
 import java.io.Serializable;
-import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
 public interface IPlayer extends Serializable {
     String getUsername();
-    Color getColor();
+    enums.Color getColor();
     void addGold(int gold);
     void purchaseBuilding(Building building);
     void endTurn();
+    List<IUnit> getUnits();
+    IBuilding getBuildingAtLocation(Point location);
+    void sellBuilding(IBuilding building, int cost);
+    int getGold();
+    void purchaseUnit(enums.UnitType);
 }

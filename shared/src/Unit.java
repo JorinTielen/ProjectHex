@@ -1,9 +1,9 @@
 import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.game.enums.UnitType;
 
-public class Unit implements Cloneable{
+public class Unit implements Cloneable, IUnit{
     public Texture texture;
-    private UnitType unitType;
+    private enums.UnitType unitType;
     private int health;
     private int armor;
     private int attackPower;
@@ -19,7 +19,7 @@ public class Unit implements Cloneable{
 
     private boolean isSelected = false;
 
-    public Unit(UnitType unitType, int health, int armor,
+    public Unit(enums.UnitType unitType, int health, int armor,
                 int attackPower, int attackRange, int movementRange,
                 int purchaseCost, int costPerTurn, Boolean canTakeLand,
                 int upgradeCost, Texture image) {
@@ -111,7 +111,7 @@ public class Unit implements Cloneable{
         return this.health;
     }
 
-    public UnitType getUnitType() {
+    public enums.UnitType getUnitType() {
         return this.unitType;
     }
 

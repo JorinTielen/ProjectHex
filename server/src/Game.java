@@ -108,7 +108,7 @@ public class Game extends UnicastRemoteObject implements IGame {
         return buildingFactory.getBuildingPreset(buildingType);
     }
 
-    public Unit getUnitPreset(UnitType unitType){
+    public Unit getUnitPreset(enums.UnitType unitType){
         return unitFactory.getUnitPreset(unitType);
     }
 
@@ -117,7 +117,7 @@ public class Game extends UnicastRemoteObject implements IGame {
      * @param unitType The type of unit
      * @param location The location to place the unit
      */
-    public void createUnit(UnitType unitType, Point location) {
+    public void createUnit(enums.UnitType unitType, Point location) {
         //When hex is empty
         if (hexEmpty(location)) {
             Unit unit = unitFactory.getUnitPreset(unitType);
@@ -208,10 +208,10 @@ public class Game extends UnicastRemoteObject implements IGame {
         return unit;
     }
 
-    public Unit getSelectedUnit() {
-        Unit unit = null;
-        for (Player p : getPlayers()) {
-            for (Unit u : p.getUnits()) {
+    public IUnit getSelectedUnit() {
+        IUnit unit = null;
+        for (IPlayer p : getPlayers()) {
+            for (IUnit u : p.getUnits()) {
                 if (u.getSelected()) {
                     unit = u;
                 }

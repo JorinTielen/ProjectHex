@@ -5,24 +5,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Player {
-    private List<Building> buildings;
-    private List<Unit> units;
+public class Player implements IPlayer{
+    private List<IBuilding> buildings;
+    private List<IUnit> units;
     private List<Hexagon> hexagons;
-    private Color color;
+    private enums.Color color;
     private int gold = 0;
     private String username;
 
-    public Player(String username, Color color) {
+    public Player(String username, enums.Color color) {
         this.color = color;
         this.username = username;
 
-        buildings = new ArrayList<Building>();
-        units = new ArrayList<Unit>();
+        buildings = new ArrayList<IBuilding>();
+        units = new ArrayList<IUnit>();
         hexagons = new ArrayList<Hexagon>();
     }
 
-    public Color getColor() {
+    public enums.Color getColor() {
         return this.color;
     }
 
@@ -42,7 +42,7 @@ public class Player {
         this.gold -= gold;
     }
 
-    public void purchaseBuilding(Building building) {
+    public void purchaseBuilding(IBuilding building) {
         //Removes gold and adds resource
         if (building instanceof Resource) {
             if (this.gold - ((Resource) building).getPurchaseCost() >= 0) {
@@ -77,13 +77,13 @@ public class Player {
     }
 
     //Sells building
-    public void sellBuilding(Building building, int cost) {
+    public void sellBuilding(IBuilding building, int cost) {
         this.buildings.remove(building);
         this.gold += (int) Math.round(cost * 0.66);
     }
 
     //Removes building when destroyed
-    public void removeBuilding(Building building) {
+    public void removeBuilding(IBuilding building) {
         if (buildings.contains(building)) {
             buildings.remove(building);
         }
@@ -93,7 +93,7 @@ public class Player {
         return buildings;
     }
 
-    public Building getBuildingAtLocation(Point location) {
+    public IBuilding getBuildingAtLocation(Point location) {
         for (Building building : buildings) {
             if (building.getLocation().equals(location)) {
                 return building;
@@ -129,7 +129,7 @@ public class Player {
         }
     }
 
-    public List<Unit> getUnits() {
+    public List<IUnit> getUnits() {
         return Collections.unmodifiableList(units);
     }
 
@@ -143,7 +143,7 @@ public class Player {
 
     public void endTurn() {
         //Set unit fields back to normal
-        for (Unit u : units) {
+        for (IUnit u : units) {
             u.resetMoves();
             if (u.getSelected()) {
                 u.toggleSelected();
