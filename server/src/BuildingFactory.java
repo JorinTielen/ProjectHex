@@ -2,6 +2,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.game.enums.BuildingType;
 import com.fantasticfive.game.enums.GroundType;
 import com.fantasticfive.game.enums.UnitType;
+import com.fantasticfive.shared.*;
 
 import java.util.ArrayList;
 import java.util.List;

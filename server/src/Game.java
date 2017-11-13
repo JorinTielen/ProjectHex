@@ -1,3 +1,6 @@
+import com.fantasticfive.shared.*;
+import com.fantasticfive.shared.enums.BuildingType;
+import com.fantasticfive.shared.enums.Color;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.rmi.RemoteException;
@@ -52,7 +55,7 @@ public class Game extends UnicastRemoteObject implements IGame {
                 Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(10,13),p);
                 p.purchaseBuilding(b);
             } else {
-                Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(1, 0), p); //Random Point???
+                Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(1, 0), p); //Random com.fantasticfive.shared.Point???
                 p.purchaseBuilding(b);
             }
         }
@@ -108,7 +111,7 @@ public class Game extends UnicastRemoteObject implements IGame {
         return buildingFactory.getBuildingPreset(buildingType);
     }
 
-    public Unit getUnitPreset(enums.UnitType unitType){
+    public Unit getUnitPreset(com.fantasticfive.shared.enums.UnitType unitType){
         return unitFactory.getUnitPreset(unitType);
     }
 
@@ -117,7 +120,7 @@ public class Game extends UnicastRemoteObject implements IGame {
      * @param unitType The type of unit
      * @param location The location to place the unit
      */
-    public void createUnit(enums.UnitType unitType, Point location) {
+    public void createUnit(com.fantasticfive.shared.enums.UnitType unitType, Point location) {
         //When hex is empty
         if (hexEmpty(location)) {
             Unit unit = unitFactory.getUnitPreset(unitType);

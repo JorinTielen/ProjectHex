@@ -198,13 +198,13 @@ public class ProjectHex extends ApplicationAdapter {
                 else if (buildingToBuild != null) {
                     if (buildingToBuild instanceof Resource) {
                         game.createBuilding(BuildingType.RESOURCE, hex.getLocation());
-                        System.out.println("Resource built");
+                        System.out.println("com.fantasticfive.shared.Resource built");
                     } else if (buildingToBuild instanceof Fortification) {
                         game.createBuilding(BuildingType.FORTIFICATION, hex.getLocation());
-                        System.out.println("Fortification built");
+                        System.out.println("com.fantasticfive.shared.Fortification built");
                     } else if (buildingToBuild instanceof Barracks) {
                         game.createBuilding(BuildingType.BARRACKS, hex.getLocation());
-                        System.out.println("Barracks built");
+                        System.out.println("com.fantasticfive.shared.Barracks built");
                     }
                     buildingToBuild = null;
                 }
@@ -229,16 +229,16 @@ public class ProjectHex extends ApplicationAdapter {
                 Building b = game.getBuildingAtLocation(hex.getLocation());
                 if (b != null && b.getOwner() == game.getCurrentPlayer()) {
                     if (b instanceof Barracks) {
-                        System.out.println("You clicked on a Barracks");
+                        System.out.println("You clicked on a com.fantasticfive.shared.Barracks");
                         createUnitShopUI(x, y, b);
                     } else if (b instanceof TownCentre) {
-                        System.out.println("You clicked on a TownCentre");
+                        System.out.println("You clicked on a com.fantasticfive.shared.TownCentre");
                         createBuildingShopUI(x, y);
                     } else if (b instanceof Resource) {
-                        System.out.println("You clicked on a Resource");
+                        System.out.println("You clicked on a com.fantasticfive.shared.Resource");
                         createSellBuildingUI(x, y, b);
                     } else if (b instanceof Fortification) {
-                        System.out.println("You clicked on a Fortification");
+                        System.out.println("You clicked on a com.fantasticfive.shared.Fortification");
                         createSellBuildingUI(x, y, b);
                     }
                 }
@@ -266,7 +266,7 @@ public class ProjectHex extends ApplicationAdapter {
                 u.move(new Point(hex.getLocation().x, hex.getLocation().y));
                 u.toggleSelected();
             }
-            //Unit attacks enemy building
+            //com.fantasticfive.shared.Unit attacks enemy building
             else if (game.getBuildingAtLocation(hex.getLocation()) != null
                     && game.getBuildingAtLocation(hex.getLocation()).getOwner() != game.getCurrentPlayer()) {
                 game.attackBuilding(game.getSelectedUnit(), hex.getLocation());
@@ -297,7 +297,7 @@ public class ProjectHex extends ApplicationAdapter {
     public void createUnitShopUI(float x, float y, final Building building) {
         System.out.println(x + ", " + y);
         Table t = new Table();
-        t.add(new Label("Buy Unit", skin)).fill();
+        t.add(new Label("Buy com.fantasticfive.shared.Unit", skin)).fill();
         t.row();
 
         final TextButton buttonBuyArcher = new TextButton("Archer - Cost: " + game.getUnitPreset(UnitType.ARCHER).getPurchaseCost(), skin);
@@ -312,7 +312,7 @@ public class ProjectHex extends ApplicationAdapter {
         t.add(buttonBuyScout).fill();
         t.row();
 
-        final TextButton buttonSellBarracks = new TextButton("Sell Barracks", skin);
+        final TextButton buttonSellBarracks = new TextButton("Sell com.fantasticfive.shared.Barracks", skin);
         t.add(buttonSellBarracks).fill();
         t.row();
 
@@ -349,7 +349,7 @@ public class ProjectHex extends ApplicationAdapter {
             public void changed(ChangeEvent event, Actor actor) {
                 //Method for selling barracks
                 game.sellBuilding(building.getLocation());
-                System.out.println("You sold your Barracks.");
+                System.out.println("You sold your com.fantasticfive.shared.Barracks.");
                 unitShopTable = null;
             }
         });
@@ -365,18 +365,18 @@ public class ProjectHex extends ApplicationAdapter {
 
         System.out.println(x + ", " + y);
         Table t = new Table();
-        t.add(new Label("Buy Building", skin)).fill();
+        t.add(new Label("Buy com.fantasticfive.shared.Building", skin)).fill();
         t.row();
 
-        final TextButton buttonBuyResource = new TextButton("Resource - Cost: " + ((Resource) game.getBuildingPreset(BuildingType.RESOURCE)).getPurchaseCost(), skin);
+        final TextButton buttonBuyResource = new TextButton("com.fantasticfive.shared.Resource - Cost: " + ((Resource) game.getBuildingPreset(BuildingType.RESOURCE)).getPurchaseCost(), skin);
         t.add(buttonBuyResource).fill();
         t.row();
 
-        final TextButton buttonBuyFortification = new TextButton("Fortification - Cost: " + ((Fortification) game.getBuildingPreset(BuildingType.FORTIFICATION)).getPurchaseCost(), skin);
+        final TextButton buttonBuyFortification = new TextButton("com.fantasticfive.shared.Fortification - Cost: " + ((Fortification) game.getBuildingPreset(BuildingType.FORTIFICATION)).getPurchaseCost(), skin);
         t.add(buttonBuyFortification).fill();
         t.row();
 
-        final TextButton buttonBuyBarracks = new TextButton("Barracks - Cost: " + ((Barracks) game.getBuildingPreset(BuildingType.BARRACKS)).getPurchaseCost(), skin);
+        final TextButton buttonBuyBarracks = new TextButton("com.fantasticfive.shared.Barracks - Cost: " + ((Barracks) game.getBuildingPreset(BuildingType.BARRACKS)).getPurchaseCost(), skin);
         t.add(buttonBuyBarracks).fill();
         t.row();
 
@@ -384,8 +384,8 @@ public class ProjectHex extends ApplicationAdapter {
 
         buttonBuyResource.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
-                //Method for buying Resource
-                System.out.println("You bought a Resource");
+                //Method for buying com.fantasticfive.shared.Resource
+                System.out.println("You bought a com.fantasticfive.shared.Resource");
                 buildingToBuild = game.getBuildingPreset(BuildingType.RESOURCE);
                 buildingShopTable = null;
             }
@@ -393,8 +393,8 @@ public class ProjectHex extends ApplicationAdapter {
 
         buttonBuyFortification.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
-                //Method for buying Fortification
-                System.out.println("You bought a Fortification");
+                //Method for buying com.fantasticfive.shared.Fortification
+                System.out.println("You bought a com.fantasticfive.shared.Fortification");
                 buildingToBuild = game.getBuildingPreset(BuildingType.FORTIFICATION);
                 buildingShopTable = null;
             }
@@ -402,8 +402,8 @@ public class ProjectHex extends ApplicationAdapter {
 
         buttonBuyBarracks.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
-                //Method for buying Barracks
-                System.out.println("You bought a Barracks");
+                //Method for buying com.fantasticfive.shared.Barracks
+                System.out.println("You bought a com.fantasticfive.shared.Barracks");
                 buildingToBuild = game.getBuildingPreset(BuildingType.BARRACKS);
                 buildingShopTable = null;
             }
@@ -440,7 +440,7 @@ public class ProjectHex extends ApplicationAdapter {
     private void createSellBuildingUI(float x, float y, final Building building) {
         Table t = new Table();
 
-        t.add(new Label("Sell Building", skin)).fill();
+        t.add(new Label("Sell com.fantasticfive.shared.Building", skin)).fill();
         t.row();
 
         final TextButton buttonSellBuilding = new TextButton("Sell", skin);
