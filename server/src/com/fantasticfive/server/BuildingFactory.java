@@ -1,9 +1,7 @@
 package com.fantasticfive.server;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.shared.enums.*;
 import com.fantasticfive.shared.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,13 +10,15 @@ import java.util.List;
  */
 public class BuildingFactory {
     private List<Building> buildingPresets;
+    private Database db;
 
     public BuildingFactory() {
+        db = new Database();
         buildingPresets = new ArrayList<Building>();
-        GroundType[] buildableOn = new GroundType[]{GroundType.GRASS, GroundType.DIRT, GroundType.SAND};
-        buildingPresets.add(new Barracks(125, new Texture("barracks.png"), 30, buildableOn));
-        buildingPresets.add(new Resource(100, new Texture("mine.png"), 15, 3, buildableOn));
-        buildingPresets.add(new Fortification(150, new Texture("tower.png"), 10, buildableOn));
+        buildingPresets.add(db.getBarracksPreset());
+        buildingPresets.add(db.getResourcePreset());
+        buildingPresets.add(db.getFortificationPreset());
+        buildingPresets.add(db.getTownCentrePreset());
     }
 
     /**
@@ -30,9 +30,8 @@ public class BuildingFactory {
      */
     public Building createBuilding(BuildingType buildingType, Point location, IPlayer player) {
         Building building;
-        GroundType[] buildableOn = new GroundType[]{GroundType.GRASS, GroundType.DIRT, GroundType.SAND};
         switch (buildingType){
-            case TOWNCENTRE: building = new TownCentre(200, location, new Texture("townCentre.png"), buildableOn, player);
+            case TOWNCENTRE: building = getBuildingPreset(buildingType);
                 break;
             case BARRACKS: building = getBuildingPreset(buildingType);
             ((Barracks)building).setCreatableUnits(new UnitType[]{UnitType.SWORDSMAN, UnitType.ARCHER, UnitType.SCOUT});
@@ -69,6 +68,11 @@ public class BuildingFactory {
                         break;
                     case FORTIFICATION:
                         if (building instanceof Fortification) {
+                            return (Building)building.clone();
+                        }
+                        break;
+                    case TOWNCENTRE:
+                        if (building instanceof TownCentre) {
                             return (Building)building.clone();
                         }
                         break;
