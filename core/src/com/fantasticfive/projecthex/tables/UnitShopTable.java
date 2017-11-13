@@ -12,6 +12,8 @@ import com.fantasticfive.shared.enums.UnitType;
 import com.fantasticfive.shared.IBuilding;
 import com.fantasticfive.shared.IGame;
 
+import java.rmi.RemoteException;
+
 
 public class UnitShopTable extends Table {
     private Table t;
@@ -20,7 +22,7 @@ public class UnitShopTable extends Table {
     private Skin skin;
     private IBuilding building;
 
-    public UnitShopTable(IGame game, Skin skin) {
+    public UnitShopTable(IGame game, Skin skin) throws RemoteException {
         setVisible(false);
         this.t = new Table();
         this.game = game;
@@ -49,7 +51,11 @@ public class UnitShopTable extends Table {
         buttonBuyArcher.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("you bought an archer");
-                UnitShopTable.this.game.createUnit(UnitType.ARCHER, new Point(building.getLocation().x + 1, building.getLocation().y));
+                try {
+                    UnitShopTable.this.game.createUnit(UnitType.ARCHER, new Point(building.getLocation().x + 1, building.getLocation().y));
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 setVisible(false);
             }
         });
@@ -58,7 +64,11 @@ public class UnitShopTable extends Table {
         buttonBuySwordsman.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("you bought a swordsman");
-                UnitShopTable.this.game.createUnit(UnitType.SWORDSMAN, new Point(building.getLocation().x + 1, building.getLocation().y));
+                try {
+                    UnitShopTable.this.game.createUnit(UnitType.SWORDSMAN, new Point(building.getLocation().x + 1, building.getLocation().y));
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 setVisible(false);
             }
         });
@@ -67,7 +77,11 @@ public class UnitShopTable extends Table {
         buttonBuyScout.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("you bought a scout");
-                UnitShopTable.this.game.createUnit(UnitType.SCOUT, new Point(building.getLocation().x + 1, building.getLocation().y));
+                try {
+                    UnitShopTable.this.game.createUnit(UnitType.SCOUT, new Point(building.getLocation().x + 1, building.getLocation().y));
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 setVisible(false);
             }
         });
@@ -76,7 +90,11 @@ public class UnitShopTable extends Table {
         buttonSellBarracks.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("You sold your Barracks.");
-                UnitShopTable.this.game.sellBuilding(building.getLocation());
+                try {
+                    UnitShopTable.this.game.sellBuilding(building.getLocation());
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 setVisible(false);
             }
         });

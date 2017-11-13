@@ -236,21 +236,30 @@ public class ProjectHex extends ApplicationAdapter {
                 System.out.println("clicked hex: " + hex.getLocation().x + " " + hex.getLocation().y);
 
                 //Right click on own building
-                IBuilding b = game.getBuildingAtLocation(hex.getLocation());
-                if (b != null && b.getOwner() == game.getCurrentPlayer()) {
-                    if (b instanceof Barracks) {
-                        System.out.println("You clicked on a Barracks");
-                        showUnitShopUI(x, y, b);
-                    } else if (b instanceof TownCentre) {
-                        System.out.println("You clicked on a TownCentre");
-                        showBuildingShopUI(x, y);
-                    } else if (b instanceof Resource) {
-                        System.out.println("You clicked on a Resource");
-                        showBuildingSellUI(x, y, b);
-                    } else if (b instanceof Fortification) {
-                        System.out.println("You clicked on a Fortification");
-                        showBuildingSellUI(x, y, b);
+                IBuilding b = null;
+                try {
+                    b = game.getBuildingAtLocation(hex.getLocation());
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    if (b != null && b.getOwner() == game.getCurrentPlayer()) {
+                        if (b instanceof Barracks) {
+                            System.out.println("You clicked on a Barracks");
+                            showUnitShopUI(x, y, b);
+                        } else if (b instanceof TownCentre) {
+                            System.out.println("You clicked on a TownCentre");
+                            showBuildingShopUI(x, y);
+                        } else if (b instanceof Resource) {
+                            System.out.println("You clicked on a Resource");
+                            showBuildingSellUI(x, y, b);
+                        } else if (b instanceof Fortification) {
+                            System.out.println("You clicked on a Fortification");
+                            showBuildingSellUI(x, y, b);
+                        }
                     }
+                } catch (RemoteException e) {
+                    e.printStackTrace();
                 }
                 //Right click on own unit
                 IUnit u = null;
@@ -260,8 +269,12 @@ public class ProjectHex extends ApplicationAdapter {
                     e.printStackTrace();
                 }
                 if (u != null) {
-                    if (u.getOwner() == game.getCurrentPlayer())
-                        showUnitSellUI(x, y, u);
+                    try {
+                        if (u.getOwner() == game.getCurrentPlayer())
+                            showUnitSellUI(x, y, u);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                     System.out.println("You clicked on a unit!");
                 }
             }
@@ -325,7 +338,11 @@ public class ProjectHex extends ApplicationAdapter {
     //  Unit Shop (Barracks)
     // ====================
     private void createUnitShopUI() {
-        unitShopTable = new UnitShopTable(game, skin);
+        try {
+            unitShopTable = new UnitShopTable(game, skin);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     private void showUnitShopUI(float x, float y, IBuilding building) {
@@ -338,7 +355,11 @@ public class ProjectHex extends ApplicationAdapter {
     //  Building Shop (Town Centre)
     // ====================
     private void createBuildingShopUI() {
-        buildingShopTable = new BuildingShopTable(this, game, skin);
+        try {
+            buildingShopTable = new BuildingShopTable(this, game, skin);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     private void showBuildingShopUI(float x, float y) {
@@ -381,7 +402,11 @@ public class ProjectHex extends ApplicationAdapter {
     //  (Shows the amount of gold and GPT cost)
     // ====================
     private void createPlayerUI() {
-        playerTable = new PlayerTable(game, skin);
+        try {
+            playerTable = new PlayerTable(game, skin);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     private void updatePlayerUI() {

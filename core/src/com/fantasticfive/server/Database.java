@@ -1,11 +1,13 @@
 package com.fantasticfive.server;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.fantasticfive.shared.Barracks;
 import com.fantasticfive.shared.Fortification;
 import com.fantasticfive.shared.Resource;
 import com.fantasticfive.shared.TownCentre;
-import com.fantasticfive.shared.enums.*;
-import com.badlogic.gdx.graphics.Texture;
-import com.fantasticfive.shared.Barracks;
+import com.fantasticfive.shared.enums.BuildingType;
+import com.fantasticfive.shared.enums.GroundType;
+
 import java.sql.*;
 import java.util.Properties;
 
@@ -50,7 +52,6 @@ public class Database {
             ResultSet myRs = myStmt.executeQuery();
             while (myRs.next()) {
                 barracks = new Barracks(myRs.getInt("health"),
-                        new Texture(myRs.getString("image")),
                         myRs.getInt("purchaseCost"),
                         getBuildableOn(BuildingType.BARRACKS.toString()));
             }
@@ -72,7 +73,6 @@ public class Database {
             ResultSet myRs = myStmt.executeQuery();
             while (myRs.next()) {
                 resource = new Resource(myRs.getInt("health"),
-                        new Texture(myRs.getString("image")),
                         myRs.getInt("purchaseCost"),
                         myRs.getInt("productionPerTurn"),
                         getBuildableOn(BuildingType.RESOURCE.toString()));
@@ -95,7 +95,6 @@ public class Database {
             ResultSet myRs = myStmt.executeQuery();
             while (myRs.next()) {
                 fortification = new Fortification(myRs.getInt("health"),
-                        new Texture(myRs.getString("image")),
                         myRs.getInt("purchaseCost"),
                         getBuildableOn(BuildingType.FORTIFICATION.toString()));
             }
@@ -117,7 +116,6 @@ public class Database {
             ResultSet myRs = myStmt.executeQuery();
             while (myRs.next()) {
                 TownCentre = new TownCentre(myRs.getInt("health"),
-                        new Texture(myRs.getString("image")),
                         getBuildableOn(BuildingType.TOWNCENTRE.toString()));
             }
 

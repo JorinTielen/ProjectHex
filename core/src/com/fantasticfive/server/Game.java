@@ -1,6 +1,7 @@
 package com.fantasticfive.server;
 
 import com.fantasticfive.shared.*;
+import com.fantasticfive.shared.enums.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.rmi.RemoteException;
@@ -107,7 +108,7 @@ public class Game extends UnicastRemoteObject implements IGame {
         throw new NotImplementedException();
     }
 
-    public IBuilding getBuildingPreset(BuildingType buildingType){
+    public Building getBuildingPreset(BuildingType buildingType){
         return buildingFactory.getBuildingPreset(buildingType);
     }
 

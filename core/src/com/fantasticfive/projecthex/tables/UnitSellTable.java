@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.fantasticfive.shared.IGame;
 import com.fantasticfive.shared.IUnit;
 
+import java.rmi.RemoteException;
+
 
 public class UnitSellTable extends Table {
     private Table t;
@@ -37,7 +39,11 @@ public class UnitSellTable extends Table {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("Selling unit");
-                UnitSellTable.this.game.getCurrentPlayer().sellUnit(unit);
+                try {
+                    UnitSellTable.this.game.getCurrentPlayer().sellUnit(unit);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 setVisible(false);
             }
         });

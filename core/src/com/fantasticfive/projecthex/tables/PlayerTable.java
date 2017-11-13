@@ -7,6 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.fantasticfive.shared.IGame;
 
+import java.rmi.RemoteException;
+
 public class PlayerTable extends Table {
     private Table t;
     private Label lGold;
@@ -15,7 +17,7 @@ public class PlayerTable extends Table {
     final private IGame game;
     private Skin skin;
 
-    public PlayerTable(IGame game, Skin skin) {
+    public PlayerTable(IGame game, Skin skin) throws RemoteException {
         this.game = game;
         this.skin = skin;
 
@@ -37,12 +39,16 @@ public class PlayerTable extends Table {
     }
 
     public void update() {
-        lGold.setText("GOLD: " + game.getCurrentPlayer().getGold());
-        lGpt.setText("GPT: " + game.getCurrentPlayer().getGoldPerTurn());
-        if (game.getCurrentPlayer().getGoldPerTurn() < 0) {
-            lGpt.setColor(Color.RED);
-        } else {
-            lGpt.setColor(Color.WHITE);
+        try {
+            lGold.setText("GOLD: " + game.getCurrentPlayer().getGold());
+            lGpt.setText("GPT: " + game.getCurrentPlayer().getGoldPerTurn());
+            if (game.getCurrentPlayer().getGoldPerTurn() < 0) {
+                lGpt.setColor(Color.RED);
+            } else {
+                lGpt.setColor(Color.WHITE);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
 }

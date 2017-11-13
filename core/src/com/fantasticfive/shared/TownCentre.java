@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.shared.enums.*;
 
 public class TownCentre extends Building {
-    public TownCentre(int health, Texture image, GroundType[] buildableOn) {
-        super(health, image, buildableOn);
+    public TownCentre(int health, GroundType[] buildableOn) {
+        super(health, buildableOn);
     }
 
     @Override
