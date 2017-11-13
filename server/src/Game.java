@@ -52,10 +52,10 @@ public class Game extends UnicastRemoteObject implements IGame {
             players.add(p);
             p.addGold(100);
             if (username.equals("enemy")) {
-                Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(10,13),p);
+                IBuilding b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(10,13),p);
                 p.purchaseBuilding(b);
             } else {
-                Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(1, 0), p); //Random com.fantasticfive.shared.Point???
+                IBuilding b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(1, 0), p); //Random Point???
                 p.purchaseBuilding(b);
             }
         }
@@ -107,7 +107,7 @@ public class Game extends UnicastRemoteObject implements IGame {
         throw new NotImplementedException();
     }
 
-    public Building getBuildingPreset(BuildingType buildingType){
+    public IBuilding getBuildingPreset(BuildingType buildingType){
         return buildingFactory.getBuildingPreset(buildingType);
     }
 
@@ -146,7 +146,7 @@ public class Game extends UnicastRemoteObject implements IGame {
     }
 
     public void sellBuilding(Point location){
-        Building building = currentPlayer.getBuildingAtLocation(location);
+        IBuilding building = currentPlayer.getBuildingAtLocation(location);
         if (building != null && !(building instanceof TownCentre)){
             int cost = 0;
             if (building instanceof Barracks) {
@@ -224,7 +224,7 @@ public class Game extends UnicastRemoteObject implements IGame {
     }
 
     public void attackBuilding(Unit selectedUnit, Point locationBuilding) {
-        Building building = getBuildingAtLocation(locationBuilding);
+        IBuilding building = getBuildingAtLocation(locationBuilding);
         if (selectedUnit != null && building != null) {
             if(selectedUnit.attack(building)){
                 Player enemy = building.getOwner();
@@ -236,9 +236,9 @@ public class Game extends UnicastRemoteObject implements IGame {
         }
     }
 
-    public Building getBuildingAtLocation(Point location) {
+    public IBuilding getBuildingAtLocation(Point location) {
         for (IPlayer player : players) {
-            Building building = player.getBuildingAtLocation(location);
+            IBuilding building = player.getBuildingAtLocation(location);
             if (building != null) {
                 return building;
             }
