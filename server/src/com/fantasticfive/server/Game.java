@@ -228,7 +228,7 @@ public class Game extends UnicastRemoteObject implements IGame {
         IBuilding building = getBuildingAtLocation(locationBuilding);
         if (selectedUnit != null && building != null) {
             if(selectedUnit.attack(building)){
-                Player enemy = building.getOwner();
+                IPlayer enemy = building.getOwner();
                 enemy.removeBuilding(building);
                 if(building instanceof TownCentre){
                     removePlayer(enemy);

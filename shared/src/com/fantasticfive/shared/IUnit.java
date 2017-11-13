@@ -8,4 +8,5 @@ public interface IUnit extends Serializable {
     void resetMoves();
     void toggleSelected();
     int getCostPerTurn();
+    int getPurchaseCost();
 }

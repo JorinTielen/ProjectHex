@@ -11,9 +11,9 @@ public abstract class Building implements Cloneable, IBuilding {
     protected int health;
     protected GroundType[] buildableOn;
     private Point location;
-    private Player owner;
+    protected IPlayer owner;
 
-    public Building(int health, Point location, Texture image, GroundType[] buildableOn, Player owner) {
+    public Building(int health, Point location, Texture image, GroundType[] buildableOn, IPlayer owner) {
         this.image = image;
         this.health = health;
         this.buildableOn = buildableOn;
@@ -39,7 +39,7 @@ public abstract class Building implements Cloneable, IBuilding {
         this.owner = owner;
     }
 
-    public Player getOwner() {
+    public IPlayer getOwner() {
         return this.owner;
     }
 

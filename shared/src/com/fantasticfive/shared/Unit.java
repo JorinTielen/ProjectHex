@@ -17,7 +17,7 @@ public class Unit implements Cloneable, IUnit{
     private int upgradeCost;
     private Point location = new Point(0,0);
     private int allowedToMove;
-    private Player owner;
+    private IPlayer owner;
 
     private boolean isSelected = false;
 
@@ -47,7 +47,7 @@ public class Unit implements Cloneable, IUnit{
         } return false;
     }
 
-    public boolean attack(Building buildingToAttack) {
+    public boolean attack(IBuilding buildingToAttack) {
         if(calculateDistance(this.location, buildingToAttack.getLocation()) <= attackRange && this.allowedToMove >= 1) {
             allowedToMove = 0;
             return buildingToAttack.damageHealth(this.attackPower);
@@ -85,11 +85,11 @@ public class Unit implements Cloneable, IUnit{
         return this.armor;
     }
 
-    public void setOwner(Player owner) {
+    public void setOwner(IPlayer owner) {
         this.owner = owner;
     }
 
-    public Player getOwner() {
+    public IPlayer getOwner() {
         return owner;
     }
 

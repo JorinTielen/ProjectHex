@@ -12,4 +12,9 @@ public class Fortification extends Building {
     }
 
     public int getPurchaseCost() { return purchaseCost; }
+
+    @Override
+    public void setOwner(IPlayer owner) {
+        this.owner = owner;
+    }
 }

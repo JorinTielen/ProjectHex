@@ -5,7 +5,7 @@ import java.io.Serializable;
 public interface IBuilding extends Serializable {
    void setLocation(Point location);
    Point getLocation();
-   void setOwner(Player owner);
-   Player getOwner();
+   void setOwner(IPlayer owner);
+   IPlayer getOwner();
    boolean damageHealth(int hp);
 }

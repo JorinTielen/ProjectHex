@@ -18,4 +18,9 @@ public class Resource extends Building {
     public int getProductionPerTurn() {
         return this.productionPerTurn;
     }
+
+    @Override
+    public void setOwner(IPlayer owner) {
+        this.owner = owner;
+    }
 }

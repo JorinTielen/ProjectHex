@@ -28,7 +28,7 @@ public class BuildingFactory {
      * @param player The player who'se buying the building
      * @return
      */
-    public Building createBuilding(BuildingType buildingType, Point location, Player player) {
+    public Building createBuilding(BuildingType buildingType, Point location, IPlayer player) {
         Building building;
         GroundType[] buildableOn = new GroundType[]{GroundType.GRASS, GroundType.DIRT, GroundType.SAND};
         switch (buildingType){

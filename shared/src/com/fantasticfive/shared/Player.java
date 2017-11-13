@@ -91,12 +91,12 @@ public class Player implements IPlayer{
         }
     }
 
-    public List<Building> getBuildings() {
+    public List<IBuilding> getBuildings() {
         return buildings;
     }
 
     public IBuilding getBuildingAtLocation(Point location) {
-        for (Building building : buildings) {
+        for (IBuilding building : buildings) {
             if (building.getLocation().equals(location)) {
                 return building;
             }
@@ -104,7 +104,7 @@ public class Player implements IPlayer{
         return null;
     }
 
-    public void purchaseUnit(Unit unit) {
+    public void purchaseUnit(IUnit unit) {
         if (this.gold - unit.getPurchaseCost() >= 0) {
             this.removeGold(unit.getPurchaseCost());
             this.units.add(unit);
