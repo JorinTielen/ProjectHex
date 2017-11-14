@@ -34,14 +34,23 @@ public abstract class Building implements Cloneable, IBuilding {
         return this.owner;
     }
 
+    public void setImage() {
+        //Needs to be empty, is overwritten in inheritance classes
+    }
+
+    public Texture getImage() {
+        return image;
+    }
+
     /**
      * Damages the building. The amount of hp a building has can never go below 0
+     *
      * @param hp The amount of hp to reduce from the building
      * @return
      */
     public boolean damageHealth(int hp) {
         health -= hp;
-        if(health <= 0){
+        if (health <= 0) {
             health = 0;
         }
         System.out.println("Health has been reduced with " + hp + " to " + health);
@@ -51,13 +60,5 @@ public abstract class Building implements Cloneable, IBuilding {
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
-    }
-
-    public void setImage(){
-
-    }
-
-    public Texture getImage() {
-        return image;
     }
 }

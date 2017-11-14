@@ -2,7 +2,6 @@ package com.fantasticfive.shared;
 
 import com.fantasticfive.shared.enums.BuildingType;
 import com.fantasticfive.shared.enums.UnitType;
-
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;

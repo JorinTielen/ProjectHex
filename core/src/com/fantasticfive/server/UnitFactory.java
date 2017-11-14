@@ -1,11 +1,9 @@
 package com.fantasticfive.server;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.shared.enums.UnitType;
 import com.fantasticfive.shared.IPlayer;
 import com.fantasticfive.shared.Point;
 import com.fantasticfive.shared.Unit;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,8 +43,8 @@ public class UnitFactory {
 
     public Unit getUnitPreset(UnitType unitType) {
         Unit copy;
-        for(Unit unit : unitPresets) {
-            if(unit.getUnitType() == unitType) {
+        for (Unit unit : unitPresets) {
+            if (unit.getUnitType() == unitType) {
                 try {
                     copy = (Unit) unit.clone();
                     return copy;

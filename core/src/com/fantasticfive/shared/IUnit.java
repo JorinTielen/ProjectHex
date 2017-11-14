@@ -2,7 +2,6 @@ package com.fantasticfive.shared;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.shared.enums.UnitType;
-
 import java.io.Serializable;
 
 public interface IUnit extends Serializable {

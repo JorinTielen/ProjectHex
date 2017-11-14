@@ -1,13 +1,11 @@
 package com.fantasticfive.server;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.shared.Barracks;
 import com.fantasticfive.shared.Fortification;
 import com.fantasticfive.shared.Resource;
 import com.fantasticfive.shared.TownCentre;
 import com.fantasticfive.shared.enums.BuildingType;
 import com.fantasticfive.shared.enums.GroundType;
-
 import java.sql.*;
 import java.util.Properties;
 

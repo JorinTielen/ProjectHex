@@ -1,7 +1,6 @@
 package com.fantasticfive.shared;
 
 import com.fantasticfive.shared.enums.*;
-
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import java.util.Random;
@@ -112,7 +111,7 @@ public class Hexagon {
         this.owner = owner;
     }
 
-    public Player getOwner(){
+    public Player getOwner() {
         return owner;
     }
 
@@ -132,7 +131,9 @@ public class Hexagon {
         this.objectType = null;
     }
 
-    public void removeObject(){ this.objectImage = null; }
+    public void removeObject() {
+        this.objectImage = null;
+    }
 
     public void deleteOwner() {
         this.owner = null;

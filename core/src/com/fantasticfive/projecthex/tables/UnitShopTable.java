@@ -6,14 +6,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.fantasticfive.shared.Building;
 import com.fantasticfive.shared.Point;
 import com.fantasticfive.shared.enums.UnitType;
 import com.fantasticfive.shared.IBuilding;
 import com.fantasticfive.shared.IGame;
 
 import java.rmi.RemoteException;
-
 
 public class UnitShopTable extends Table {
     private Table t;

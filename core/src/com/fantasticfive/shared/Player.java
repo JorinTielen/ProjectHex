@@ -2,12 +2,11 @@ package com.fantasticfive.shared;
 
 import com.fantasticfive.shared.enums.Color;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Player implements IPlayer{
+public class Player implements IPlayer {
     private List<IBuilding> buildings;
     private List<IUnit> units;
     private List<Hexagon> hexagons;
@@ -115,7 +114,7 @@ public class Player implements IPlayer{
 
     //Sells unit
     public void sellUnit(IUnit unit) {
-        if(units.contains(unit)) {
+        if (units.contains(unit)) {
             this.addGold((int) (unit.getPurchaseCost() * 0.66));
             if (unit.getSelected()) {
                 unit.toggleSelected();

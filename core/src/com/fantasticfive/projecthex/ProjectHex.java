@@ -16,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.enums.BuildingType;
 import com.fantasticfive.projecthex.tables.*;
-
 import java.rmi.RemoteException;
 
 public class ProjectHex extends ApplicationAdapter {
@@ -105,13 +104,13 @@ public class ProjectHex extends ApplicationAdapter {
         }
 
         createBuildingSellUI();
-        if(buildingSellTable != null) {
+        if (buildingSellTable != null) {
             table.addActor(buildingSellTable);
         }
 
         createGameUI();
         createOptionsUI();
-        if(optionsTable != null) {
+        if (optionsTable != null) {
             table.addActor(optionsTable);
         }
 
@@ -392,7 +391,7 @@ public class ProjectHex extends ApplicationAdapter {
     }
 
     private void showBuildingSellUI(float x, float y, final IBuilding building) {
-        ((BuildingSellTable)buildingSellTable).setBuilding(building);
+        ((BuildingSellTable) buildingSellTable).setBuilding(building);
         buildingSellTable.setPosition(x, Gdx.graphics.getHeight() - y);
         buildingSellTable.setVisible(true);
     }
@@ -410,7 +409,7 @@ public class ProjectHex extends ApplicationAdapter {
     }
 
     private void updatePlayerUI() {
-        ((PlayerTable)playerTable).update();
+        ((PlayerTable) playerTable).update();
     }
 
     // ====================

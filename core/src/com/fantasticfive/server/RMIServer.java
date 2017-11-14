@@ -1,7 +1,6 @@
 package com.fantasticfive.server;
 
 import com.fantasticfive.shared.IGame;
-
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -22,7 +21,7 @@ public class RMIServer {
         //Print port number for registry
         System.out.println("Server: Port number " + portNumber);
 
-        try{
+        try {
             game = new Game();
             System.out.println("Server: Game created");
         } catch (RemoteException e) {
@@ -53,7 +52,7 @@ public class RMIServer {
             System.out.println("Server: NullPointerException: " + e.getMessage());
         }
 
-        if(game != null) {
+        if (game != null) {
             System.out.println("Server: Server started");
         } else {
             System.out.println("Server: Something went wrong with starting the server");
@@ -61,7 +60,7 @@ public class RMIServer {
         }
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         RMIServer server = new RMIServer();
     }
 

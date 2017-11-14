@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.enums.BuildingType;
 import com.fantasticfive.projecthex.ProjectHex;
-
 import java.rmi.RemoteException;
 
 public class BuildingShopTable extends Table {

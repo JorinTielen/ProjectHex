@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.fantasticfive.shared.IGame;
-
 import java.rmi.RemoteException;
 
 public class PlayerTable extends Table {

@@ -7,7 +7,6 @@ public class Main {
     private IGame game;
 
     public Main() {
-
     }
 
     public void createGame() {

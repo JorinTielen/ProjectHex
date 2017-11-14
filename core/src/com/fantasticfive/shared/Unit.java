@@ -3,8 +3,7 @@ package com.fantasticfive.shared;
 import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.shared.enums.UnitType;
 
-
-public class Unit implements Cloneable, IUnit{
+public class Unit implements Cloneable, IUnit {
     public Texture texture;
     private UnitType unitType;
     private int health;
@@ -16,7 +15,7 @@ public class Unit implements Cloneable, IUnit{
     private int costPerTurn;
     private Boolean canTakeLand;
     private int upgradeCost;
-    private Point location = new Point(0,0);
+    private Point location = new Point(0, 0);
     private int allowedToMove;
     private IPlayer owner;
 
@@ -40,15 +39,16 @@ public class Unit implements Cloneable, IUnit{
     }
 
     public boolean attack(IUnit unitToAttack) {
-        if(calculateDistance(this.location, unitToAttack.getLocation()) <= attackRange && this.allowedToMove >= 1) {
+        if (calculateDistance(this.location, unitToAttack.getLocation()) <= attackRange && this.allowedToMove >= 1) {
             unitToAttack.reduceHealth(attackPower - unitToAttack.getArmor());
             allowedToMove = 0;
             return true;
-        } return false;
+        }
+        return false;
     }
 
     public boolean attack(IBuilding buildingToAttack) {
-        if(calculateDistance(this.location, buildingToAttack.getLocation()) <= attackRange && this.allowedToMove >= 1) {
+        if (calculateDistance(this.location, buildingToAttack.getLocation()) <= attackRange && this.allowedToMove >= 1) {
             allowedToMove = 0;
             return buildingToAttack.damageHealth(this.attackPower);
         }
@@ -56,16 +56,16 @@ public class Unit implements Cloneable, IUnit{
     }
 
     public void reduceHealth(int hp) {
-        if(health - hp > 0) {
+        if (health - hp > 0) {
             health -= hp;
-        } else if(health - hp <= 0) {
+        } else if (health - hp <= 0) {
             health = 0;
         }
         System.out.println("Health has been reduced with " + hp + " to " + health);
     }
 
     public void move(Point destination) {
-        if(allowedToMove - calculateDistance(location, destination) < 0) {
+        if (allowedToMove - calculateDistance(location, destination) < 0) {
             System.out.println("Not allowed to walk :(");
         } else {
             this.allowedToMove -= calculateDistance(location, destination);
@@ -118,12 +118,12 @@ public class Unit implements Cloneable, IUnit{
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException{
+    public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 
     public void toggleSelected() {
-        if(isSelected) {
+        if (isSelected) {
             System.out.println("com.fantasticfive.shared.Unit deselected");
             isSelected = false;
         } else {
@@ -150,8 +150,8 @@ public class Unit implements Cloneable, IUnit{
         return this.allowedToMove;
     }
 
-    public void setTexture(){
-        switch (unitType){
+    public void setTexture() {
+        switch (unitType) {
             case ARCHER:
                 this.texture = new Texture("characterArcher.png");
                 break;

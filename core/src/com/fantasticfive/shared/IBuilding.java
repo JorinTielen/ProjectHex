@@ -1,7 +1,6 @@
 package com.fantasticfive.shared;
 
 import com.badlogic.gdx.graphics.Texture;
-
 import java.io.Serializable;
 
 public interface IBuilding extends Serializable {

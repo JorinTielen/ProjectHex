@@ -3,7 +3,6 @@ package com.fantasticfive.server;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.enums.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -22,11 +21,12 @@ public class Game extends UnicastRemoteObject implements IGame {
     private String hash;
     private int id;
 
-    public Game() throws RemoteException{
+    public Game() throws RemoteException {
     }
 
     /**
      * Adds a player to the game. Checks if the username is already in use and gives the player a random colour and his towncentre
+     *
      * @param username The user's username
      */
     public void addPlayer(String username) {
@@ -53,7 +53,7 @@ public class Game extends UnicastRemoteObject implements IGame {
             players.add(p);
             p.addGold(100);
             if (username.equals("enemy")) {
-                IBuilding b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(10,13),p);
+                IBuilding b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(10, 13), p);
                 p.purchaseBuilding(b);
             } else {
                 IBuilding b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(1, 0), p); //Random Point???
@@ -65,7 +65,7 @@ public class Game extends UnicastRemoteObject implements IGame {
     public void removePlayer(IPlayer player) {
         this.players.remove(player);
 
-        if(players.size() == 1){
+        if (players.size() == 1) {
             System.out.println(currentPlayer.getUsername() + " has won the game!");
         }
     }
@@ -99,7 +99,7 @@ public class Game extends UnicastRemoteObject implements IGame {
         players.remove(currentPlayer);
         endTurn();
 
-        if(players.size() == 1){
+        if (players.size() == 1) {
             System.out.println(currentPlayer.getUsername() + " has won the game!");
         }
     }
@@ -108,16 +108,17 @@ public class Game extends UnicastRemoteObject implements IGame {
         throw new NotImplementedException();
     }
 
-    public Building getBuildingPreset(BuildingType buildingType){
+    public Building getBuildingPreset(BuildingType buildingType) {
         return buildingFactory.getBuildingPreset(buildingType);
     }
 
-    public IUnit getUnitPreset(UnitType unitType){
+    public IUnit getUnitPreset(UnitType unitType) {
         return unitFactory.getUnitPreset(unitType);
     }
 
     /**
      * Purchase a unit for the current player
+     *
      * @param unitType The type of unit
      * @param location The location to place the unit
      */
@@ -140,15 +141,15 @@ public class Game extends UnicastRemoteObject implements IGame {
 
     public void createBuilding(BuildingType buildingType, Point location) {
 //        if (map.isHexBuildable(location, currentPlayer)) { //TODO uncomment when hex owner is implemented
-            if (hexEmpty(location)) {
-                currentPlayer.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, currentPlayer));
-            }
+        if (hexEmpty(location)) {
+            currentPlayer.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, currentPlayer));
+        }
 //        }
     }
 
-    public void sellBuilding(Point location){
+    public void sellBuilding(Point location) {
         IBuilding building = currentPlayer.getBuildingAtLocation(location);
-        if (building != null && !(building instanceof TownCentre)){
+        if (building != null && !(building instanceof TownCentre)) {
             int cost = 0;
             if (building instanceof Barracks) {
                 cost = ((Barracks) buildingFactory.getBuildingPreset(BuildingType.BARRACKS)).getPurchaseCost();
@@ -175,6 +176,7 @@ public class Game extends UnicastRemoteObject implements IGame {
 
     /**
      * Checks if a specified Hex has a unit, building or mountain on it. Also checks if the hex is water.
+     *
      * @param location The location of the hex to check.
      * @return True if the hex is empty, false if it's not empty.
      */
@@ -192,10 +194,9 @@ public class Game extends UnicastRemoteObject implements IGame {
         Hexagon hex = map.getHexAtLocation(location);
         if (hex.getObjectType() == ObjectType.MOUNTAIN
                 || hex.getGroundType() == GroundType.WATER
-                || getBuildingAtLocation(location) != null){
+                || getBuildingAtLocation(location) != null) {
             return false;
-        }
-        else{
+        } else {
             return true;
         }
     }
@@ -227,10 +228,10 @@ public class Game extends UnicastRemoteObject implements IGame {
     public void attackBuilding(IUnit selectedUnit, Point locationBuilding) {
         IBuilding building = getBuildingAtLocation(locationBuilding);
         if (selectedUnit != null && building != null) {
-            if(selectedUnit.attack(building)){
+            if (selectedUnit.attack(building)) {
                 IPlayer enemy = building.getOwner();
                 enemy.removeBuilding(building);
-                if(building instanceof TownCentre){
+                if (building instanceof TownCentre) {
                     removePlayer(enemy);
                 }
             }

@@ -1,0 +1,6 @@
+VPN: vdi.fhict.nl
+
+Host		mssql.fhict.local
+Database	dbi362227
+Username	dbi362227
+Password	projectHex
