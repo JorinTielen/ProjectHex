@@ -26,7 +26,7 @@ public class ProjectHex extends ApplicationAdapter {
 
     //game
     private IGame game;
-    private Map map;
+    private IMap map;
 
     //ui
     private Skin skin;
