@@ -70,6 +70,7 @@ public class Game extends UnicastRemoteObject implements IGame {
         }
     }
 
+    @Override
     public void setMap(IMap map) {
         this.map = map;
     }
