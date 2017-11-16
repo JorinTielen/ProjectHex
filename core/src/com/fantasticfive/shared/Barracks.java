@@ -10,8 +10,8 @@ public class Barracks extends Building{
     private UnitType[] creatableUnits;
     private int purchaseCost;
 
-    public Barracks(int health, Texture image, int purchaseCost, GroundType[] buildableOn) {
-        super(health, image, buildableOn);
+    public Barracks(int health, int purchaseCost, GroundType[] buildableOn) {
+        super(health, buildableOn);
         this.purchaseCost = purchaseCost;
     }
 
@@ -36,5 +36,10 @@ public class Barracks extends Building{
     @Override
     public void setOwner(IPlayer owner) {
         this.owner = owner;
+    }
+
+    @Override
+    public void setImage() {
+        this.image = new Texture("barracks.png");
     }
 }

@@ -16,13 +16,13 @@ public class UnitFactory {
         unitPresets = new ArrayList<Unit>();
         unitPresets.add(new Unit(UnitType.SWORDSMAN, 100, 10, 35,
                 1, 2, 20, 1,
-                false, 150, new Texture("characterSwordsman.png")));
+                false, 150));
         unitPresets.add(new Unit(UnitType.ARCHER, 75, 5, 25,
                 2, 3, 15, 1,
-                false, 150, new Texture("characterArcher.png")));
+                false, 150));
         unitPresets.add(new Unit(UnitType.SCOUT, 50, 0, 10,
                 1, 4, 10, 1,
-                true, 150, new Texture("characterScout.png")));
+                true, 150));
     }
 
     public Unit createUnit(UnitType unitType, Point location, IPlayer owner) {

@@ -13,17 +13,8 @@ public abstract class Building implements Cloneable, IBuilding {
     private Point location;
     protected IPlayer owner;
 
-    public Building(int health, Point location, Texture image, GroundType[] buildableOn, IPlayer owner) {
-        this.image = image;
+    public Building(int health, GroundType[] buildableOn) {
         this.health = health;
-        this.buildableOn = buildableOn;
-        this.location = location;
-        this.owner = owner;
-    }
-
-    public Building(int health, Texture image, GroundType[] buildableOn) {
-        this.health = health;
-        this.image = image;
         this.buildableOn = buildableOn;
     }
 
@@ -60,6 +51,10 @@ public abstract class Building implements Cloneable, IBuilding {
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
+    }
+
+    public void setImage(){
+
     }
 
     public Texture getImage() {

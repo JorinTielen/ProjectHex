@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.fantasticfive.shared.IBuilding;
 import com.fantasticfive.shared.IGame;
 
+import java.rmi.RemoteException;
+
 public class BuildingSellTable extends Table {
     private Table t;
     private Label l;
@@ -36,7 +38,11 @@ public class BuildingSellTable extends Table {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("Selling building");
-                BuildingSellTable.this.game.sellBuilding(building.getLocation());
+                try {
+                    BuildingSellTable.this.game.sellBuilding(building.getLocation());
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 setVisible(false);
             }
         });

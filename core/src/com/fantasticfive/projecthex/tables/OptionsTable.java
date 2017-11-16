@@ -8,6 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.fantasticfive.shared.IGame;
 
+import java.rmi.RemoteException;
+
 public class OptionsTable extends Table {
     private Table t;
 
@@ -36,7 +38,11 @@ public class OptionsTable extends Table {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("Ending turn");
-                OptionsTable.this.game.endTurn();
+                try {
+                    OptionsTable.this.game.endTurn();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 setVisible(false);
             }
         });
@@ -45,7 +51,11 @@ public class OptionsTable extends Table {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("Leaving game");
-                OptionsTable.this.game.leaveGame();
+                try {
+                    OptionsTable.this.game.leaveGame();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 setVisible(false);
             }
         });

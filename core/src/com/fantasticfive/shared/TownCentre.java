@@ -4,12 +4,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.shared.enums.*;
 
 public class TownCentre extends Building {
-    public TownCentre(int health, Point location, Texture image, GroundType[] buildableOn, IPlayer owner) {
-        super(health, location, image, buildableOn, owner);
+    public TownCentre(int health, GroundType[] buildableOn) {
+        super(health, buildableOn);
     }
 
     @Override
     public void setOwner(IPlayer owner) {
         this.owner = owner;
+    }
+
+    @Override
+    public void setImage() {
+        this.image = new Texture("townCentre.png");
     }
 }
