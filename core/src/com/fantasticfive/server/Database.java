@@ -16,11 +16,11 @@ public class Database {
 
     private void setConnection() throws SQLException {
         Properties connectionProps = new Properties();
-        connectionProps.put("user", "dbi362227");
-        connectionProps.put("password", "projectHex");
+        connectionProps.put("user", "sven");
+        connectionProps.put("password", "sven123");
         try {
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            conn = DriverManager.getConnection("jdbc:sqlserver://mssql.fhict.local;databaseName=dbi362227", connectionProps);
+            Class.forName("com.mysql.jdbc.Driver");
+            conn = DriverManager.getConnection("jdbc:mysql://thedin.nl/projecthex", connectionProps);
             System.out.println("Connection to database SUCCEED");
         } catch (ClassNotFoundException ex) {
             System.out.println(ex.getMessage());
@@ -44,7 +44,7 @@ public class Database {
         Barracks barracks = null;
         try {
             setConnection();
-            PreparedStatement myStmt = conn.prepareStatement("SELECT * FROM [building] WHERE [buildingType] = ?");
+            PreparedStatement myStmt = conn.prepareStatement("SELECT * FROM projecthex.building WHERE buildingType = ?");
             myStmt.setString(1, BuildingType.BARRACKS.toString());
             ResultSet myRs = myStmt.executeQuery();
             while (myRs.next()) {
@@ -65,7 +65,7 @@ public class Database {
         Resource resource = null;
         try {
             setConnection();
-            PreparedStatement myStmt = conn.prepareStatement("SELECT * FROM [building] WHERE [buildingType] = ?");
+            PreparedStatement myStmt = conn.prepareStatement("SELECT * FROM projecthex.building WHERE buildingType = ?");
             myStmt.setString(1, BuildingType.RESOURCE.toString());
             ResultSet myRs = myStmt.executeQuery();
             while (myRs.next()) {
@@ -87,7 +87,7 @@ public class Database {
         Fortification fortification = null;
         try {
             setConnection();
-            PreparedStatement myStmt = conn.prepareStatement("SELECT * FROM [building] WHERE [buildingType] = ?");
+            PreparedStatement myStmt = conn.prepareStatement("SELECT * FROM projecthex.building WHERE buildingType = ?");
             myStmt.setString(1, BuildingType.FORTIFICATION.toString());
             ResultSet myRs = myStmt.executeQuery();
             while (myRs.next()) {
@@ -108,7 +108,7 @@ public class Database {
         TownCentre townCentre = null;
         try {
             setConnection();
-            PreparedStatement myStmt = conn.prepareStatement("SELECT * FROM [building] WHERE [buildingType] = ?");
+            PreparedStatement myStmt = conn.prepareStatement("SELECT * FROM projecthex.building WHERE buildingType = ?");
             myStmt.setString(1, BuildingType.TOWNCENTRE.toString());
             ResultSet myRs = myStmt.executeQuery();
             while (myRs.next()) {
@@ -127,7 +127,7 @@ public class Database {
     private GroundType[] getBuildableOn(String buildingType) throws SQLException {
         GroundType[] buildableOn = new GroundType[5];
 
-        PreparedStatement myStmt = conn.prepareStatement("SELECT g.[type] FROM [building] b, [building_groundType] bg, [groundType] g WHERE b.[buildingType] = bg.[building_buildingType] AND bg.[groundType_type] = g.[type] AND b.[buildingType] = ?");
+        PreparedStatement myStmt = conn.prepareStatement("SELECT g.type FROM projecthex.building b, projecthex.building_groundtype bg, projecthex.groundtype g WHERE b.buildingType = bg.building_buildingType AND bg.groundType_type = g.type AND b.buildingType = ?");
         myStmt.setString(1, buildingType);
         ResultSet myRs = myStmt.executeQuery();
         int count = 0;
@@ -143,7 +143,7 @@ public class Database {
         Unit swordsman = null;
         try {
             setConnection();
-            PreparedStatement myStmt = conn.prepareStatement("SELECT * FROM [unit] WHERE [unitType] = ?");
+            PreparedStatement myStmt = conn.prepareStatement("SELECT * FROM projecthex.unit WHERE unitType = ?");
             myStmt.setString(1, UnitType.SWORDSMAN.toString());
             ResultSet myRs = myStmt.executeQuery();
             while (myRs.next()) {
@@ -171,7 +171,7 @@ public class Database {
         Unit archer = null;
         try {
             setConnection();
-            PreparedStatement myStmt = conn.prepareStatement("SELECT * FROM [unit] WHERE [unitType] = ?");
+            PreparedStatement myStmt = conn.prepareStatement("SELECT * FROM projecthex.unit WHERE unitType = ?");
             myStmt.setString(1, UnitType.ARCHER.toString());
             ResultSet myRs = myStmt.executeQuery();
             while (myRs.next()) {
@@ -199,7 +199,7 @@ public class Database {
         Unit scout = null;
         try {
             setConnection();
-            PreparedStatement myStmt = conn.prepareStatement("SELECT * FROM [unit] WHERE [unitType] = ?");
+            PreparedStatement myStmt = conn.prepareStatement("SELECT * FROM projecthex.unit WHERE unitType = ?");
             myStmt.setString(1, UnitType.SCOUT.toString());
             ResultSet myRs = myStmt.executeQuery();
             while (myRs.next()) {
