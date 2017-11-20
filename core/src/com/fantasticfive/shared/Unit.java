@@ -21,7 +21,7 @@ public class Unit implements Cloneable, IUnit {
 
     private boolean isSelected = false;
 
-    public Unit(com.fantasticfive.shared.enums.UnitType unitType, int health, int armor,
+    public Unit(UnitType unitType, int health, int armor,
                 int attackPower, int attackRange, int movementRange,
                 int purchaseCost, int costPerTurn, Boolean canTakeLand,
                 int upgradeCost) {

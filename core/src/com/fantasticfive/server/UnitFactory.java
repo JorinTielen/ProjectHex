@@ -11,16 +11,11 @@ public class UnitFactory {
     private List<Unit> unitPresets;
 
     public UnitFactory() {
+        Database db = new Database();
         unitPresets = new ArrayList<Unit>();
-        unitPresets.add(new Unit(UnitType.SWORDSMAN, 100, 10, 35,
-                1, 2, 20, 1,
-                false, 150));
-        unitPresets.add(new Unit(UnitType.ARCHER, 75, 5, 25,
-                2, 3, 15, 1,
-                false, 150));
-        unitPresets.add(new Unit(UnitType.SCOUT, 50, 0, 10,
-                1, 4, 10, 1,
-                true, 150));
+        unitPresets.add(db.getSwordsmanPreset());
+        unitPresets.add(db.getArcherPreset());
+        unitPresets.add(db.getScoutPreset());
     }
 
     public Unit createUnit(UnitType unitType, Point location, IPlayer owner) {
