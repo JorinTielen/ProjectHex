@@ -1,6 +1,9 @@
 package com.fantasticfive.server;
 
 import com.fantasticfive.shared.IGame;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -8,7 +11,7 @@ import java.rmi.registry.Registry;
 public class RMIServer {
 
     private static final int portNumber = 1099;
-    private static final String bindingName = "AEXBanner";
+    private static final String bindingName = "ProjectHex";
 
     private Registry registry = null;
     private IGame game = null;
@@ -19,6 +22,13 @@ public class RMIServer {
 
     private void startRMIServer() {
         //Print port number for registry
+        InetAddress localhost = null;
+        try {
+            localhost = InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Server: IP Address: " + localhost.getHostAddress());
         System.out.println("Server: Port number " + portNumber);
 
         try {

@@ -16,13 +16,22 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.enums.BuildingType;
 import com.fantasticfive.projecthex.tables.*;
+
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.util.Scanner;
 
 public class ProjectHex extends ApplicationAdapter {
     //lib gdx
     private InputManager input = new InputManager(this);
     private OrthographicCamera camera;
     private SpriteBatch batch;
+
+    //RMI
+    private static final String bindingName = "ProjectHex";
+    private Registry registry = null;
 
     //game
     private IGame game;
@@ -55,7 +64,7 @@ public class ProjectHex extends ApplicationAdapter {
         //Setup Game
         try {
             //TODO Ophalen van RMI Server
-            game = null;
+            getGameFromRMI();
             game.setMap(map);
             game.addPlayer("maxim");
             game.addPlayer("enemy");
@@ -150,6 +159,8 @@ public class ProjectHex extends ApplicationAdapter {
         try {
             for (IPlayer p : game.getPlayers()) {
                 for (IBuilding b : p.getBuildings()) {
+                    if(b.getImage() == null) {
+                    }
                     Hexagon h = map.getHexAtLocation(b.getLocation());
                     batch.draw(b.getImage(), h.getPos().x, h.getPos().y);
                 }
@@ -447,5 +458,60 @@ public class ProjectHex extends ApplicationAdapter {
         labelStyle.background = skin.newDrawable("white", Color.LIGHT_GRAY);
         labelStyle.font = skin.getFont("default");
         skin.add("default", labelStyle);
+    }
+
+    private void getGameFromRMI() {
+        //Get ip address of server
+        Scanner input = new Scanner(System.in);
+        System.out.print("Client: Enter IP address of server: ");
+        String ipAddress = input.nextLine();
+
+        //Get port number
+        System.out.print("Client: Enter port number: ");
+        int portNumber = input.nextInt();
+
+        // Print IP address and port number for registry
+        System.out.println("Client: IP Address: " + ipAddress);
+        System.out.println("Client: Port number " + portNumber);
+
+        // Locate registry at IP address and port number
+        try {
+            registry = LocateRegistry.getRegistry(ipAddress, portNumber);
+        } catch (RemoteException ex) {
+            System.out.println("Client: Cannot locate registry");
+            System.out.println("Client: RemoteException: " + ex.getMessage());
+            registry = null;
+        }
+
+        // Print result locating registry
+        if (registry != null) {
+            System.out.println("Client: Registry located");
+        } else {
+            System.out.println("Client: Cannot locate registry");
+            System.out.println("Client: Registry is null pointer");
+        }
+
+        //Bind effectenbeurs using registry
+        if (registry != null) {
+            try {
+                game = (IGame) registry.lookup(bindingName);
+            } catch (RemoteException e) {
+                System.out.println("Client: Cannot bind effectenbeurs");
+                System.out.println("Client: RemoteException: " + e.getMessage());
+                game = null;
+            } catch (NotBoundException e) {
+                System.out.println("Client: Cannot bind effectenbeurs");
+                System.out.println("Client: NotBoundException: " + e.getMessage());
+                game = null;
+            }
+        }
+
+        // Test RMI connection
+        if (game != null) {
+            System.out.println("Client: Client started");
+        } else {
+            System.out.println("Client: Something went wrong");
+            System.exit(0);
+        }
     }
 }
