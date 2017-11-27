@@ -6,14 +6,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.fantasticfive.projecthex.ProjectHex;
+import com.fantasticfive.projecthex.screens.GameScreen;
 
 public class GameTable extends Table {
     private Table t;
 
     private Skin skin;
 
-    public GameTable(final ProjectHex projectHex, Skin skin) {
+    public GameTable(final GameScreen gameScreen, Skin skin) {
         t = new Table();
         this.skin = skin;
 
@@ -24,7 +24,7 @@ public class GameTable extends Table {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("Open Options");
-                //projectHex.showOptionsUI();
+                //gameScreen.showOptionsUI();
             }
         });
 

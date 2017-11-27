@@ -5,13 +5,14 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import com.fantasticfive.projecthex.screens.GameMain;
+import com.fantasticfive.projecthex.screens.GameScreen;
 
 public class InputManager implements InputProcessor {
     private Vector2 camPos = Vector2.Zero;
-    private GameMain game;
+    private GameScreen gameScreen;
 
-    public InputManager(GameMain game) {
-        this.game = game;
+    public InputManager(GameScreen gameScreen) {
+        this.gameScreen = gameScreen;
     }
 
     public Vector2 getCamPos() {
@@ -53,12 +54,12 @@ public class InputManager implements InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         //Left mouse button down
         if (button == Input.Buttons.LEFT) {
-            projectHex.screenLeftClick(screenX, screenY);
+            gameScreen.screenLeftClick(screenX, screenY);
             return true;
         }
         //Right mouse button down
         else if (button == Input.Buttons.RIGHT) {
-            projectHex.screenRightClick(screenX, screenY);
+            gameScreen.screenRightClick(screenX, screenY);
             return true;
         }
         return false;

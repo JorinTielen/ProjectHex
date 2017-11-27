@@ -2,7 +2,6 @@ package com.fantasticfive.projecthex.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.fantasticfive.projecthex.ProjectHex;
 import com.fantasticfive.projecthex.screens.GameMain;
 
 public class DesktopLauncher {

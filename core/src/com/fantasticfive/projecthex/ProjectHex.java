@@ -1,3 +1,5 @@
+/*
+
 package com.fantasticfive.projecthex;
 
 import com.badlogic.gdx.ApplicationAdapter;
@@ -404,3 +406,4 @@ public class ProjectHex extends ApplicationAdapter {
         skin.add("default", labelStyle);
     }
 }
+*/

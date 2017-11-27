@@ -22,7 +22,7 @@ public class LocalGame {
     private int version = 0;
     private IRemoteGame remoteGame;
 
-    LocalGame() {
+    public LocalGame() {
         getRemoteGame();
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -102,11 +102,11 @@ public class LocalGame {
         return thisPlayer;
     }
 
-    List<Player> getPlayers() {
+    public List<Player> getPlayers() {
         return Collections.unmodifiableList(players);
     }
 
-    Map getMap() {
+    public Map getMap() {
         return map;
     }
 
@@ -127,7 +127,7 @@ public class LocalGame {
         }
     }
 
-    Unit getUnitOnHex(Hexagon hex) {
+    public Unit getUnitOnHex(Hexagon hex) {
         Unit unit = null;
         for (Player p : getPlayers()) {
             for (Unit u : p.getUnits()) {

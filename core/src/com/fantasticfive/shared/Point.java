@@ -30,4 +30,9 @@ public class Point implements Serializable {
             return false;
         }
     }
+
+    public Point value(){
+        return new Point(x,y);
+    }
+
 }
