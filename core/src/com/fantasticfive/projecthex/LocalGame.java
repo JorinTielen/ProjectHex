@@ -170,7 +170,6 @@ public class LocalGame {
     public Building getBuildingPreset(BuildingType type) {
         try {
             Building b = remoteGame.getBuildingPreset(type);
-            b.setImage();
             return b;
         } catch (RemoteException e) {
             e.printStackTrace();

@@ -86,6 +86,19 @@ public class Player implements Serializable {
         else if (building instanceof TownCentre) {
             this.buildings.add(building);
         }
+        building.setOwner(this);
+    }
+
+    public boolean purchaseBuilding(Building building, Boolean mineOnMountain){
+        if (this.gold - ((Resource) building).getPurchaseCost() >= 0) {
+            this.removeGold(((Resource) building).getPurchaseCost());
+            building.setMineOnMountain();
+            this.buildings.add(building);
+            return true;
+        } else {
+            System.out.println("Not enough money");
+            return false;
+        }
     }
 
     //Sells building
