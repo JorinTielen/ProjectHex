@@ -4,13 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
+import com.fantasticfive.projecthex.screens.GameMain;
 
 public class InputManager implements InputProcessor {
     private Vector2 camPos = Vector2.Zero;
-    private ProjectHex projectHex;
+    private GameMain game;
 
-    public InputManager(ProjectHex projectHex) {
-        this.projectHex = projectHex;
+    public InputManager(GameMain game) {
+        this.game = game;
     }
 
     public Vector2 getCamPos() {

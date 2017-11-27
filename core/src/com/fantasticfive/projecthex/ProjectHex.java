@@ -9,11 +9,12 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.fantasticfive.projecthex.screens.GameMain;
 import com.fantasticfive.shared.*;
 
 public class ProjectHex extends ApplicationAdapter {
     //lib gdx
-    private InputManager input = new InputManager(this);
+    private InputManager input = new InputManager(new GameMain());
     private OrthographicCamera camera;
     private SpriteBatch batch;
 
