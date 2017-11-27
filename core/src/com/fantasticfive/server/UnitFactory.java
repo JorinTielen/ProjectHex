@@ -33,7 +33,12 @@ public class UnitFactory {
         }
         unit.setOwner(owner);
         unit.setLocation(location);
-        return unit;
+        try {
+            return (Unit) unit.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     Unit getUnitPreset(UnitType unitType) {

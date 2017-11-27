@@ -6,21 +6,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.fantasticfive.projecthex.LocalGame;
 import com.fantasticfive.shared.Building;
 import com.fantasticfive.shared.Point;
 import com.fantasticfive.shared.enums.UnitType;
-import com.fantasticfive.shared.IGame;
-
-import java.rmi.RemoteException;
 
 public class UnitShopTable extends Table {
     private Table t;
 
-    final private IGame game;
+    final private LocalGame game;
     private Skin skin;
     private Building building;
 
-    public UnitShopTable(IGame game, Skin skin) throws RemoteException {
+    public UnitShopTable(LocalGame game, Skin skin) {
         setVisible(false);
         this.t = new Table();
         this.game = game;
@@ -49,11 +47,7 @@ public class UnitShopTable extends Table {
         buttonBuyArcher.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("you bought an archer");
-                try {
-                    UnitShopTable.this.game.createUnit(UnitType.ARCHER, new Point(building.getLocation().x + 1, building.getLocation().y));
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                UnitShopTable.this.game.buyUnit(UnitType.ARCHER, new Point(building.getLocation().x + 1, building.getLocation().y));
                 setVisible(false);
             }
         });
@@ -62,11 +56,8 @@ public class UnitShopTable extends Table {
         buttonBuySwordsman.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("you bought a swordsman");
-                try {
-                    UnitShopTable.this.game.createUnit(UnitType.SWORDSMAN, new Point(building.getLocation().x + 1, building.getLocation().y));
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+
+                UnitShopTable.this.game.buyUnit(UnitType.SWORDSMAN, new Point(building.getLocation().x + 1, building.getLocation().y));
                 setVisible(false);
             }
         });
@@ -75,11 +66,7 @@ public class UnitShopTable extends Table {
         buttonBuyScout.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("you bought a scout");
-                try {
-                    UnitShopTable.this.game.createUnit(UnitType.SCOUT, new Point(building.getLocation().x + 1, building.getLocation().y));
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                UnitShopTable.this.game.buyUnit(UnitType.SCOUT, new Point(building.getLocation().x + 1, building.getLocation().y));
                 setVisible(false);
             }
         });
@@ -88,11 +75,7 @@ public class UnitShopTable extends Table {
         buttonSellBarracks.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("You sold your Barracks.");
-                try {
-                    UnitShopTable.this.game.sellBuilding(building.getLocation());
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                UnitShopTable.this.game.sellBuilding(building.getLocation());
                 setVisible(false);
             }
         });

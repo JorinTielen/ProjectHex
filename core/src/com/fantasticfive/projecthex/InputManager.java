@@ -52,12 +52,12 @@ public class InputManager implements InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         //Left mouse button down
         if (button == Input.Buttons.LEFT) {
-            //projectHex.screenLeftClick(screenX, screenY);
+            projectHex.screenLeftClick(screenX, screenY);
             return true;
         }
         //Right mouse button down
         else if (button == Input.Buttons.RIGHT) {
-            //projectHex.screenRightClick(screenX, screenY);
+            projectHex.screenRightClick(screenX, screenY);
             return true;
         }
         return false;

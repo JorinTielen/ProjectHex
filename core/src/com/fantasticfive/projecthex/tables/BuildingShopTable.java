@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.fantasticfive.projecthex.LocalGame;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.enums.BuildingType;
 import com.fantasticfive.projecthex.ProjectHex;
@@ -16,11 +17,11 @@ public class BuildingShopTable extends Table {
 
     final private ProjectHex projectHex;
 
-    final private IGame game;
+    final private LocalGame game;
     private Skin skin;
     private Building buildingToBuild;
 
-    public BuildingShopTable(ProjectHex projectHex, IGame game, Skin skin) throws RemoteException {
+    public BuildingShopTable(ProjectHex projectHex, LocalGame game, Skin skin) {
         setVisible(false);
         t = new Table();
         this.projectHex = projectHex;
@@ -48,11 +49,7 @@ public class BuildingShopTable extends Table {
         buttonBuyResource.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("You bought a Resource");
-                try {
-                    buildingToBuild = BuildingShopTable.this.game.getBuildingPreset(BuildingType.RESOURCE);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                buildingToBuild = BuildingShopTable.this.game.getBuildingPreset(BuildingType.RESOURCE);
                 update();
                 setVisible(false);
             }
@@ -62,11 +59,7 @@ public class BuildingShopTable extends Table {
         buttonBuyFortification.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("You bought a Fortification");
-                try {
-                    buildingToBuild = BuildingShopTable.this.game.getBuildingPreset(BuildingType.FORTIFICATION);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                buildingToBuild = BuildingShopTable.this.game.getBuildingPreset(BuildingType.FORTIFICATION);
                 update();
                 setVisible(false);
             }
@@ -76,11 +69,7 @@ public class BuildingShopTable extends Table {
         buttonBuyBarracks.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("You bought a Barracks");
-                try {
-                    buildingToBuild = BuildingShopTable.this.game.getBuildingPreset(BuildingType.BARRACKS);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                buildingToBuild = BuildingShopTable.this.game.getBuildingPreset(BuildingType.BARRACKS);
                 update();
                 setVisible(false);
             }
@@ -90,6 +79,6 @@ public class BuildingShopTable extends Table {
     }
 
     private void update() {
-        //projectHex.updateBuildingToBuild(buildingToBuild);
+        projectHex.updateBuildingToBuild(buildingToBuild);
     }
 }

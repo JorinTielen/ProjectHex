@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.fantasticfive.projecthex.LocalGame;
 import com.fantasticfive.shared.IGame;
 import com.fantasticfive.shared.Unit;
 
@@ -15,11 +16,11 @@ public class UnitSellTable extends Table {
     private Table t;
     private Label l;
 
-    final private IGame game;
+    final private LocalGame game;
     private Skin skin;
     private Unit unit;
 
-    public UnitSellTable(IGame game, Skin skin) {
+    public UnitSellTable(LocalGame game, Skin skin) {
         setVisible(false);
         this.t = new Table();
         this.game = game;
@@ -38,11 +39,7 @@ public class UnitSellTable extends Table {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("Selling unit");
-                try {
-                    UnitSellTable.this.game.getCurrentPlayer().sellUnit(unit);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                UnitSellTable.this.game.getThisPlayer().sellUnit(unit);
                 setVisible(false);
             }
         });

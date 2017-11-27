@@ -4,6 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.fantasticfive.shared.IRemoteGame;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.Map;
+import com.fantasticfive.shared.enums.BuildingType;
+import com.fantasticfive.shared.enums.UnitType;
+
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -13,7 +16,7 @@ import java.util.*;
 public class LocalGame {
     private List<Player> players = new ArrayList<>();
     private Player currentPlayer;
-    private int thisPlayerId;
+    private Player thisPlayer;
     private Map map;
 
     private int version = 0;
@@ -29,11 +32,7 @@ public class LocalGame {
                     int remoteVersion = remoteGame.getVersion();
                     if (remoteVersion != version) {
                         Gdx.app.postRunnable(() -> {
-                            try {
-                                UpdateFromRemote(remoteVersion);
-                            } catch (RemoteException e) {
-                                e.printStackTrace();
-                            }
+                            UpdateFromRemote(remoteVersion);
                         });
                     }
                 } catch (RemoteException e) {
@@ -43,21 +42,64 @@ public class LocalGame {
         },0, 500);
     }
 
-    private void join(String username) throws RemoteException {
-        thisPlayerId = remoteGame.addPlayer(username).getId();
+    private void join(String username) {
+        try {
+            this.thisPlayer = remoteGame.addPlayer(username);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void UpdateFromRemote(int remoteVersion) throws RemoteException {
-        players = remoteGame.getPlayers();
+    public void leaveGame()  {
+        try {
+            remoteGame.leaveGame(thisPlayer.getId());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void UpdateFromRemote(int remoteVersion) {
+        try {
+            players = remoteGame.getPlayers();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
 
         for (Player p : players) {
+            if (this.thisPlayer.getId() == p.getId()) {
+                this.thisPlayer = p;
+            }
             for (Building b : p.getBuildings()) {
                 b.setImage();
+            }
+            for (Unit u : p.getUnits()) {
+                u.setTexture();
             }
         }
 
         version = remoteVersion;
         System.out.println("Updated from Remote");
+    }
+
+    boolean isMyTurn() {
+        try {
+            return thisPlayer.getId() == remoteGame.getCurrentPlayer().getId();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public void endTurn() {
+        try {
+            remoteGame.endTurn(thisPlayer.getId());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Player getThisPlayer() {
+        return thisPlayer;
     }
 
     List<Player> getPlayers() {
@@ -68,7 +110,24 @@ public class LocalGame {
         return map;
     }
 
-    public Unit getUnitOnHex(Hexagon hex) {
+    public Unit getUnitPreset(UnitType type) {
+        try {
+            return remoteGame.getUnitPreset(type);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void buyUnit(UnitType type, Point location) {
+        try {
+            remoteGame.buyUnit(type, location, thisPlayer.getId());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    Unit getUnitOnHex(Hexagon hex) {
         Unit unit = null;
         for (Player p : getPlayers()) {
             for (Unit u : p.getUnits()) {
@@ -91,6 +150,59 @@ public class LocalGame {
             }
         }
         return unit;
+    }
+
+    public void attackBuilding(Unit attacker, Point location) {
+        try {
+            remoteGame.attackBuilding(attacker, location);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Building getBuildingPreset(BuildingType type) {
+        try {
+            Building b = remoteGame.getBuildingPreset(type);
+            b.setImage();
+            return b;
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public void buyBuilding(BuildingType type, Point location) {
+        try {
+            remoteGame.buyBuilding(type, location);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sellBuilding(Point location) {
+        try {
+            remoteGame.sellBuilding(location);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Building getBuildingAtLocation(Point location) {
+        try {
+            return remoteGame.getBuildingAtLocation(location);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public boolean hexEmpty(Point location) {
+        try {
+            return remoteGame.hexEmpty(location);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private void getRemoteGame() {

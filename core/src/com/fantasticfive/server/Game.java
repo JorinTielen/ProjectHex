@@ -66,12 +66,7 @@ public class Game extends UnicastRemoteObject implements IGame {
     }
 
     public void leaveGame() {
-        players.remove(currentPlayer);
-        endTurn();
 
-        if (players.size() == 1) {
-            System.out.println(currentPlayer.getUsername() + " has won the game!");
-        }
     }
 
     public void generateHash() {

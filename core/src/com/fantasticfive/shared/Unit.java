@@ -3,7 +3,9 @@ package com.fantasticfive.shared;
 import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.shared.enums.UnitType;
 
-public class Unit implements Cloneable {
+import java.io.Serializable;
+
+public class Unit implements Cloneable, Serializable {
     public Texture texture;
     private UnitType unitType;
     private int health;
@@ -113,7 +115,7 @@ public class Unit implements Cloneable {
         return this.health;
     }
 
-    public com.fantasticfive.shared.enums.UnitType getUnitType() {
+    public UnitType getUnitType() {
         return this.unitType;
     }
 
@@ -124,10 +126,10 @@ public class Unit implements Cloneable {
 
     public void toggleSelected() {
         if (isSelected) {
-            System.out.println("com.fantasticfive.shared.Unit deselected");
+            System.out.println("Unit deselected");
             isSelected = false;
         } else {
-            System.out.println("com.fantasticfive.shared.Unit selected");
+            System.out.println("Unit selected");
             isSelected = true;
         }
     }
