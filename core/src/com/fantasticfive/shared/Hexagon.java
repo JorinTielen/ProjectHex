@@ -18,6 +18,7 @@ public class Hexagon implements Serializable {
     private Point location;
     private int radius;
     private Player owner;
+    private boolean isMountain;
     private static final double HEIGHT_MULTIPLIER = Math.sqrt(3) / 2;
 
     //Normal hexagon
@@ -33,6 +34,10 @@ public class Hexagon implements Serializable {
         this.objectType = objectType;
         this.location = location;
         this.radius = radius;
+
+        if (objectType == ObjectType.MOUNTAIN){
+            this.isMountain = true;
+        }
     }
 
     public void setTextures() {
@@ -121,6 +126,15 @@ public class Hexagon implements Serializable {
 
     public Player getOwner() {
         return owner;
+    }
+
+    public boolean getIsMountain() {
+        return this.isMountain;
+    }
+
+    public void setMountain(){
+        this.objectType = ObjectType.MOUNTAIN;
+        this.objectImage = new Texture("rockBig.png");
     }
 
     public ObjectType getObjectType() {

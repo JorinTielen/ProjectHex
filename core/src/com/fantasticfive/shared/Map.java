@@ -82,6 +82,43 @@ public class Map implements IMap {
         return hexagons;
     }
 
+    @Override
+    public boolean bordersOwnLand(Point location, Player currentPlayer) {
+        Hexagon h = getHexAtLocation(new Point(location.x - 1, location.y - 1));
+        if (h.getOwner() == currentPlayer){
+            return true;
+        }
+        h = getHexAtLocation(new Point(location.x - 1, location.y ));
+        if (h.getOwner() == currentPlayer){
+            return true;
+        }
+        h = getHexAtLocation(new Point(location.x - 1, location.y + 1));
+        if (h.getOwner() == currentPlayer){
+            return true;
+        }
+        h = getHexAtLocation(new Point(location.x, location.y - 1));
+        if (h.getOwner() == currentPlayer){
+            return true;
+        }
+        h = getHexAtLocation(new Point(location.x, location.y + 1));
+        if (h.getOwner() == currentPlayer){
+            return true;
+        }
+        h = getHexAtLocation(new Point(location.x + 1, location.y - 1));
+        if (h.getOwner() == currentPlayer){
+            return true;
+        }
+        h = getHexAtLocation(new Point(location.x + 1, location.y));
+        if (h.getOwner() == currentPlayer){
+            return true;
+        }
+        h = getHexAtLocation(new Point(location.x + 1, location.y + 1));
+        if (h.getOwner() == currentPlayer){
+            return true;
+        }
+        return false;
+    }
+
     //Check if buildings can be placed on given location
     public boolean isHexBuildable(Point location, Player player) {
         Hexagon hex = getHexAtLocation(location);

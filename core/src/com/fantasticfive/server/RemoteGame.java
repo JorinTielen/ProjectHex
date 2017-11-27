@@ -199,6 +199,42 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         }
     }
 
+    //Checks if claimed land has any mountain next to it, if it does it claims it.
+    private void claimMountains(Point location){
+        Hexagon h = map.getHexAtLocation(new Point(location.x - 1, location.y - 1));
+        if (!h.hasOwner() && h.getIsMountain()){
+            currentPlayer.addHexagon(h);
+        }
+        h = map.getHexAtLocation(new Point(location.x - 1, location.y ));
+        if (!h.hasOwner() && h.getIsMountain()){
+            currentPlayer.addHexagon(h);
+        }
+        h = map.getHexAtLocation(new Point(location.x - 1, location.y + 1));
+        if (!h.hasOwner() && h.getIsMountain()){
+            currentPlayer.addHexagon(h);
+        }
+        h = map.getHexAtLocation(new Point(location.x, location.y - 1));
+        if (!h.hasOwner() && h.getIsMountain()){
+            currentPlayer.addHexagon(h);
+        }
+        h = map.getHexAtLocation(new Point(location.x, location.y + 1));
+        if (!h.hasOwner() && h.getIsMountain()){
+            currentPlayer.addHexagon(h);
+        }
+        h = map.getHexAtLocation(new Point(location.x + 1, location.y - 1));
+        if (!h.hasOwner() && h.getIsMountain()){
+            currentPlayer.addHexagon(h);
+        }
+        h = map.getHexAtLocation(new Point(location.x + 1, location.y));
+        if (!h.hasOwner() && h.getIsMountain()){
+            currentPlayer.addHexagon(h);
+        }
+        h = map.getHexAtLocation(new Point(location.x + 1, location.y + 1));
+        if (!h.hasOwner() && h.getIsMountain()){
+            currentPlayer.addHexagon(h);
+        }
+    }
+
     @Override
     public Building getBuildingPreset(BuildingType type) throws RemoteException {
         return buildingFactory.getBuildingPreset(type);
@@ -229,6 +265,9 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
                 cost = ((Fortification) buildingFactory.getBuildingPreset(BuildingType.FORTIFICATION)).getPurchaseCost();
             } else if (building instanceof Resource) {
                 cost = ((Resource) buildingFactory.getBuildingPreset(BuildingType.RESOURCE)).getPurchaseCost();
+            }
+            if (map.getHexAtLocation(location).getIsMountain()){
+                map.getHexAtLocation(location).setMountain();
             }
             currentPlayer.sellBuilding(building, cost);
         }
