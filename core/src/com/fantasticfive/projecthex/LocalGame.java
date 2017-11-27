@@ -3,9 +3,6 @@ package com.fantasticfive.projecthex;
 import com.fantasticfive.shared.IRemoteGame;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.Map;
-import fontyspublisher.*;
-
-import java.beans.PropertyChangeEvent;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -31,14 +28,15 @@ public class LocalGame {
                 try {
                     int remoteVersion = remoteGame.getVersion();
                     if (remoteVersion != version) {
-                        remoteGame.getPlayers();
+                        players = remoteGame.getPlayers();
                         version = remoteVersion;
+                        System.out.println("Updated from Remote");
                     }
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
             }
-        },0, 1000);
+        },0, 500);
     }
 
     public void join(String username) {

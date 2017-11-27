@@ -4,8 +4,6 @@ import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.enums.BuildingType;
 import com.fantasticfive.shared.enums.Color;
 import com.fantasticfive.shared.enums.UnitType;
-import fontyspublisher.*;
-
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -20,17 +18,15 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     private Player currentPlayer;
     private Map map;
 
-    ArrayList<Color> usedColors = new ArrayList<>();
-    ArrayList<Integer> usedIds = new ArrayList<>();
+    private ArrayList<Color> usedColors = new ArrayList<>();
+    private ArrayList<Integer> usedIds = new ArrayList<>();
 
     private BuildingFactory buildingFactory = new BuildingFactory();
     private UnitFactory unitFactory = new UnitFactory();
 
     private Registry registry;
-    private RemotePublisher remotePublisher = new RemotePublisher();
 
     RemoteGame(int portNumber) throws RemoteException {
-        remotePublisher.registerProperty("players");
         RemoteSetup(portNumber);
 
         map = new Map(10, 10);
@@ -63,6 +59,9 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(1, 0), p);
             p.purchaseBuilding(b);
         }
+
+        usedColors.add(color);
+        usedIds.add(id);
 
         players.add(p);
         version++;
