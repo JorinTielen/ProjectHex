@@ -76,6 +76,17 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         version++;
     }
 
+    @Override
+    public void updateFromLocal(List<Player> players) throws RemoteException {
+        this.players = players;
+        for (Player p : players) {
+            if (p.getId() == currentPlayer.getId()) {
+                currentPlayer = p;
+            }
+        }
+        version++;
+    }
+
     public Player getCurrentPlayer() throws RemoteException {
         return currentPlayer;
     }
@@ -118,6 +129,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         if (players.size() == 1) {
             System.out.println(currentPlayer.getUsername() + " has won the game!");
         }
+        version++;
     }
 
     @Override
@@ -141,15 +153,11 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
 
     @Override
     public void buyUnit(UnitType unitType, Point location, int playerId) throws RemoteException {
-        if (playerId == currentPlayer.getId()) {
+         if (playerId == currentPlayer.getId()) {
             if (hexEmpty(location)) {
                 Unit unit = unitFactory.getUnitPreset(unitType);
                 //When player has enough gold to buy unit
-                if (currentPlayer.getGold() - unit.getPurchaseCost() > 0) {
-                    currentPlayer.purchaseUnit(unitFactory.createUnit(unitType, location, currentPlayer));
-                } else {
-                    System.out.println("Not enough gold");
-                }
+                currentPlayer.purchaseUnit(unitFactory.createUnit(unitType, location, currentPlayer));
             }
             //When hex is not empty
             else {

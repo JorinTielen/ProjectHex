@@ -15,6 +15,7 @@ public interface IRemoteGame extends Remote {
     void startGame() throws RemoteException;
     void endTurn(int playerId) throws RemoteException;
     void leaveGame(int playerId) throws RemoteException;
+    void updateFromLocal(List<Player> players) throws RemoteException;
     Player addPlayer(String username) throws RemoteException;
     List<Player> getPlayers() throws RemoteException;
     Player getCurrentPlayer() throws RemoteException;

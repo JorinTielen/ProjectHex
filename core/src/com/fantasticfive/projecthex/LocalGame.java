@@ -15,7 +15,6 @@ import java.util.*;
 
 public class LocalGame {
     private List<Player> players = new ArrayList<>();
-    private Player currentPlayer;
     private Player thisPlayer;
     private Map map;
 
@@ -39,7 +38,7 @@ public class LocalGame {
                     e.printStackTrace();
                 }
             }
-        },0, 500);
+        },0, 250);
     }
 
     private void join(String username) {
@@ -79,6 +78,14 @@ public class LocalGame {
 
         version = remoteVersion;
         System.out.println("Updated from Remote");
+    }
+
+    public void updateFromLocal() {
+        try {
+            remoteGame.updateFromLocal(players);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     boolean isMyTurn() {

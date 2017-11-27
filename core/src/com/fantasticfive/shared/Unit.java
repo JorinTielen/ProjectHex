@@ -6,7 +6,7 @@ import com.fantasticfive.shared.enums.UnitType;
 import java.io.Serializable;
 
 public class Unit implements Cloneable, Serializable {
-    public Texture texture;
+    public transient Texture texture;
     private UnitType unitType;
     private int health;
     private int armor;

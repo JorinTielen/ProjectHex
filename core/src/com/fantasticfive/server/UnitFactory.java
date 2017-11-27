@@ -20,25 +20,30 @@ public class UnitFactory {
 
     Unit createUnit(UnitType unitType, Point location, Player owner) {
         Unit unit = null;
-        switch (unitType) {
-            case SWORDSMAN:
-                unit = getUnitPreset(UnitType.SWORDSMAN);
-                break;
-            case ARCHER:
-                unit = getUnitPreset(UnitType.ARCHER);
-                break;
-            case SCOUT:
-                unit = getUnitPreset(UnitType.SCOUT);
-                break;
-        }
-        unit.setOwner(owner);
-        unit.setLocation(location);
+
         try {
-            return (Unit) unit.clone();
+            switch (unitType) {
+                case SWORDSMAN:
+                    unit = (Unit) getUnitPreset(UnitType.SWORDSMAN).clone();
+                    break;
+                case ARCHER:
+                    unit = (Unit) getUnitPreset(UnitType.ARCHER).clone();
+                    break;
+                case SCOUT:
+                    unit = (Unit) getUnitPreset(UnitType.SCOUT).clone();
+                    break;
+            }
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
-            return null;
         }
+            if (unit != null) {
+            unit.setOwner(owner);
+            unit.setLocation(location);
+
+            return unit;
+        }
+
+        return null;
     }
 
     Unit getUnitPreset(UnitType unitType) {

@@ -251,15 +251,17 @@ public class ProjectHex extends ApplicationAdapter {
         if (game.getUnitOnHex(hex) != null && game.getSelectedUnit() == null && game.getUnitOnHex(hex).getOwner() == game.getThisPlayer()) {
             Unit u = game.getUnitOnHex(hex);
             u.toggleSelected();
-            //If not clicked on unit and unit is selected
-        } else if (game.getUnitOnHex(hex) == null && game.getSelectedUnit() != null) {
+        }
+        //If not clicked on unit and unit is selected
+        else if (game.getUnitOnHex(hex) == null && game.getSelectedUnit() != null) {
             Unit u = game.getSelectedUnit();
             //Move unit to free hex
             if (game.hexEmpty(hex.getLocation())) {
                 u.move(new Point(hex.getLocation().x, hex.getLocation().y));
                 u.toggleSelected();
+                game.updateFromLocal();
             }
-            //com.fantasticfive.shared.Unit attacks enemy building
+            //Unit attacks enemy building
             else if (game.getBuildingAtLocation(hex.getLocation()) != null
                     && game.getBuildingAtLocation(hex.getLocation()).getOwner() != game.getThisPlayer()) {
                 game.attackBuilding(game.getSelectedUnit(), hex.getLocation());
@@ -283,6 +285,7 @@ public class ProjectHex extends ApplicationAdapter {
                 if (enemy.getHealth() == 0) {
                     enemy.getOwner().removeUnit(enemy);
                 }
+                game.updateFromLocal();
             }
         }
     }
