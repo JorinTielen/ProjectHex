@@ -10,15 +10,15 @@ import java.util.List;
 public class UnitFactory {
     private List<Unit> unitPresets;
 
-    public UnitFactory() {
+    UnitFactory() {
         Database db = new Database();
-        unitPresets = new ArrayList<Unit>();
+        unitPresets = new ArrayList<>();
         unitPresets.add(db.getSwordsmanPreset());
         unitPresets.add(db.getArcherPreset());
         unitPresets.add(db.getScoutPreset());
     }
 
-    public Unit createUnit(UnitType unitType, Point location, IPlayer owner) {
+    Unit createUnit(UnitType unitType, Point location, IPlayer owner) {
         Unit unit = null;
         switch (unitType) {
             case SWORDSMAN:
@@ -36,7 +36,7 @@ public class UnitFactory {
         return unit;
     }
 
-    public Unit getUnitPreset(UnitType unitType) {
+    Unit getUnitPreset(UnitType unitType) {
         Unit copy;
         for (Unit unit : unitPresets) {
             if (unit.getUnitType() == unitType) {

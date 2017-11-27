@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface IGame extends Remote {
     IUnit getSelectedUnit() throws RemoteException;
-    void setMap(IMap map) throws RemoteException;
+    void setMap() throws RemoteException;
     void addPlayer(String username) throws RemoteException;
     void startGame() throws RemoteException;
     List<IPlayer> getPlayers() throws RemoteException;

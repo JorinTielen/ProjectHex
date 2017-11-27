@@ -1,11 +1,10 @@
 package com.fantasticfive.server;
 
-import com.fantasticfive.shared.IGame;
+import com.fantasticfive.shared.IRemoteGame;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 public class RMIServer {
@@ -14,7 +13,7 @@ public class RMIServer {
     private static final String bindingName = "ProjectHex";
 
     private Registry registry = null;
-    private IGame game = null;
+    private IRemoteGame game = null;
 
     public RMIServer() {
         startRMIServer();
@@ -32,41 +31,11 @@ public class RMIServer {
         System.out.println("Server: Port number " + portNumber);
 
         try {
-            game = new Game();
+            game = new RemoteGame(portNumber);
             System.out.println("Server: Game created");
         } catch (RemoteException e) {
             System.out.println("Server: Cannot create Game");
             System.out.println("Server: RemoteException: " + e.getMessage());
-            game = null;
-        }
-
-        //Create registry at port number
-        try {
-            registry = LocateRegistry.createRegistry(portNumber);
-            System.out.println("Server: Registry created on port number " + portNumber);
-        } catch (RemoteException e) {
-            System.out.println("Server: Cannot create registry");
-            System.out.println("Server: RemoteException: " + e.getMessage());
-            registry = null;
-        }
-
-        //Bind effectenbeurs using registry
-        try {
-            registry.rebind(bindingName, game);
-            System.out.println("Server: Game binded to registry");
-        } catch (RemoteException e) {
-            System.out.println("Server: Cannot bind Game");
-            System.out.println("Server: RemoteException: " + e.getMessage());
-        } catch (NullPointerException e) {
-            System.out.println("Server: Port already in use. \nServer: Please check if the server isn't already running");
-            System.out.println("Server: NullPointerException: " + e.getMessage());
-        }
-
-        if (game != null) {
-            System.out.println("Server: Server started");
-        } else {
-            System.out.println("Server: Something went wrong with starting the server");
-            System.exit(0);
         }
     }
 

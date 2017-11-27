@@ -24,7 +24,7 @@ public class GameTable extends Table {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("Open Options");
-                projectHex.showOptionsUI();
+                //projectHex.showOptionsUI();
             }
         });
 

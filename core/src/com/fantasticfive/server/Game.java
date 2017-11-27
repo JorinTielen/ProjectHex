@@ -1,5 +1,7 @@
 package com.fantasticfive.server;
 
+import com.fantasticfive.server.BuildingFactory;
+import com.fantasticfive.server.UnitFactory;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.enums.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -12,7 +14,7 @@ import java.util.List;
 /**
  * The com.fantasticfive.server.Game class is the main class of the game, and takes care of the core functionalities of the game.
  */
-public class Game extends UnicastRemoteObject implements IGame {
+public class Game extends UnicastRemoteObject {
     private List<IPlayer> players = new ArrayList<IPlayer>();
     private IPlayer currentPlayer;
     private IMap map;
@@ -24,44 +26,6 @@ public class Game extends UnicastRemoteObject implements IGame {
     public Game() throws RemoteException {
     }
 
-    /**
-     * Adds a player to the game. Checks if the username is already in use and gives the player a random colour and his towncentre
-     *
-     * @param username The user's username
-     */
-    public void addPlayer(String username) {
-        boolean available = true;
-        ArrayList<Color> usedColors = new ArrayList<Color>();
-
-        for (IPlayer p : players) {
-            if (p.getUsername().equals(username)) {
-                System.out.println("This username is already in this game!");
-                available = false;
-            }
-            if (!usedColors.contains(p.getColor())) {
-                usedColors.add(p.getColor());
-            }
-        }
-
-        Color color;
-        do {
-            color = Color.getRandomColor();
-        } while (usedColors.contains(color));
-
-        if (available) {
-            IPlayer p = new Player(username, color);
-            players.add(p);
-            p.addGold(100);
-            if (username.equals("enemy")) {
-                IBuilding b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(10, 13), p);
-                p.purchaseBuilding(b);
-            } else {
-                IBuilding b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(1, 0), p); //Random Point???
-                p.purchaseBuilding(b);
-            }
-        }
-    }
-
     public void removePlayer(IPlayer player) {
         this.players.remove(player);
 
@@ -70,9 +34,8 @@ public class Game extends UnicastRemoteObject implements IGame {
         }
     }
 
-    @Override
-    public void setMap(IMap map) {
-        this.map = map;
+    public void setMap() {
+        map = new Map(20, 15);
     }
 
     public void startGame() {

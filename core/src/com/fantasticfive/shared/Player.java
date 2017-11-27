@@ -5,6 +5,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class Player implements IPlayer {
     private List<IBuilding> buildings;
@@ -13,14 +14,18 @@ public class Player implements IPlayer {
     private Color color;
     private int gold = 0;
     private String username;
+    private int id;
 
-    public Player(String username, Color color) {
+    public Player(String username, Color color, int id) {
         this.color = color;
         this.username = username;
 
-        buildings = new ArrayList<IBuilding>();
-        units = new ArrayList<IUnit>();
-        hexagons = new ArrayList<Hexagon>();
+        buildings = new ArrayList<>();
+        units = new ArrayList<>();
+        hexagons = new ArrayList<>();
+        this.gold = 100;
+
+        this.id = id;
     }
 
     public Color getColor() {

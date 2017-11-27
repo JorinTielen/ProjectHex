@@ -28,6 +28,12 @@ public class Map implements IMap {
         return false;
     }
 
+    public void setTextures() {
+        for (Hexagon hex : hexagons) {
+            hex.setTextures();
+        }
+    }
+
     private void Generate() {
         Noise.setSeed(1234); //This value is used to calculate the map
         float scale = 0.10f; //To determine the density

@@ -14,7 +14,7 @@ public class BuildingFactory {
 
     public BuildingFactory() {
         Database db = new Database();
-        buildingPresets = new ArrayList<Building>();
+        buildingPresets = new ArrayList<>();
         buildingPresets.add(db.getBarracksPreset());
         buildingPresets.add(db.getResourcePreset());
         buildingPresets.add(db.getFortificationPreset());

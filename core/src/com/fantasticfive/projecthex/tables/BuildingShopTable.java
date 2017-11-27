@@ -90,6 +90,6 @@ public class BuildingShopTable extends Table {
     }
 
     private void update() {
-        projectHex.updateBuildingToBuild(buildingToBuild);
+        //projectHex.updateBuildingToBuild(buildingToBuild);
     }
 }

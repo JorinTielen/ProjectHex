@@ -3,9 +3,11 @@ package com.fantasticfive.shared;
 import com.fantasticfive.shared.enums.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+
+import java.io.Serializable;
 import java.util.Random;
 
-public class Hexagon {
+public class Hexagon implements Serializable {
     public Texture groundImage;
     public Texture objectImage;
     private GroundType groundType;
@@ -18,44 +20,9 @@ public class Hexagon {
 
     //Normal hexagon
     public Hexagon(GroundType groundType, Point location, int radius) {
-        Random random = new Random();
         this.groundType = groundType;
         this.location = location;
         this.radius = radius;
-
-        switch (groundType) {
-            case GRASS:
-                this.groundImage = new Texture("grassClear.png");
-                break;
-            case DIRT:
-                this.groundImage = new Texture("dirtClear.png");
-                break;
-            case WATER:
-                this.groundImage = new Texture("waterClear.png");
-                break;
-            case SAND:
-                int randomNumber = random.nextInt(10);
-                switch (randomNumber) {
-                    case 2:
-                        this.groundImage = new Texture("sandTrees1.png");
-                        break;
-                    case 7:
-                        this.groundImage = new Texture("sandTrees2.png");
-                        break;
-                    default:
-                        this.groundImage = new Texture("sandClear.png");
-                        break;
-                }
-                break;
-            case FOREST:
-                if (random.nextInt(2) == 1) {
-                    this.groundImage = new Texture("grassTrees1.png");
-                } else {
-                    this.groundImage = new Texture("grassTrees2.png");
-                }
-                break;
-        }
-        groundImage.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
     }
 
     //com.fantasticfive.shared.Hexagon with rock
@@ -64,26 +31,65 @@ public class Hexagon {
         this.objectType = objectType;
         this.location = location;
         this.radius = radius;
+    }
 
-        switch (groundType) {
-            case GRASS:
-                this.groundImage = new Texture("grassClear.png");
-                break;
-            case DIRT:
-                this.groundImage = new Texture("dirtClear.png");
-                break;
-            case WATER:
-                this.groundImage = new Texture("waterClear.png");
-                break;
-            case SAND:
-                this.groundImage = new Texture("sandClear.png");
-                break;
-            case FOREST:
-                this.groundImage = new Texture("grassClear.png");
-                break;
+    public void setTextures() {
+        Random random = new Random();
+
+        if (objectType == null) {
+            switch (groundType) {
+                case GRASS:
+                    this.groundImage = new Texture("grassClear.png");
+                    break;
+                case DIRT:
+                    this.groundImage = new Texture("dirtClear.png");
+                    break;
+                case WATER:
+                    this.groundImage = new Texture("waterClear.png");
+                    break;
+                case SAND:
+                    int randomNumber = random.nextInt(10);
+                    switch (randomNumber) {
+                        case 2:
+                            this.groundImage = new Texture("sandTrees1.png");
+                            break;
+                        case 7:
+                            this.groundImage = new Texture("sandTrees2.png");
+                            break;
+                        default:
+                            this.groundImage = new Texture("sandClear.png");
+                            break;
+                    }
+                    break;
+                case FOREST:
+                    if (random.nextInt(2) == 1) {
+                        this.groundImage = new Texture("grassTrees1.png");
+                    } else {
+                        this.groundImage = new Texture("grassTrees2.png");
+                    }
+                    break;
+            }
+        } else {
+            switch (groundType) {
+                case GRASS:
+                    this.groundImage = new Texture("grassClear.png");
+                    break;
+                case DIRT:
+                    this.groundImage = new Texture("dirtClear.png");
+                    break;
+                case WATER:
+                    this.groundImage = new Texture("waterClear.png");
+                    break;
+                case SAND:
+                    this.groundImage = new Texture("sandClear.png");
+                    break;
+                case FOREST:
+                    this.groundImage = new Texture("grassClear.png");
+                    break;
+            }
+            objectImage = new Texture("rockBig.png");
         }
 
-        objectImage = new Texture("rockBig.png");
         groundImage.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
     }
 

@@ -4,24 +4,12 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.fantasticfive.shared.*;
-import com.fantasticfive.shared.enums.BuildingType;
-import com.fantasticfive.projecthex.tables.*;
-
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.util.Scanner;
 
 public class ProjectHex extends ApplicationAdapter {
     //lib gdx
@@ -29,12 +17,8 @@ public class ProjectHex extends ApplicationAdapter {
     private OrthographicCamera camera;
     private SpriteBatch batch;
 
-    //RMI
-    private static final String bindingName = "ProjectHex";
-    private Registry registry = null;
-
     //game
-    private IGame game;
+    private LocalGame game;
     private IMap map;
 
     //ui
@@ -59,19 +43,10 @@ public class ProjectHex extends ApplicationAdapter {
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         //Setup Map
-        map = new Map(20, 15);
 
         //Setup Game
-        try {
-            //TODO Ophalen van RMI Server
-            getGameFromRMI();
-            game.setMap(map);
-            game.addPlayer("maxim");
-            game.addPlayer("enemy");
-            game.startGame();
-        } catch (RemoteException e) {
-            System.out.println("Remote exception enzo");
-        }
+        game = new LocalGame();
+        map = game.getMap();
 
         //Setup window
         batch = new SpriteBatch();
@@ -84,17 +59,13 @@ public class ProjectHex extends ApplicationAdapter {
         stage.addActor(table);
         table.setDebug(true);
 
+        /*
         createSkin();
 
         //Create UI
         createPlayerUI();
         if (playerTable != null) {
             table.addActor(playerTable);
-        }
-
-        createGameUI();
-        if (optionsTable != null) {
-            table.addActor(optionsTable);
         }
 
         createBuildingShopUI();
@@ -122,6 +93,8 @@ public class ProjectHex extends ApplicationAdapter {
         if (optionsTable != null) {
             table.addActor(optionsTable);
         }
+
+        */
 
         //Input processor
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
@@ -156,21 +129,17 @@ public class ProjectHex extends ApplicationAdapter {
         }
 
         //draw all buildings and units from all players
-        try {
-            for (IPlayer p : game.getPlayers()) {
-                for (IBuilding b : p.getBuildings()) {
-                    if(b.getImage() == null) {
-                    }
-                    Hexagon h = map.getHexAtLocation(b.getLocation());
-                    batch.draw(b.getImage(), h.getPos().x, h.getPos().y);
+        for (Player p : game.getPlayers()) {
+            for (IBuilding b : p.getBuildings()) {
+                if(b.getImage() == null) {
                 }
-                for (IUnit u : p.getUnits()) {
-                    Hexagon h = map.getHexAtLocation(u.getLocation());
-                    batch.draw(u.getTexture(), h.getPos().x, h.getPos().y);
-                }
+                Hexagon h = map.getHexAtLocation(b.getLocation());
+                batch.draw(b.getImage(), h.getPos().x, h.getPos().y);
             }
-        } catch (RemoteException e) {
-            System.out.println("Heeeuuuuhhhh. Leuke remote exception enzo je weet zelluf");
+            for (IUnit u : p.getUnits()) {
+                Hexagon h = map.getHexAtLocation(u.getLocation());
+                batch.draw(u.getTexture(), h.getPos().x, h.getPos().y);
+            }
         }
 
         //draw building when trying to place it on a Hexagon
@@ -183,7 +152,7 @@ public class ProjectHex extends ApplicationAdapter {
         batch.end();
 
         //update UI information
-        updatePlayerUI();
+        //updatePlayerUI();
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
@@ -194,7 +163,7 @@ public class ProjectHex extends ApplicationAdapter {
         batch.dispose();
     }
 
-    void screenLeftClick(int x, int y) {
+    /*void screenLeftClick(int x, int y) {
         clearUI();
 
         Vector3 tmp = new Vector3(x, y, 0);
@@ -458,60 +427,5 @@ public class ProjectHex extends ApplicationAdapter {
         labelStyle.background = skin.newDrawable("white", Color.LIGHT_GRAY);
         labelStyle.font = skin.getFont("default");
         skin.add("default", labelStyle);
-    }
-
-    private void getGameFromRMI() {
-        //Get ip address of server
-        Scanner input = new Scanner(System.in);
-        System.out.print("Client: Enter IP address of server: ");
-        String ipAddress = input.nextLine();
-
-        //Get port number
-        System.out.print("Client: Enter port number: ");
-        int portNumber = input.nextInt();
-
-        // Print IP address and port number for registry
-        System.out.println("Client: IP Address: " + ipAddress);
-        System.out.println("Client: Port number " + portNumber);
-
-        // Locate registry at IP address and port number
-        try {
-            registry = LocateRegistry.getRegistry(ipAddress, portNumber);
-        } catch (RemoteException ex) {
-            System.out.println("Client: Cannot locate registry");
-            System.out.println("Client: RemoteException: " + ex.getMessage());
-            registry = null;
-        }
-
-        // Print result locating registry
-        if (registry != null) {
-            System.out.println("Client: Registry located");
-        } else {
-            System.out.println("Client: Cannot locate registry");
-            System.out.println("Client: Registry is null pointer");
-        }
-
-        //Bind effectenbeurs using registry
-        if (registry != null) {
-            try {
-                game = (IGame) registry.lookup(bindingName);
-            } catch (RemoteException e) {
-                System.out.println("Client: Cannot bind effectenbeurs");
-                System.out.println("Client: RemoteException: " + e.getMessage());
-                game = null;
-            } catch (NotBoundException e) {
-                System.out.println("Client: Cannot bind effectenbeurs");
-                System.out.println("Client: NotBoundException: " + e.getMessage());
-                game = null;
-            }
-        }
-
-        // Test RMI connection
-        if (game != null) {
-            System.out.println("Client: Client started");
-        } else {
-            System.out.println("Client: Something went wrong");
-            System.exit(0);
-        }
-    }
+    }*/
 }
