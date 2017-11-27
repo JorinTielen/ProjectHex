@@ -1,6 +1,8 @@
 package com.fantasticfive.shared;
 
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.fantasticfive.shared.enums.Color;
 import com.fantasticfive.shared.enums.UnitType;
 
 import java.io.Serializable;
@@ -20,6 +22,7 @@ public class Unit implements Cloneable, Serializable {
     private Point location = new Point(0, 0);
     private int allowedToMove;
     private Player owner;
+    private int maxHealth;
 
     private boolean isSelected = false;
 
@@ -29,6 +32,7 @@ public class Unit implements Cloneable, Serializable {
                 int upgradeCost) {
         this.unitType = unitType;
         this.health = health;
+        this.maxHealth = health;
         this.armor = armor;
         this.attackPower = attackPower;
         this.attackRange = attackRange;
@@ -115,6 +119,8 @@ public class Unit implements Cloneable, Serializable {
         return this.health;
     }
 
+    public int getMaxHealth() {return this.maxHealth;}
+
     public UnitType getUnitType() {
         return this.unitType;
     }
@@ -164,9 +170,49 @@ public class Unit implements Cloneable, Serializable {
                 this.texture = new Texture("characterSwordsman.png");
                 break;
         }
+        setColor();
     }
 
     public Texture getTexture() {
         return texture;
+    }
+
+    public void setColor(){
+        texture.getTextureData().prepare();
+        Pixmap pixmap = texture.getTextureData().consumePixmap();
+        com.badlogic.gdx.graphics.Color newColor;
+        switch(owner.getColor()){
+            case RED: newColor = com.badlogic.gdx.graphics.Color.RED;
+                break;
+            case BLUE: newColor = com.badlogic.gdx.graphics.Color.BLUE;
+                break;
+            case PURPLE: newColor = com.badlogic.gdx.graphics.Color.PURPLE;
+                break;
+            case ORANGE: newColor = com.badlogic.gdx.graphics.Color.ORANGE;
+                break;
+            case YELLOW: newColor = com.badlogic.gdx.graphics.Color.YELLOW;
+                break;
+            case GREEN: newColor = com.badlogic.gdx.graphics.Color.GREEN;
+                break;
+            case BROWN: newColor = com.badlogic.gdx.graphics.Color.BROWN;
+                break;
+            case PINK: newColor = com.badlogic.gdx.graphics.Color.PINK;
+                break;
+            default: newColor = com.badlogic.gdx.graphics.Color.WHITE;
+                break;
+        }
+        pixmap.setColor(newColor);
+        com.badlogic.gdx.graphics.Color whiteColor = com.badlogic.gdx.graphics.Color.WHITE;
+        for (int y = 0; y < pixmap.getHeight(); y++){
+            for (int x = 0; x < pixmap.getWidth(); x++){
+                com.badlogic.gdx.graphics.Color pixelColor = new com.badlogic.gdx.graphics.Color(pixmap.getPixel(x, y));
+                if (pixelColor.equals(whiteColor)){
+                    pixmap.fillRectangle(x, y, 1, 1);
+                }
+            }
+        }
+        texture = new Texture(pixmap);
+        texture.getTextureData().disposePixmap();
+        pixmap.dispose();
     }
 }

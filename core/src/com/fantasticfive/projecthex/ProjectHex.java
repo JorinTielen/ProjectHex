@@ -33,6 +33,7 @@ public class ProjectHex extends ApplicationAdapter {
     private Skin skin;
     private Stage stage;
     private Table table;
+    private Texture blankTexture; //blank texture for health bars
 
     //tables
     private Table unitShopTable;
@@ -100,12 +101,14 @@ public class ProjectHex extends ApplicationAdapter {
             table.addActor(optionsTable);
         }
 
-
         //Input processor
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(input);
         Gdx.input.setInputProcessor(inputMultiplexer);
+
+        //set blank texture
+        blankTexture = new Texture("whitePixel.png");
     }
 
     @Override
@@ -131,6 +134,9 @@ public class ProjectHex extends ApplicationAdapter {
             if (hex.objectImage != null) {
                 batch.draw(hex.objectImage, hex.getPos().x, hex.getPos().y);
             }
+            if (hex.colorCoding != null){
+                batch.draw(hex.colorCoding, hex.getPos().x, hex.getPos().y);
+            }
         }
 
         //draw all buildings and units from all players
@@ -141,10 +147,20 @@ public class ProjectHex extends ApplicationAdapter {
                 }
                 Hexagon h = map.getHexAtLocation(b.getLocation());
                 batch.draw(b.getImage(), h.getPos().x, h.getPos().y);
+                batch.setColor(Color.RED);
+                batch.draw(blankTexture, h.getPos().x + 35, h.getPos().y + 100, 50, 5);
+                batch.setColor(Color.GREEN);
+                batch.draw(blankTexture, h.getPos().x + 35, h.getPos().y + 100, (int)((double)50 * ((double)b.getHealth() / (double)b.getMaxHealth())), 5);
+                batch.setColor(Color.WHITE);
             }
             for (Unit u : p.getUnits()) {
                 Hexagon h = map.getHexAtLocation(u.getLocation());
                 batch.draw(u.getTexture(), h.getPos().x, h.getPos().y);
+                batch.setColor(Color.RED);
+                batch.draw(blankTexture, h.getPos().x + 35, h.getPos().y + 100, 50, 5);
+                batch.setColor(Color.GREEN);
+                batch.draw(blankTexture, h.getPos().x + 35, h.getPos().y + 100, (int)((double)50 * ((double)u.getHealth() / (double)u.getMaxHealth())), 5);
+                batch.setColor(Color.WHITE);
             }
         }
 
@@ -278,11 +294,12 @@ public class ProjectHex extends ApplicationAdapter {
             } else if (game.getUnitOnHex(hex).getOwner() != game.getSelectedUnit().getOwner()) {
                 Unit enemy = game.getUnitOnHex(hex);
                 Unit playerUnit = game.getSelectedUnit();
-                playerUnit.attack(enemy);
-                playerUnit.toggleSelected();
-                if (enemy.getHealth() == 0) {
-                    enemy.getOwner().removeUnit(enemy);
+                if(playerUnit.attack(enemy)){
+                    if (enemy.getHealth() == 0) {
+                        enemy.getOwner().removeUnit(enemy);
+                    }
                 }
+                playerUnit.toggleSelected();
             }
         }
     }

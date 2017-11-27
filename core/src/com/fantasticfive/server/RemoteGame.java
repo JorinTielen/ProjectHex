@@ -25,6 +25,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     private UnitFactory unitFactory = new UnitFactory();
 
     private Registry registry;
+    private static final String bindingName = "ProjectHex";
 
     RemoteGame(int portNumber) throws RemoteException {
         RemoteSetup(portNumber);
@@ -165,11 +166,17 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     }
 
     public void buyBuilding(BuildingType buildingType, Point location) throws RemoteException {
-//        if (map.isHexBuildable(location, currentPlayer)) { //TODO uncomment when hex owner is implemented
-        if (hexEmpty(location)) {
-            currentPlayer.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, currentPlayer));
+        if (map.isHexBuildable(location, currentPlayer)) { //TODO uncomment when hex owner is implemented
+            if (buildingType == BuildingType.RESOURCE && hexEmptyResource(location)){
+                if (currentPlayer.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, currentPlayer), true)) {
+                    map.getHexAtLocation(location).removeObjectType();
+                    map.getHexAtLocation(location).removeObject();
+                }
+            }
+            else if (hexEmpty(location)) {
+                currentPlayer.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, currentPlayer));
+            }
         }
-//        }
         version++;
     }
 
@@ -221,6 +228,26 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         }
     }
 
+    public boolean hexEmptyResource(Point location) throws RemoteException {
+        //Check if unit is on hex
+        for (Player player : players) {
+            for (Unit unit : player.getUnits()) {
+                if (unit.getLocation().equals(location)) {
+                    return false;
+                }
+            }
+        }
+
+        //Check if hex is a mountain for resource
+        Hexagon hex = map.getHexAtLocation(location);
+        if (hex.getObjectType() == ObjectType.MOUNTAIN
+                && getBuildingAtLocation(location) == null
+                && hex.getGroundType() != GroundType.WATER){
+            return true;
+        }
+        return false;
+    }
+
     public Unit getUnitOnHex(Hexagon hex) throws RemoteException {
         Unit unit = null;
         for (Player p : players) {
@@ -268,7 +295,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
 
         //Bind using registry
         try {
-            registry.rebind("ProjectHex", this);
+            registry.rebind(bindingName, this);
             System.out.println("Server: Game bound to registry");
         } catch (RemoteException e) {
             System.out.println("Server: Cannot bind Game");

@@ -1,5 +1,6 @@
 package com.fantasticfive.shared;
 
+import com.badlogic.gdx.graphics.Pixmap;
 import com.fantasticfive.shared.enums.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
@@ -8,6 +9,7 @@ import java.io.Serializable;
 import java.util.Random;
 
 public class Hexagon implements Serializable {
+    public transient Texture colorCoding;
     public transient Texture groundImage;
     public transient Texture objectImage;
     private GroundType groundType;
@@ -25,7 +27,7 @@ public class Hexagon implements Serializable {
         this.radius = radius;
     }
 
-    //com.fantasticfive.shared.Hexagon with rock
+    //Hexagon with rock
     public Hexagon(GroundType groundType, ObjectType objectType, Point location, int radius) {
         this.groundType = groundType;
         this.objectType = objectType;
@@ -151,5 +153,44 @@ public class Hexagon implements Serializable {
 
     public GroundType getGroundType() {
         return groundType;
+    }
+
+    public void setColor(){
+        colorCoding.getTextureData().prepare();
+        Pixmap pixmap = colorCoding.getTextureData().consumePixmap();
+        com.badlogic.gdx.graphics.Color newColor;
+        switch(owner.getColor()){
+            case RED: newColor = com.badlogic.gdx.graphics.Color.RED;
+                break;
+            case BLUE: newColor = com.badlogic.gdx.graphics.Color.BLUE;
+                break;
+            case PURPLE: newColor = com.badlogic.gdx.graphics.Color.PURPLE;
+                break;
+            case ORANGE: newColor = com.badlogic.gdx.graphics.Color.ORANGE;
+                break;
+            case YELLOW: newColor = com.badlogic.gdx.graphics.Color.YELLOW;
+                break;
+            case GREEN: newColor = com.badlogic.gdx.graphics.Color.GREEN;
+                break;
+            case BROWN: newColor = com.badlogic.gdx.graphics.Color.BROWN;
+                break;
+            case PINK: newColor = com.badlogic.gdx.graphics.Color.PINK;
+                break;
+            default: newColor = com.badlogic.gdx.graphics.Color.WHITE;
+                break;
+        }
+        pixmap.setColor(newColor);
+        com.badlogic.gdx.graphics.Color whiteColor = com.badlogic.gdx.graphics.Color.WHITE;
+        for (int y = 0; y < pixmap.getHeight(); y++){
+            for (int x = 0; x < pixmap.getWidth(); x++){
+                com.badlogic.gdx.graphics.Color pixelColor = new com.badlogic.gdx.graphics.Color(pixmap.getPixel(x, y));
+                if (pixelColor.equals(whiteColor)){
+                    pixmap.fillRectangle(x, y, 1, 1);
+                }
+            }
+        }
+        colorCoding = new Texture(pixmap);
+        colorCoding.getTextureData().disposePixmap();
+        pixmap.dispose();
     }
 }

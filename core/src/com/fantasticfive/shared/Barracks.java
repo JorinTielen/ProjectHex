@@ -41,5 +41,6 @@ public class Barracks extends Building{
     @Override
     public void setImage() {
         this.image = new Texture("barracks.png");
+        setColor();
     }
 }
