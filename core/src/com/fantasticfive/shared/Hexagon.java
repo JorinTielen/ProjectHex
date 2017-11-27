@@ -96,6 +96,10 @@ public class Hexagon implements Serializable {
             }
             objectImage = new Texture("rockBig.png");
         }
+        if(owner != null){
+            this.colorCoding = new Texture("terrainColor.png");
+            setColor();
+        }
 
         groundImage.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
     }
@@ -122,8 +126,6 @@ public class Hexagon implements Serializable {
 
     public void setOwner(Player owner) {
         this.owner = owner;
-        colorCoding = new Texture("terrainColor.png");
-        setColor();
     }
 
     public Player getOwner() {

@@ -288,6 +288,7 @@ public class ProjectHex extends ApplicationAdapter {
         if (game.getUnitOnHex(hex) != null && game.getSelectedUnit() == null && game.getUnitOnHex(hex).getOwner() == game.getThisPlayer()) {
             Unit u = game.getUnitOnHex(hex);
             u.toggleSelected();
+            game.setWalkableHexesForUnit(u);
         }
         //If not clicked on unit and unit is selected
         else if (game.getUnitOnHex(hex) == null && game.getSelectedUnit() != null) {

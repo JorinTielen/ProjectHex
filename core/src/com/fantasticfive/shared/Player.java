@@ -90,7 +90,6 @@ public class Player implements Serializable {
             this.buildings.add(building);
             System.out.println("TownCentre built");
         }
-        building.setOwner(this);
     }
 
     public boolean purchaseBuildingOnMountain(Building building){

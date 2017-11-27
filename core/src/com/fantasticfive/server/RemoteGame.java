@@ -175,7 +175,6 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     public void buyUnit(UnitType unitType, Point location, int playerId) throws RemoteException {
         if (playerId == currentPlayer.getId()) {
             if (hexEmpty(location)) {
-                Unit unit = unitFactory.getUnitPreset(unitType);
                 //When player has enough gold to buy unit
                 currentPlayer.purchaseUnit(unitFactory.createUnit(unitType, location, currentPlayer));
             }
@@ -281,7 +280,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             if (unit.attack(building)) {
                 Player enemy = building.getOwner();
                 enemy.destroyBuilding(building);
-//                enemy.removeBuilding(building);
+//                enemy.removeBuilding(building); //TODO test if can be deleted
                 if (building instanceof TownCentre) {
                     enemy.destroyBuilding(building);
                     removePlayer(enemy);
@@ -320,9 +319,9 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
 
         //Check if hex isn't water, mountain or possessed by a building
         Hexagon hex = map.getHexAtLocation(location);
-        return (hex.getObjectType() == ObjectType.MOUNTAIN
-                || hex.getGroundType() == GroundType.WATER
-                || getBuildingAtLocation(location) != null);
+        return (hex.getObjectType() != ObjectType.MOUNTAIN
+                || hex.getGroundType() != GroundType.WATER
+                || getBuildingAtLocation(location) == null);
     }
 
     public boolean hexEmptyResource(Point location) throws RemoteException {

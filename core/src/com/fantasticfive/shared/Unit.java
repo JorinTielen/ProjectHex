@@ -2,10 +2,10 @@ package com.fantasticfive.shared;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.fantasticfive.shared.enums.Color;
 import com.fantasticfive.shared.enums.UnitType;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Unit implements Cloneable, Serializable {
@@ -75,7 +75,7 @@ public class Unit implements Cloneable, Serializable {
     }
 
     public void setWalkableHexes(List<Hexagon> hexes){
-        this.walkableHexes.clear();
+        this.walkableHexes = new ArrayList<>();
         this.walkableHexes = hexes;
     }
 
