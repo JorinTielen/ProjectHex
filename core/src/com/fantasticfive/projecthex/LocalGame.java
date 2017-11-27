@@ -210,6 +210,16 @@ public class LocalGame {
         }
     }
 
+    public void setWalkableHexesForUnit(Unit unit){
+        List<Hexagon> walkableHexes = new ArrayList<>();
+        for (Hexagon hex : map.getHexagons()){
+            if (unit.canMoveTo(hex.getLocation()) && hexEmpty(hex.getLocation())){
+                walkableHexes.add(hex);
+            }
+        }
+        unit.setWalkableHexes(walkableHexes);
+    }
+
     public boolean hexEmpty(Point location) {
         try {
             return remoteGame.hexEmpty(location);

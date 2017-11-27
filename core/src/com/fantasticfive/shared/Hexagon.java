@@ -122,6 +122,8 @@ public class Hexagon implements Serializable {
 
     public void setOwner(Player owner) {
         this.owner = owner;
+        colorCoding = new Texture("terrainColor.png");
+        setColor();
     }
 
     public Player getOwner() {

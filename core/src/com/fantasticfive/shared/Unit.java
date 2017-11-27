@@ -6,6 +6,7 @@ import com.fantasticfive.shared.enums.Color;
 import com.fantasticfive.shared.enums.UnitType;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Unit implements Cloneable, Serializable {
     public transient Texture texture;
@@ -23,6 +24,9 @@ public class Unit implements Cloneable, Serializable {
     private int allowedToMove;
     private Player owner;
     private int maxHealth;
+
+    //List for Hexes that the unit can walk on
+    private List<Hexagon> walkableHexes;
 
     private boolean isSelected = false;
 
@@ -68,6 +72,22 @@ public class Unit implements Cloneable, Serializable {
             health = 0;
         }
         System.out.println("Health has been reduced with " + hp + " to " + health);
+    }
+
+    public void setWalkableHexes(List<Hexagon> hexes){
+        this.walkableHexes.clear();
+        this.walkableHexes = hexes;
+    }
+
+    public List<Hexagon> getWalkableHexes(){
+        return this.walkableHexes;
+    }
+
+    public boolean canMoveTo(Point destination){
+        if (allowedToMove - calculateDistance(location, destination) < 0) {
+            return false;
+        }
+        return true;
     }
 
     public void move(Point destination) {

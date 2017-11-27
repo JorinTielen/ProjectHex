@@ -14,7 +14,7 @@ public class Map implements IMap {
         this.width = width;
         this.height = height;
 
-        hexagons = new ArrayList<Hexagon>();
+        hexagons = new ArrayList<>();
         Generate();
     }
 
@@ -123,12 +123,9 @@ public class Map implements IMap {
     public boolean isHexBuildable(Point location, Player player) {
         Hexagon hex = getHexAtLocation(location);
 
-        if (hex.getOwner() == player &&
+        return (hex.getOwner() == player &&
                 hex.getGroundType() != GroundType.WATER &&
-                hex.getObjectType() != ObjectType.MOUNTAIN) {
-            return true;
-        }
-        return false;
+                hex.getObjectType() != ObjectType.MOUNTAIN);
     }
 
     //Returns hexagon at a specific location
