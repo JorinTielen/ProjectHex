@@ -34,7 +34,7 @@ public class Barracks extends Building{
     public int getPurchaseCost() { return purchaseCost; }
 
     @Override
-    public void setOwner(IPlayer owner) {
+    public void setOwner(Player owner) {
         this.owner = owner;
     }
 

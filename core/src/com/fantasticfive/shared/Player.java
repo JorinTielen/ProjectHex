@@ -2,14 +2,16 @@ package com.fantasticfive.shared;
 
 import com.fantasticfive.shared.enums.Color;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class Player implements IPlayer {
-    private List<IBuilding> buildings;
-    private List<IUnit> units;
+public class Player implements Serializable {
+    private List<Building> buildings;
+    private List<Unit> units;
     private List<Hexagon> hexagons;
     private Color color;
     private int gold = 0;
@@ -26,6 +28,10 @@ public class Player implements IPlayer {
         this.gold = 100;
 
         this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public Color getColor() {
@@ -48,7 +54,7 @@ public class Player implements IPlayer {
         this.gold -= gold;
     }
 
-    public void purchaseBuilding(IBuilding building) {
+    public void purchaseBuilding(Building building) {
         //Removes gold and adds resource
         if (building instanceof Resource) {
             if (this.gold - ((Resource) building).getPurchaseCost() >= 0) {
@@ -83,24 +89,24 @@ public class Player implements IPlayer {
     }
 
     //Sells building
-    public void sellBuilding(IBuilding building, int cost) {
+    public void sellBuilding(Building building, int cost) {
         this.buildings.remove(building);
         this.gold += (int) Math.round(cost * 0.66);
     }
 
     //Removes building when destroyed
-    public void removeBuilding(IBuilding building) {
+    public void removeBuilding(Building building) {
         if (buildings.contains(building)) {
             buildings.remove(building);
         }
     }
 
-    public List<IBuilding> getBuildings() {
+    public List<Building> getBuildings() {
         return buildings;
     }
 
-    public IBuilding getBuildingAtLocation(Point location) {
-        for (IBuilding building : buildings) {
+    public Building getBuildingAtLocation(Point location) {
+        for (Building building : buildings) {
             if (building.getLocation().equals(location)) {
                 return building;
             }
@@ -108,7 +114,7 @@ public class Player implements IPlayer {
         return null;
     }
 
-    public void purchaseUnit(IUnit unit) {
+    public void purchaseUnit(Unit unit) {
         if (this.gold - unit.getPurchaseCost() >= 0) {
             this.removeGold(unit.getPurchaseCost());
             this.units.add(unit);
@@ -118,7 +124,7 @@ public class Player implements IPlayer {
     }
 
     //Sells unit
-    public void sellUnit(IUnit unit) {
+    public void sellUnit(Unit unit) {
         if (units.contains(unit)) {
             this.addGold((int) (unit.getPurchaseCost() * 0.66));
             if (unit.getSelected()) {
@@ -129,13 +135,13 @@ public class Player implements IPlayer {
     }
 
     //Removes unit when dead
-    public void removeUnit(IUnit unit) {
+    public void removeUnit(Unit unit) {
         if (units.contains(unit)) {
             units.remove(unit);
         }
     }
 
-    public List<IUnit> getUnits() {
+    public List<Unit> getUnits() {
         return Collections.unmodifiableList(units);
     }
 
@@ -149,7 +155,7 @@ public class Player implements IPlayer {
 
     public void endTurn() {
         //Set unit fields back to normal
-        for (IUnit u : units) {
+        for (Unit u : units) {
             u.resetMoves();
             if (u.getSelected()) {
                 u.toggleSelected();
@@ -166,11 +172,11 @@ public class Player implements IPlayer {
 
     public int getGoldPerTurn() {
         int gpt = 0;
-        for (IUnit u : units) {
+        for (Unit u : units) {
             gpt -= u.getCostPerTurn();
         }
 
-        for (IBuilding b : buildings) {
+        for (Building b : buildings) {
             if (b instanceof Resource) {
                 gpt += ((Resource) b).getProductionPerTurn();
             }

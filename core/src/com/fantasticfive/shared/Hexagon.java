@@ -8,8 +8,8 @@ import java.io.Serializable;
 import java.util.Random;
 
 public class Hexagon implements Serializable {
-    public Texture groundImage;
-    public Texture objectImage;
+    public transient Texture groundImage;
+    public transient Texture objectImage;
     private GroundType groundType;
     private ObjectType objectType;
     private boolean accessible;

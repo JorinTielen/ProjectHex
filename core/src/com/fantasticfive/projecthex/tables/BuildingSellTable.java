@@ -6,7 +6,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.fantasticfive.shared.IBuilding;
+import com.fantasticfive.projecthex.LocalGame;
+import com.fantasticfive.shared.Building;
 import com.fantasticfive.shared.IGame;
 import java.rmi.RemoteException;
 
@@ -14,11 +15,11 @@ public class BuildingSellTable extends Table {
     private Table t;
     private Label l;
 
-    final private IGame game;
+    final private LocalGame game;
     private Skin skin;
-    private IBuilding building;
+    private Building building;
 
-    public BuildingSellTable(IGame game, Skin skin) {
+    public BuildingSellTable(LocalGame game, Skin skin) {
         setVisible(false);
 
         this.game = game;
@@ -37,11 +38,7 @@ public class BuildingSellTable extends Table {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("Selling building");
-                try {
-                    BuildingSellTable.this.game.sellBuilding(building.getLocation());
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                BuildingSellTable.this.game.sellBuilding(building.getLocation());
                 setVisible(false);
             }
         });
@@ -49,7 +46,7 @@ public class BuildingSellTable extends Table {
         addActor(t);
     }
 
-    public void setBuilding(IBuilding building) {
+    public void setBuilding(Building building) {
         this.building = building;
     }
 }

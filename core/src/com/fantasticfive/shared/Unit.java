@@ -3,7 +3,9 @@ package com.fantasticfive.shared;
 import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.shared.enums.UnitType;
 
-public class Unit implements Cloneable, IUnit {
+import java.io.Serializable;
+
+public class Unit implements Cloneable, Serializable {
     public Texture texture;
     private UnitType unitType;
     private int health;
@@ -17,7 +19,7 @@ public class Unit implements Cloneable, IUnit {
     private int upgradeCost;
     private Point location = new Point(0, 0);
     private int allowedToMove;
-    private IPlayer owner;
+    private Player owner;
 
     private boolean isSelected = false;
 
@@ -38,7 +40,7 @@ public class Unit implements Cloneable, IUnit {
         this.upgradeCost = upgradeCost;
     }
 
-    public boolean attack(IUnit unitToAttack) {
+    public boolean attack(Unit unitToAttack) {
         if (calculateDistance(this.location, unitToAttack.getLocation()) <= attackRange && this.allowedToMove >= 1) {
             unitToAttack.reduceHealth(attackPower - unitToAttack.getArmor());
             allowedToMove = 0;
@@ -47,7 +49,7 @@ public class Unit implements Cloneable, IUnit {
         return false;
     }
 
-    public boolean attack(IBuilding buildingToAttack) {
+    public boolean attack(Building buildingToAttack) {
         if (calculateDistance(this.location, buildingToAttack.getLocation()) <= attackRange && this.allowedToMove >= 1) {
             allowedToMove = 0;
             return buildingToAttack.damageHealth(this.attackPower);
@@ -85,11 +87,11 @@ public class Unit implements Cloneable, IUnit {
         return this.armor;
     }
 
-    public void setOwner(IPlayer owner) {
+    public void setOwner(Player owner) {
         this.owner = owner;
     }
 
-    public IPlayer getOwner() {
+    public Player getOwner() {
         return owner;
     }
 
@@ -113,7 +115,7 @@ public class Unit implements Cloneable, IUnit {
         return this.health;
     }
 
-    public com.fantasticfive.shared.enums.UnitType getUnitType() {
+    public UnitType getUnitType() {
         return this.unitType;
     }
 
@@ -124,10 +126,10 @@ public class Unit implements Cloneable, IUnit {
 
     public void toggleSelected() {
         if (isSelected) {
-            System.out.println("com.fantasticfive.shared.Unit deselected");
+            System.out.println("Unit deselected");
             isSelected = false;
         } else {
-            System.out.println("com.fantasticfive.shared.Unit selected");
+            System.out.println("Unit selected");
             isSelected = true;
         }
     }

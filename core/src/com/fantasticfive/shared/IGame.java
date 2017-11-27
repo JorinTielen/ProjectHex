@@ -7,18 +7,18 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 public interface IGame extends Remote {
-    IUnit getSelectedUnit() throws RemoteException;
+    Unit getSelectedUnit() throws RemoteException;
     void setMap() throws RemoteException;
     void addPlayer(String username) throws RemoteException;
     void startGame() throws RemoteException;
-    List<IPlayer> getPlayers() throws RemoteException;
-    IUnit getUnitOnHex(Hexagon hex) throws RemoteException;
-    IBuilding getBuildingAtLocation(Point location) throws RemoteException;
-    IPlayer getCurrentPlayer() throws RemoteException;
+    List<Player> getPlayers() throws RemoteException;
+    Unit getUnitOnHex(Hexagon hex) throws RemoteException;
+    Building getBuildingAtLocation(Point location) throws RemoteException;
+    Player getCurrentPlayer() throws RemoteException;
     void createBuilding(BuildingType buildingType, Point location) throws RemoteException;
     boolean hexEmpty(Point location) throws RemoteException;
-    void attackBuilding(IUnit selectedUnit, Point locationBuilding) throws RemoteException;
-    IUnit getUnitPreset(UnitType unitType) throws RemoteException;
+    void attackBuilding(Unit selectedUnit, Point locationBuilding) throws RemoteException;
+    Unit getUnitPreset(UnitType unitType) throws RemoteException;
     void createUnit(UnitType unitType, Point location) throws RemoteException;
     void endTurn() throws RemoteException;
     void leaveGame() throws RemoteException;

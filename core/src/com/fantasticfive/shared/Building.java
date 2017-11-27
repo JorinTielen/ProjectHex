@@ -3,15 +3,17 @@ package com.fantasticfive.shared;
 import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.shared.enums.*;
 
+import java.io.Serializable;
+
 /**
  * The Buidling class contains all the base information and functionality that all buildings share.
  */
-public abstract class Building implements Cloneable, IBuilding {
-    public Texture image;
+public abstract class Building implements Cloneable, Serializable {
+    public transient Texture image;
     protected int health;
     protected GroundType[] buildableOn;
     private Point location;
-    protected IPlayer owner;
+    protected Player owner;
 
     public Building(int health, GroundType[] buildableOn) {
         this.health = health;
@@ -30,7 +32,7 @@ public abstract class Building implements Cloneable, IBuilding {
         this.owner = owner;
     }
 
-    public IPlayer getOwner() {
+    public Player getOwner() {
         return this.owner;
     }
 
