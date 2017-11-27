@@ -1,5 +1,6 @@
 package com.fantasticfive.server;
 
+import com.fantasticfive.projecthex.tables.BuildingSellTable;
 import com.fantasticfive.server.BuildingFactory;
 import com.fantasticfive.server.UnitFactory;
 import com.fantasticfive.shared.*;
@@ -14,9 +15,9 @@ import java.util.List;
 /**
  * The com.fantasticfive.server.Game class is the main class of the game, and takes care of the core functionalities of the game.
  */
-public class Game extends UnicastRemoteObject {
-    private List<IPlayer> players = new ArrayList<IPlayer>();
-    private IPlayer currentPlayer;
+public class Game extends UnicastRemoteObject implements IGame {
+    private List<Player> players = new ArrayList<Player>();
+    private Player currentPlayer;
     private IMap map;
     private UnitFactory unitFactory = new UnitFactory();
     private BuildingFactory buildingFactory = new BuildingFactory();
@@ -26,7 +27,7 @@ public class Game extends UnicastRemoteObject {
     public Game() throws RemoteException {
     }
 
-    public void removePlayer(IPlayer player) {
+    public void removePlayer(Player player) {
         this.players.remove(player);
 
         if (players.size() == 1) {
@@ -36,6 +37,11 @@ public class Game extends UnicastRemoteObject {
 
     public void setMap() {
         map = new Map(20, 15);
+    }
+
+    @Override
+    public void addPlayer(String username) throws RemoteException {
+        //
     }
 
     public void startGame() {
@@ -76,7 +82,7 @@ public class Game extends UnicastRemoteObject {
         return buildingFactory.getBuildingPreset(buildingType);
     }
 
-    public IUnit getUnitPreset(UnitType unitType) {
+    public Unit getUnitPreset(UnitType unitType) {
         return unitFactory.getUnitPreset(unitType);
     }
 
@@ -112,7 +118,7 @@ public class Game extends UnicastRemoteObject {
     }
 
     public void sellBuilding(Point location) {
-        IBuilding building = currentPlayer.getBuildingAtLocation(location);
+        Building building = currentPlayer.getBuildingAtLocation(location);
         if (building != null && !(building instanceof TownCentre)) {
             int cost = 0;
             if (building instanceof Barracks) {
@@ -126,7 +132,7 @@ public class Game extends UnicastRemoteObject {
         }
     }
 
-    public void claimLand(IUnit unit) {
+    public void claimLand(Unit unit) {
         throw new NotImplementedException();
     }
 
@@ -134,7 +140,7 @@ public class Game extends UnicastRemoteObject {
         throw new NotImplementedException();
     }
 
-    public List<IPlayer> getPlayers() {
+    public List<Player> getPlayers() {
         return Collections.unmodifiableList(players);
     }
 
@@ -146,8 +152,8 @@ public class Game extends UnicastRemoteObject {
      */
     public boolean hexEmpty(Point location) {
         //Check if unit is on hex
-        for (IPlayer player : players) {
-            for (IUnit unit : player.getUnits()) {
+        for (Player player : players) {
+            for (Unit unit : player.getUnits()) {
                 if (unit.getLocation().equals(location)) {
                     return false;
                 }
@@ -165,10 +171,10 @@ public class Game extends UnicastRemoteObject {
         }
     }
 
-    public IUnit getUnitOnHex(Hexagon hex) {
-        IUnit unit = null;
-        for (IPlayer p : getPlayers()) {
-            for (IUnit u : p.getUnits()) {
+    public Unit getUnitOnHex(Hexagon hex) {
+        Unit unit = null;
+        for (Player p : getPlayers()) {
+            for (Unit u : p.getUnits()) {
                 if (u.getLocation().x == hex.getLocation().x && u.getLocation().y == hex.getLocation().y) {
                     unit = u;
                 }
@@ -177,10 +183,10 @@ public class Game extends UnicastRemoteObject {
         return unit;
     }
 
-    public IUnit getSelectedUnit() {
-        IUnit unit = null;
-        for (IPlayer p : getPlayers()) {
-            for (IUnit u : p.getUnits()) {
+    public Unit getSelectedUnit() {
+        Unit unit = null;
+        for (Player p : getPlayers()) {
+            for (Unit u : p.getUnits()) {
                 if (u.getSelected()) {
                     unit = u;
                 }
@@ -189,11 +195,11 @@ public class Game extends UnicastRemoteObject {
         return unit;
     }
 
-    public void attackBuilding(IUnit selectedUnit, Point locationBuilding) {
-        IBuilding building = getBuildingAtLocation(locationBuilding);
+    public void attackBuilding(Unit selectedUnit, Point locationBuilding) {
+        Building building = getBuildingAtLocation(locationBuilding);
         if (selectedUnit != null && building != null) {
             if (selectedUnit.attack(building)) {
-                IPlayer enemy = building.getOwner();
+                Player enemy = building.getOwner();
                 enemy.removeBuilding(building);
                 if (building instanceof TownCentre) {
                     removePlayer(enemy);
@@ -202,9 +208,9 @@ public class Game extends UnicastRemoteObject {
         }
     }
 
-    public IBuilding getBuildingAtLocation(Point location) {
-        for (IPlayer player : players) {
-            IBuilding building = player.getBuildingAtLocation(location);
+    public Building getBuildingAtLocation(Point location) {
+        for (Player player : players) {
+            Building building = player.getBuildingAtLocation(location);
             if (building != null) {
                 return building;
             }
@@ -213,7 +219,7 @@ public class Game extends UnicastRemoteObject {
         return null;
     }
 
-    public IPlayer getCurrentPlayer() {
+    public Player getCurrentPlayer() {
         return this.currentPlayer;
     }
 }

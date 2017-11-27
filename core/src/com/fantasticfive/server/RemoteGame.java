@@ -39,7 +39,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
 
     //TODO: fix de locaties van town centers
     @Override
-    public IPlayer addPlayer(String username) {
+    public Player addPlayer(String username) {
         Color color;
         do {
             color = Color.getRandomColor();
@@ -69,7 +69,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     }
 
     @Override
-    public IUnit createUnit(UnitType unitType, Point location, int playerId) {
+    public Unit createUnit(UnitType unitType, Point location, int playerId) {
         return null;
     }
 

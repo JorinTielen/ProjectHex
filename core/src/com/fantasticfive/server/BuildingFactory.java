@@ -29,7 +29,7 @@ public class BuildingFactory {
      * @param player       The player who'se buying the building
      * @return
      */
-    public Building createBuilding(BuildingType buildingType, Point location, IPlayer player) {
+    public Building createBuilding(BuildingType buildingType, Point location, Player player) {
         Building building;
         switch (buildingType) {
             case TOWNCENTRE:

@@ -9,7 +9,7 @@ public class TownCentre extends Building {
     }
 
     @Override
-    public void setOwner(IPlayer owner) {
+    public void setOwner(Player owner) {
         this.owner = owner;
     }
 

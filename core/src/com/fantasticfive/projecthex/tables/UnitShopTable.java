@@ -6,9 +6,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.fantasticfive.shared.Building;
 import com.fantasticfive.shared.Point;
 import com.fantasticfive.shared.enums.UnitType;
-import com.fantasticfive.shared.IBuilding;
 import com.fantasticfive.shared.IGame;
 
 import java.rmi.RemoteException;
@@ -18,7 +18,7 @@ public class UnitShopTable extends Table {
 
     final private IGame game;
     private Skin skin;
-    private IBuilding building;
+    private Building building;
 
     public UnitShopTable(IGame game, Skin skin) throws RemoteException {
         setVisible(false);
@@ -100,7 +100,7 @@ public class UnitShopTable extends Table {
         addActor(t);
     }
 
-    public void setBuilding(IBuilding b) {
+    public void setBuilding(Building b) {
         this.building = b;
     }
 }

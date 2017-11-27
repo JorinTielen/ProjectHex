@@ -18,7 +18,7 @@ public class BuildingShopTable extends Table {
 
     final private IGame game;
     private Skin skin;
-    private IBuilding buildingToBuild;
+    private Building buildingToBuild;
 
     public BuildingShopTable(ProjectHex projectHex, IGame game, Skin skin) throws RemoteException {
         setVisible(false);

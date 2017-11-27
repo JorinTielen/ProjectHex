@@ -33,8 +33,7 @@ public class ProjectHex extends ApplicationAdapter {
     private Table unitSellTable;
     private Table buildingSellTable;
     private Table optionsTable;
-
-    private IBuilding buildingToBuild;
+    private Building buildingToBuild;
 
     @Override
     public void create() {
@@ -130,13 +129,14 @@ public class ProjectHex extends ApplicationAdapter {
 
         //draw all buildings and units from all players
         for (Player p : game.getPlayers()) {
-            for (IBuilding b : p.getBuildings()) {
+            for (Building b : p.getBuildings()) {
                 if(b.getImage() == null) {
+                    System.out.println("no image");
                 }
                 Hexagon h = map.getHexAtLocation(b.getLocation());
                 batch.draw(b.getImage(), h.getPos().x, h.getPos().y);
             }
-            for (IUnit u : p.getUnits()) {
+            for (Unit u : p.getUnits()) {
                 Hexagon h = map.getHexAtLocation(u.getLocation());
                 batch.draw(u.getTexture(), h.getPos().x, h.getPos().y);
             }

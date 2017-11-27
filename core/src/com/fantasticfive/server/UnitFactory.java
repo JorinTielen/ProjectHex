@@ -1,7 +1,7 @@
 package com.fantasticfive.server;
 
+import com.fantasticfive.shared.Player;
 import com.fantasticfive.shared.enums.UnitType;
-import com.fantasticfive.shared.IPlayer;
 import com.fantasticfive.shared.Point;
 import com.fantasticfive.shared.Unit;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public class UnitFactory {
         unitPresets.add(db.getScoutPreset());
     }
 
-    Unit createUnit(UnitType unitType, Point location, IPlayer owner) {
+    Unit createUnit(UnitType unitType, Point location, Player owner) {
         Unit unit = null;
         switch (unitType) {
             case SWORDSMAN:

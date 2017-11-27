@@ -7,7 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.fantasticfive.shared.IGame;
-import com.fantasticfive.shared.IUnit;
+import com.fantasticfive.shared.Unit;
+
 import java.rmi.RemoteException;
 
 public class UnitSellTable extends Table {
@@ -16,7 +17,7 @@ public class UnitSellTable extends Table {
 
     final private IGame game;
     private Skin skin;
-    private IUnit unit;
+    private Unit unit;
 
     public UnitSellTable(IGame game, Skin skin) {
         setVisible(false);
@@ -49,7 +50,7 @@ public class UnitSellTable extends Table {
         addActor(t);
     }
 
-    public void setUnit(IUnit u) {
+    public void setUnit(Unit u) {
         this.unit = u;
         this.l.setText(this.unit.getUnitType().toString());
     }
