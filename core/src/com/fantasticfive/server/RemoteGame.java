@@ -2,6 +2,7 @@ package com.fantasticfive.server;
 
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.enums.*;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -33,16 +34,41 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         map = new Map(10, 10);
     }
 
+    private void RemoteSetup(int portNumber) {
+        //Create registry at port number
+        try {
+            registry = LocateRegistry.createRegistry(portNumber);
+            System.out.println("Server: Registry created on port number " + portNumber);
+        } catch (RemoteException e) {
+            System.out.println("Server: Cannot create registry");
+            System.out.println("Server: RemoteException: " + e.getMessage());
+        }
+
+        //Bind using registry
+        try {
+            registry.rebind(bindingName, this);
+            System.out.println("Server: Game bound to registry");
+        } catch (RemoteException e) {
+            System.out.println("Server: Cannot bind Game");
+            System.out.println("Server: RemoteException: " + e.getMessage());
+        } catch (NullPointerException e) {
+            System.out.println("Server: Port already in use. \nServer: Please check if the server isn't already running");
+            System.out.println("Server: NullPointerException: " + e.getMessage());
+        }
+    }
+
     @Override
     public int getVersion() throws RemoteException {
         return version;
     }
 
+    @Override
     public void startGame() throws RemoteException {
         currentPlayer = players.get(0);
         version++;
     }
 
+    @Override
     public void endTurn(int playerId) throws RemoteException {
         if (players.size() != 0) {
             if (currentPlayer.getId() == playerId) {
@@ -88,11 +114,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         version++;
     }
 
-    public Player getCurrentPlayer() throws RemoteException {
-        return currentPlayer;
-    }
-
-    //TODO: fix de locaties van town centers
+    //TODO: fix de locaties van town center
     @Override
     public Player addPlayer(String username) throws RemoteException {
         Color color;
@@ -107,13 +129,14 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         } while (usedIds.contains(id));
 
         Player p = new Player(username, color, id);
-        if (username.equals("enemy")) {
-            Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(10, 13), p);
-            p.purchaseBuilding(b);
-        } else {
-            Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(1, 0), p);
-            p.purchaseBuilding(b);
-        }
+        Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, new Point(1, 0), p);
+        p.purchaseBuilding(b);
+        p.addHexagon(map.getHexAtLocation(new Point(1, 0)));
+        p.addHexagon(map.getHexAtLocation(new Point(1, 1)));
+        p.addHexagon(map.getHexAtLocation(new Point(0, 0)));
+        p.addHexagon(map.getHexAtLocation(new Point(0, 1)));
+        p.addHexagon(map.getHexAtLocation(new Point(2, 1)));
+        p.addHexagon(map.getHexAtLocation(new Point(2, 0)));
 
         usedColors.add(color);
         usedIds.add(id);
@@ -122,6 +145,16 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         startGame();
         version++;
         return p;
+    }
+
+    @Override
+    public List<Player> getPlayers() throws RemoteException {
+        return players;
+    }
+
+    @Override
+    public Player getCurrentPlayer() throws RemoteException {
+        return currentPlayer;
     }
 
     private void removePlayer(Player player) throws RemoteException {
@@ -139,22 +172,8 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     }
 
     @Override
-    public void attackBuilding(Unit unit, Point location) throws RemoteException {
-        Building building = getBuildingAtLocation(location);
-        if (unit != null && building != null) {
-            if (unit.attack(building)) {
-                Player enemy = building.getOwner();
-                enemy.removeBuilding(building);
-                if (building instanceof TownCentre) {
-                    removePlayer(enemy);
-                }
-            }
-        }
-    }
-
-    @Override
     public void buyUnit(UnitType unitType, Point location, int playerId) throws RemoteException {
-         if (playerId == currentPlayer.getId()) {
+        if (playerId == currentPlayer.getId()) {
             if (hexEmpty(location)) {
                 Unit unit = unitFactory.getUnitPreset(unitType);
                 //When player has enough gold to buy unit
@@ -169,19 +188,30 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     }
 
     @Override
+    public void claimLand(Unit unit) throws RemoteException {
+        if (unit.getUnitType() == UnitType.SCOUT) {
+            Hexagon h = map.getHexAtLocation(unit.getLocation());
+            if (!h.hasOwner() && map.bordersOwnLand(unit.getLocation(), currentPlayer)) {
+                h.setOwner(currentPlayer);
+                currentPlayer.addHexagon(h);
+                claimMountains(unit.getLocation());
+            }
+        }
+    }
+
+    @Override
     public Building getBuildingPreset(BuildingType type) throws RemoteException {
         return buildingFactory.getBuildingPreset(type);
     }
 
     public void buyBuilding(BuildingType buildingType, Point location) throws RemoteException {
-        if (map.isHexBuildable(location, currentPlayer)) { //TODO uncomment when hex owner is implemented
-            if (buildingType == BuildingType.RESOURCE && hexEmptyResource(location)){
+        if (map.isHexBuildable(location, currentPlayer)) {
+            if (buildingType == BuildingType.RESOURCE && hexEmptyResource(location)) {
                 if (currentPlayer.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, currentPlayer), true)) {
                     map.getHexAtLocation(location).removeObjectType();
                     map.getHexAtLocation(location).removeObject();
                 }
-            }
-            else if (hexEmpty(location)) {
+            } else if (hexEmpty(location)) {
                 currentPlayer.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, currentPlayer));
             }
         }
@@ -206,8 +236,29 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     }
 
     @Override
-    public List<Player> getPlayers() throws RemoteException {
-        return players;
+    public void attackBuilding(Unit unit, Point location) throws RemoteException {
+        Building building = getBuildingAtLocation(location);
+        if (unit != null && building != null) {
+            if (unit.attack(building)) {
+                Player enemy = building.getOwner();
+                enemy.removeBuilding(building);
+                if (building instanceof TownCentre) {
+                    removePlayer(enemy);
+                }
+            }
+        }
+    }
+
+    @Override
+    public Building getBuildingAtLocation(Point location) throws RemoteException {
+        for (Player player : players) {
+            Building building = player.getBuildingAtLocation(location);
+            if (building != null) {
+                return building;
+            }
+
+        }
+        return null;
     }
 
     @Override
@@ -215,6 +266,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         return map;
     }
 
+    @Override
     public boolean hexEmpty(Point location) throws RemoteException {
         //Check if unit is on hex
         for (Player player : players) {
@@ -250,7 +302,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         Hexagon hex = map.getHexAtLocation(location);
         if (hex.getObjectType() == ObjectType.MOUNTAIN
                 && getBuildingAtLocation(location) == null
-                && hex.getGroundType() != GroundType.WATER){
+                && hex.getGroundType() != GroundType.WATER) {
             return true;
         }
         return false;
@@ -278,39 +330,5 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             }
         }
         return unit;
-    }
-
-    public Building getBuildingAtLocation(Point location) throws RemoteException {
-        for (Player player : players) {
-            Building building = player.getBuildingAtLocation(location);
-            if (building != null) {
-                return building;
-            }
-
-        }
-        return null;
-    }
-
-    private void RemoteSetup(int portNumber) {
-        //Create registry at port number
-        try {
-            registry = LocateRegistry.createRegistry(portNumber);
-            System.out.println("Server: Registry created on port number " + portNumber);
-        } catch (RemoteException e) {
-            System.out.println("Server: Cannot create registry");
-            System.out.println("Server: RemoteException: " + e.getMessage());
-        }
-
-        //Bind using registry
-        try {
-            registry.rebind(bindingName, this);
-            System.out.println("Server: Game bound to registry");
-        } catch (RemoteException e) {
-            System.out.println("Server: Cannot bind Game");
-            System.out.println("Server: RemoteException: " + e.getMessage());
-        } catch (NullPointerException e) {
-            System.out.println("Server: Port already in use. \nServer: Please check if the server isn't already running");
-            System.out.println("Server: NullPointerException: " + e.getMessage());
-        }
     }
 }

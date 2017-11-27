@@ -117,6 +117,14 @@ public class LocalGame {
         return map;
     }
 
+    public void claimLand(Unit unit){
+        try {
+            remoteGame.claimLand(unit);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
     public Unit getUnitPreset(UnitType type) {
         try {
             return remoteGame.getUnitPreset(type);

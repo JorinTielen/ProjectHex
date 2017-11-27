@@ -168,6 +168,7 @@ public class ProjectHex extends ApplicationAdapter {
         if (buildingToBuild != null) {
             Vector3 mousePos = new Vector3(Gdx.input.getX() - 80, Gdx.input.getY() + 80, 0); //Image position gets set hard-coded to get it under the cursor.
             camera.unproject(mousePos);
+            buildingToBuild.setImage();
             batch.draw(buildingToBuild.getImage(), mousePos.x, mousePos.y);
         }
 

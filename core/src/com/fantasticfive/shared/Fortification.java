@@ -21,6 +21,8 @@ public class Fortification extends Building {
     @Override
     public void setImage() {
         this.image = new Texture("tower.png");
-        setColor();
+        if(owner != null) {
+            setColor();
+        }
     }
 }
