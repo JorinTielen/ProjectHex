@@ -320,8 +320,8 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         //Check if hex isn't water, mountain or possessed by a building
         Hexagon hex = map.getHexAtLocation(location);
         return (hex.getObjectType() != ObjectType.MOUNTAIN
-                || hex.getGroundType() != GroundType.WATER
-                || getBuildingAtLocation(location) == null);
+                && hex.getGroundType() != GroundType.WATER
+                && getBuildingAtLocation(location) == null);
     }
 
     public boolean hexEmptyResource(Point location) throws RemoteException {
