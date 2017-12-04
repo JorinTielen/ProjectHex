@@ -49,6 +49,9 @@ public class MainMenuScreen implements Screen {
     private Table table;
     private SpriteBatch menuBatch = new SpriteBatch();
 
+    Texture title;
+    Texture titleStart;
+
     private Music menuMusic;
 
     //Tables
@@ -191,12 +194,8 @@ public class MainMenuScreen implements Screen {
     }
 
     private void createMenuBatch() {
-        Texture title;
-        Texture titleStart;
         menuBatch.begin();
 
-        title = new Texture("title.png");
-        titleStart = new Texture("titleStart.png");
 
         menuBatch.draw(title, (screenWidth / 2) - (title.getWidth() / 2), screenHeight / 100 * 80);
         if (startScreen) {
