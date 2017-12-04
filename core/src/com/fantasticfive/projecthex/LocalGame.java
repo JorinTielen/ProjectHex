@@ -89,7 +89,7 @@ public class LocalGame {
         }
 
         version = remoteVersion;
-        System.out.println("Updated from Remote");
+        LOGGER.info("Updated from Remote");
     }
 
     public void updateFromLocal() {
@@ -260,25 +260,25 @@ public class LocalGame {
         int portNumber = 1099;
 
         // Print IP address and port number for registry
-        System.out.println("Client: IP Address: " + ipAddress);
-        System.out.println("Client: Port number " + portNumber);
+        LOGGER.info("Client: IP Address: " + ipAddress);
+        LOGGER.info("Client: Port number " + portNumber);
 
         // Locate registry at IP address and port number
         Registry registry;
         try {
             registry = LocateRegistry.getRegistry(ipAddress, portNumber);
         } catch (RemoteException ex) {
-            System.out.println("Client: Cannot locate registry");
-            System.out.println("Client: RemoteException: " + ex.getMessage());
+            LOGGER.info("Client: Cannot locate registry");
+            LOGGER.info("Client: RemoteException: " + ex.getMessage());
             registry = null;
         }
 
         // Print result locating registry
         if (registry != null) {
-            System.out.println("Client: Registry located");
+            LOGGER.info("Client: Registry located");
         } else {
-            System.out.println("Client: Cannot locate registry");
-            System.out.println("Client: Registry is null pointer");
+            LOGGER.info("Client: Cannot locate registry");
+            LOGGER.info("Client: Registry is null pointer");
         }
 
         //Bind using registry
@@ -286,12 +286,12 @@ public class LocalGame {
             try {
                 remoteGame = (IRemoteGame) registry.lookup("ProjectHex");
             } catch (RemoteException e) {
-                System.out.println("Client: RemoteException on IRemoteGame");
-                System.out.println("Client: RemoteException: " + e.getMessage());
+                LOGGER.info("Client: RemoteException on IRemoteGame");
+                LOGGER.info("Client: RemoteException: " + e.getMessage());
                 remoteGame = null;
             } catch (NotBoundException e) {
-                System.out.println("Client: Cannot bind IRemoteGame");
-                System.out.println("Client: NotBoundException: " + e.getMessage());
+                LOGGER.info("Client: Cannot bind IRemoteGame");
+                LOGGER.info("Client: NotBoundException: " + e.getMessage());
                 remoteGame = null;
             }
         }
@@ -306,9 +306,9 @@ public class LocalGame {
             } catch (RemoteException e) {
                 LOGGER.log(Level.ALL, e.getMessage());
             }
-            System.out.println("Client: remoteGame retrieved");
+            LOGGER.info("Client: remoteGame retrieved");
         } else {
-            System.out.println("Client: Something went wrong");
+            LOGGER.info("Client: Something went wrong");
             System.exit(0);
         }
     }

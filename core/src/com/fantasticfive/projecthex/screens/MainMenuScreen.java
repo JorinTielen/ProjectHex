@@ -21,8 +21,11 @@ import com.fantasticfive.shared.enums.UnitType;
 
 import java.util.*;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class MainMenuScreen implements Screen {
+
+    private static final Logger LOGGER = Logger.getLogger( MainMenuScreen.class.getName() );
 
     private final GameMain game;
 

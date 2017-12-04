@@ -11,7 +11,11 @@ import com.fantasticfive.shared.Building;
 import com.fantasticfive.shared.Point;
 import com.fantasticfive.shared.enums.UnitType;
 
+import java.util.logging.Logger;
+
 public class UnitShopTable extends Table {
+    private static final Logger LOGGER = Logger.getLogger( UnitShopTable.class.getName() );
+
     private Table t;
 
     final private LocalGame game;
@@ -46,7 +50,7 @@ public class UnitShopTable extends Table {
         //Method for buying archer
         buttonBuyArcher.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("you bought an archer");
+                LOGGER.info("you bought an archer");
                 UnitShopTable.this.game.buyUnit(UnitType.ARCHER, new Point(building.getLocation().getX() + 1, building.getLocation().getY()));
                 setVisible(false);
             }
@@ -55,7 +59,7 @@ public class UnitShopTable extends Table {
         //Method for buying swordsman
         buttonBuySwordsman.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("you bought a swordsman");
+                LOGGER.info("you bought a swordsman");
 
                 UnitShopTable.this.game.buyUnit(UnitType.SWORDSMAN, new Point(building.getLocation().getX() + 1, building.getLocation().getY()));
                 setVisible(false);
@@ -65,7 +69,7 @@ public class UnitShopTable extends Table {
         //Method for buying scout
         buttonBuyScout.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("you bought a scout");
+                LOGGER.info("you bought a scout");
                 UnitShopTable.this.game.buyUnit(UnitType.SCOUT, new Point(building.getLocation().getX() + 1, building.getLocation().getY()));
                 setVisible(false);
             }
@@ -74,7 +78,7 @@ public class UnitShopTable extends Table {
         //Method for selling barracks
         buttonSellBarracks.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("You sold your Barracks.");
+                LOGGER.info("You sold your Barracks.");
                 UnitShopTable.this.game.sellBuilding(building.getLocation());
                 setVisible(false);
             }

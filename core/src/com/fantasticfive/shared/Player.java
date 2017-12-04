@@ -7,8 +7,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Player implements Serializable {
+    private static final Logger LOGGER = Logger.getLogger( Player.class.getName() );
+
     private List<Building> buildings;
     private List<Unit> units;
     private List<Hexagon> hexagons;
@@ -63,9 +66,9 @@ public class Player implements Serializable {
             if (this.gold - ((Resource) building).getPurchaseCost() >= 0) {
                 this.removeGold(((Resource) building).getPurchaseCost());
                 this.buildings.add(building);
-                System.out.println("Resource built");
+                LOGGER.info("Resource built");
             } else {
-                System.out.println("Not enough money");
+                LOGGER.info("Not enough money");
             }
         }
         //Removes gold and adds fortification
@@ -73,9 +76,9 @@ public class Player implements Serializable {
             if (this.gold - ((Fortification) building).getPurchaseCost() >= 0) {
                 this.removeGold(((Fortification) building).getPurchaseCost());
                 this.buildings.add(building);
-                System.out.println("Fortification built");
+                LOGGER.info("Fortification built");
             } else {
-                System.out.println("Not enough money");
+                LOGGER.info("Not enough money");
             }
         }
         //Removes gold and adds barracks
@@ -83,15 +86,15 @@ public class Player implements Serializable {
             if (this.gold - ((Barracks) building).getPurchaseCost() >= 0) {
                 this.removeGold(((Barracks) building).getPurchaseCost());
                 this.buildings.add(building);
-                System.out.println("Barracks built");
+                LOGGER.info("Barracks built");
             } else {
-                System.out.println("Not enough money");
+                LOGGER.info("Not enough money");
             }
         }
         //Adds town centre
         else if (building instanceof TownCentre) {
             this.buildings.add(building);
-            System.out.println("TownCentre built");
+            LOGGER.info("TownCentre built");
         }
     }
 
@@ -100,10 +103,10 @@ public class Player implements Serializable {
             this.removeGold(((Resource) building).getPurchaseCost());
             building.setMineOnMountain();
             this.buildings.add(building);
-            System.out.println("Resource on mountain built");
+            LOGGER.info("Resource on mountain built");
             return true;
         } else {
-            System.out.println("Not enough money");
+            LOGGER.info("Not enough money");
             return false;
         }
     }
@@ -143,7 +146,7 @@ public class Player implements Serializable {
             this.removeGold(unit.getPurchaseCost());
             this.units.add(unit);
         } else {
-            System.out.println("Not enough money");
+            LOGGER.info("Not enough money");
         }
     }
 

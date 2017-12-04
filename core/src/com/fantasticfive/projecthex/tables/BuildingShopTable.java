@@ -14,7 +14,12 @@ import com.fantasticfive.shared.Fortification;
 import com.fantasticfive.shared.Resource;
 import com.fantasticfive.shared.enums.BuildingType;
 
+import java.util.logging.Logger;
+
 public class BuildingShopTable extends Table {
+
+    private static final Logger LOGGER = Logger.getLogger( BuildingSellTable.class.getName() );
+
     private Table t;
 
     final private GameScreen gameScreen;
@@ -24,6 +29,7 @@ public class BuildingShopTable extends Table {
     private Building buildingToBuild;
 
     public BuildingShopTable(GameScreen gameScreen, LocalGame game, Skin skin) {
+
         setVisible(false);
         t = new Table();
         this.gameScreen = gameScreen;
@@ -50,7 +56,7 @@ public class BuildingShopTable extends Table {
         //Method for buying Resource
         buttonBuyResource.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("You bought a Resource");
+                LOGGER.info("You bought a Resource");
                 buildingToBuild = BuildingShopTable.this.game.getBuildingPreset(BuildingType.RESOURCE);
                 update();
                 setVisible(false);
@@ -60,7 +66,7 @@ public class BuildingShopTable extends Table {
         //Method for buying Fortification
         buttonBuyFortification.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("You bought a Fortification");
+                LOGGER.info("You bought a Fortification");
                 buildingToBuild = BuildingShopTable.this.game.getBuildingPreset(BuildingType.FORTIFICATION);
                 update();
                 setVisible(false);
@@ -70,7 +76,7 @@ public class BuildingShopTable extends Table {
         //Method for buying Barracks
         buttonBuyBarracks.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("You bought a Barracks");
+                LOGGER.info("You bought a Barracks");
                 buildingToBuild = BuildingShopTable.this.game.getBuildingPreset(BuildingType.BARRACKS);
                 update();
                 setVisible(false);

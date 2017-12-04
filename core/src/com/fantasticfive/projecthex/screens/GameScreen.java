@@ -161,7 +161,7 @@ public class GameScreen implements Screen{
             for (Building b : p.getBuildings()) {
                 b.setImage();
                 if (b.getImage() == null) {
-                    System.out.println("no image");
+                    LOGGER.info("no image");
                 }
                 Hexagon h = map.getHexAtLocation(b.getLocation());
                 batch.draw(b.getImage(), h.getPos().x, h.getPos().y);
@@ -254,7 +254,7 @@ public class GameScreen implements Screen{
             Rectangle clickArea = new Rectangle(hex.getPos().x, hex.getPos().y,
                     hex.getGroundImage().getWidth(), hex.getGroundImage().getHeight());
             if (clickArea.contains(tmp.x, tmp.y)) {
-                System.out.println("clicked hex: " + hex.getLocation().getX() + " " + hex.getLocation().getY());
+                LOGGER.info("clicked hex: " + hex.getLocation().getX() + " " + hex.getLocation().getY());
 
                 //When clicked on unit or unit is selected
                 if (localGame.getUnitOnHex(hex) != null || localGame.getSelectedUnit() != null) {
@@ -286,23 +286,23 @@ public class GameScreen implements Screen{
             Rectangle clickArea = new Rectangle(hex.getPos().x, hex.getPos().y,
                     hex.getGroundImage().getWidth(), hex.getGroundImage().getHeight());
             if (clickArea.contains(tmp.x, tmp.y)) {
-                System.out.println("clicked hex: " + hex.getLocation().getX() + " " + hex.getLocation().getY());
+                LOGGER.info("clicked hex: " + hex.getLocation().getX() + " " + hex.getLocation().getY());
 
                 //Right click on own building
                 Building b;
                 b = localGame.getBuildingAtLocation(hex.getLocation());
                 if (b != null && b.getOwner().getId() == localGame.getThisPlayer().getId()) {
                     if (b instanceof Barracks) {
-                        System.out.println("You clicked on a Barracks");
+                        LOGGER.info("You clicked on a Barracks");
                         showUnitShopUI(x, y, b);
                     } else if (b instanceof TownCentre) {
-                        System.out.println("You clicked on a TownCentre");
+                        LOGGER.info("You clicked on a TownCentre");
                         showBuildingShopUI(x, y);
                     } else if (b instanceof Resource) {
-                        System.out.println("You clicked on a Resource");
+                        LOGGER.info("You clicked on a Resource");
                         showBuildingSellUI(x, y, b);
                     } else if (b instanceof Fortification) {
-                        System.out.println("You clicked on a Fortification");
+                        LOGGER.info("You clicked on a Fortification");
                         showBuildingSellUI(x, y, b);
                     }
                 }
@@ -312,7 +312,7 @@ public class GameScreen implements Screen{
                 if (u != null) {
                     if (u.getOwner() == localGame.getThisPlayer())
                         showUnitSellUI(x, y, u);
-                    System.out.println("You clicked on a unit!");
+                    LOGGER.info("You clicked on a unit!");
                 }
             }
         }

@@ -7,8 +7,11 @@ import com.fantasticfive.shared.enums.UnitType;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Unit implements Cloneable, Serializable {
+    private static final Logger LOGGER = Logger.getLogger( Unit.class.getName() );
+
     public transient Texture texture;
     private UnitType unitType;
     private int health;
@@ -60,10 +63,10 @@ public class Unit implements Cloneable, Serializable {
 
     public void reduceHealth(int hp) {
         health -= hp;
-        System.out.println("Health has been reduced with " + hp + " to " + health);
+        LOGGER.info("Health has been reduced with " + hp + " to " + health);
         if (health < 0) {
             owner.removeUnit(this);
-            System.out.println("Unit has died");
+            LOGGER.info("Unit has died");
         }
     }
 
@@ -134,10 +137,10 @@ public class Unit implements Cloneable, Serializable {
 
     public void toggleSelected() {
         if (isSelected) {
-            System.out.println("Unit deselected");
+            LOGGER.info("Unit deselected");
             isSelected = false;
         } else {
-            System.out.println("Unit selected");
+            LOGGER.info("Unit selected");
             isSelected = true;
         }
     }

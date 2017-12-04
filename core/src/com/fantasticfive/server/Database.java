@@ -11,11 +11,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
  * ProjectHex Created by Sven de Vries on 13-11-2017
  */
 public class Database {
+    private static final Logger LOGGER = Logger.getLogger( Database.class.getName() );
+
     private Connection conn;
 
     private void setConnection() {
@@ -32,19 +35,19 @@ public class Database {
 
             Class.forName("com.mysql.jdbc.Driver");
             conn = DriverManager.getConnection(url, username, password);
-            System.out.println("Connection to database SUCCEED");
+            LOGGER.info("Connection to database SUCCEED");
         } catch (ClassNotFoundException ex) {
-            System.out.println(ex.getMessage());
-            System.out.println("Connection to database FAILED");
+            LOGGER.info(ex.getMessage());
+            LOGGER.info("Connection to database FAILED");
         } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
-            System.out.println("Couldn't find properties file for database");
+            LOGGER.info(e.getMessage());
+            LOGGER.info("Couldn't find properties file for database");
         } catch (IOException e) {
-            System.out.println(e.getMessage());
-            System.out.println("Error with loading properties file for database");
+            LOGGER.info(e.getMessage());
+            LOGGER.info("Error with loading properties file for database");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            System.out.println("Error with driver library");
+            LOGGER.info(e.getMessage());
+            LOGGER.info("Error with driver library");
         }
     }
 
@@ -54,7 +57,7 @@ public class Database {
                 conn.close();
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            LOGGER.info(ex.getMessage());
         } finally {
             conn = null;
         }
@@ -73,7 +76,7 @@ public class Database {
                 }
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            LOGGER.info(ex.getMessage());
         } finally {
             closeConnection();
         }
@@ -95,7 +98,7 @@ public class Database {
                 }
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            LOGGER.info(ex.getMessage());
         } finally {
             closeConnection();
         }
@@ -116,7 +119,7 @@ public class Database {
                 }
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            LOGGER.info(ex.getMessage());
         } finally {
             closeConnection();
         }
@@ -136,7 +139,7 @@ public class Database {
                 }
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            LOGGER.info(ex.getMessage());
         } finally {
             closeConnection();
         }
@@ -181,7 +184,7 @@ public class Database {
                 }
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            LOGGER.info(ex.getMessage());
         } finally {
             closeConnection();
         }
@@ -209,7 +212,7 @@ public class Database {
                 }
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            LOGGER.info(ex.getMessage());
         } finally {
             closeConnection();
         }
@@ -237,7 +240,7 @@ public class Database {
                 }
             }
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            LOGGER.info(ex.getMessage());
         } finally {
             closeConnection();
         }

@@ -9,7 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.fantasticfive.projecthex.LocalGame;
 import com.fantasticfive.shared.Building;
 
+import java.util.logging.Logger;
+
 public class BuildingSellTable extends Table {
+    private static final Logger LOGGER = Logger.getLogger( BuildingSellTable.class.getName() );
+
     private Table t;
     private Label l;
 
@@ -35,7 +39,7 @@ public class BuildingSellTable extends Table {
         buttonSellBuilding.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Selling building");
+                LOGGER.info("Selling building");
                 BuildingSellTable.this.game.sellBuilding(building.getLocation());
                 setVisible(false);
             }
