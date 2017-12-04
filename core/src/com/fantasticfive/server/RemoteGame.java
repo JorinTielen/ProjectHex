@@ -128,9 +128,17 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         Player p = new Player(username, color, id);
 
         Point location;
+        int distance = 999;
         do {
             location = map.randomPoint();
-        } while (!hexEmpty(location));
+            for (Player otherPlayer : players) {
+                Point townCenter = otherPlayer.getBuildings().get(0).getLocation();
+                int townCenter_distance = map.distance(location, townCenter);
+                if (townCenter_distance < distance) {
+                    distance = townCenter_distance;
+                }
+            }
+        } while (!(hexEmpty(location) || distance < 4));
         Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, location, p);
         p.purchaseBuilding(b);
 

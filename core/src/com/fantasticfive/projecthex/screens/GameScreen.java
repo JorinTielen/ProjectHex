@@ -155,9 +155,8 @@ public class GameScreen implements Screen{
         //draw all buildings and units from all players
         for (Player p : localGame.getPlayers()) {
             for (Building b : p.getBuildings()) {
-                b.setImage();
-                if (b.getImage() == null) {
-                    System.out.println("no image");
+                if (b.image == null) {
+                    b.setImage();
                 }
                 Hexagon h = map.getHexAtLocation(b.getLocation());
                 batch.draw(b.getImage(), h.getPos().x, h.getPos().y);
@@ -186,17 +185,19 @@ public class GameScreen implements Screen{
         if (buildingToBuild != null) {
             Vector3 mousePos = new Vector3(Gdx.input.getX() - 80, Gdx.input.getY() + 80, 0); //Image position gets set hard-coded to get it under the cursor.
             camera.unproject(mousePos);
-            buildingToBuild.setImage();
+            if (buildingToBuild.image == null) {
+                buildingToBuild.setImage();
+            }
             batch.draw(buildingToBuild.getImage(), mousePos.x, mousePos.y);
         }
 
         //draw explosion animation
-        if (explosionAnimation != null) {
+        /*if (explosionAnimation != null) {
             if (explosionAnimation.getActive()) {
                 explosionAnimation.animate();
                 batch.draw(explosionAnimation.getTexture(), explosionAnimation.getLocation().x, explosionAnimation.getLocation().y);
             }
-        }
+        }*/
 
         //draw area where unit can walk
         if (localGame.getSelectedUnit() != null) {
@@ -209,7 +210,7 @@ public class GameScreen implements Screen{
         batch.end();
 
         //update UI information
-        updatePlayerUI();
+        //updatePlayerUI();
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();

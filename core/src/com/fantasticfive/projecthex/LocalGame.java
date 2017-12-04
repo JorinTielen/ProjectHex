@@ -30,9 +30,9 @@ public class LocalGame {
                 try {
                     int remoteVersion = remoteGame.getVersion();
                     if (remoteVersion != version) {
-                        Gdx.app.postRunnable(() -> {
-                            UpdateFromRemote(remoteVersion);
-                        });
+                        Gdx.app.postRunnable(() ->
+                            UpdateFromRemote(remoteVersion)
+                        );
                     }
                 } catch (RemoteException e) {
                     e.printStackTrace();

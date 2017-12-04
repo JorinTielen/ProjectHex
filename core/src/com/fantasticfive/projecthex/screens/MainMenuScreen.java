@@ -77,7 +77,9 @@ public class MainMenuScreen implements Screen {
 
         createUIElements();
 
-        startMusic();
+        //startMusic();
+        title = new Texture("title.png");
+        titleStart = new Texture("titleStart.png");
     }
 
     @Override
@@ -116,8 +118,7 @@ public class MainMenuScreen implements Screen {
         game.batch.end();
 
         menuBatch.begin();
-        title = new Texture("title.png");
-        titleStart = new Texture("titleStart.png");
+
         menuBatch.draw(title, (screenWidth / 2) - (title.getWidth() / 2), screenHeight / 100 * 80);
         if (startScreen) {
             menuBatch.draw(titleStart, (screenWidth / 2) - (titleStart.getWidth() / 2), screenHeight / 100 * 40);
@@ -150,7 +151,9 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void dispose() {
-        menuMusic.dispose();
+        menuBatch.dispose();
+        game.batch.dispose();
+        if (menuMusic != null) menuMusic.dispose();
     }
 
     public void startMusic() {
