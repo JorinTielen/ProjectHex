@@ -5,6 +5,7 @@ import com.fantasticfive.shared.enums.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Map implements Serializable {
     private List<Hexagon> hexagons;
@@ -36,17 +37,54 @@ public class Map implements Serializable {
         }
     }
 
-    private void Generate() {
-        Noise.setSeed(1234); //This value is used to calculate the map
-        float scale = 0.10f; //To determine the density
-        float[][] noiseValues = Noise.Calc2DNoise(width, height, scale);
+    public Point randomPoint() {
+        Random rnd = new Random();
+        int i;
+        do {
+            i = rnd.nextInt(hexagons.size());
+        } while (hexagons.get(i).getGroundType() != GroundType.GRASS);
+        return hexagons.get(i).getLocation();
 
-        int maxNoise1 = 75;
-        int maxNoise2 = 125;
-        int maxNoise3 = 150;
-        int maxNoise4 = 220;
-        int maxNoise5 = 235;
-        int maxNoise6 = 255;
+    }
+
+    public boolean canMoveTo(Unit u, Point location) {
+        List<Hexagon> movableHexes = hexesInCirle(u.getLocation(), u.getMovementLeft());
+        for (Hexagon hex : movableHexes) {
+            if(hex.getLocation().equals(location)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<Hexagon> hexesInCirle(Point location, int radius) {
+        List<Hexagon> results = new ArrayList<>();
+        for (Hexagon hex : hexagons) {
+            int distance = distance(location, hex.getLocation());
+            if (distance >= -radius &&
+                    distance <= radius) {
+                results.add(hex);
+            }
+        }
+        return results;
+    }
+
+    public int distance(Point a, Point b) {
+        return (Math.abs(a.y - b.y) + Math.abs(a.x + a.y - b.x - b.y) + Math.abs(a.x - b.x)) / 2;
+    }
+
+    private void Generate() {
+        //old seed: 1234
+        Noise.setSeed(365); //This value is used to calculate the map
+        float scale = 0.10f; //To determine the density
+        float[][] noiseValues = Noise.Calc2DNoise(height, width, scale);
+
+        int maxNoise1 = 60;
+        int maxNoise2 = 90;
+        int maxNoise3 = 120;
+        int maxNoise4 = 200;
+        int maxNoise5 = 220;
+        int maxNoise6 = 250;
 
         for (int column = 0; column < width; column++) {
             for (int row = 0; row < height; row++) {

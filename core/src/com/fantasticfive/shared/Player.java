@@ -34,6 +34,10 @@ public class Player implements Serializable {
         return id;
     }
 
+    public List<Hexagon> getOwnedHexagons() {
+        return hexagons;
+    }
+
     public Color getColor() {
         return this.color;
     }

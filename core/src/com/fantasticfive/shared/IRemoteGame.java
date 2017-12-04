@@ -62,11 +62,32 @@ public interface IRemoteGame extends Remote {
      * @throws RemoteException when RMI breaks.
      */
     Unit getUnitPreset(UnitType type) throws RemoteException;
+
     /**
      * Makes the playerId buy a unit of unitType, at the location.
-     * @throws RemoteException when RMI breaks.
+     * @param unitType the unitType the unit will be.
+     * @param location the location the unit will be spawned
+     * @param playerId your player id.
+     * @throws RemoteException
      */
     void buyUnit(UnitType unitType, Point location, int playerId) throws RemoteException;
+
+    /**
+     * Makes a unit move to another location.
+     * @param u the unit you want to move.
+     * @param location the location you want to move to.
+     * @param playerId your player id.
+     * @throws RemoteException
+     */
+    void moveUnit(Unit u, Point location, int playerId) throws RemoteException;
+
+    /**
+     * Makes a unit attack another.
+     * @param attacker the unit attacking
+     * @param defender the unit defending
+     * @throws RemoteException
+     */
+    void attackUnit(Unit attacker, Unit defender) throws RemoteException;
     /**
      * Claims land for the current player.
      * @throws RemoteException when RMI breaks.
@@ -94,7 +115,7 @@ public interface IRemoteGame extends Remote {
      * Makes unit attack the building at location.
      * @throws RemoteException when RMI breaks.
      */
-    void attackBuilding(Unit unit, Point location) throws RemoteException;
+    void attackBuilding(Unit unit, Building b) throws RemoteException;
     /**
      * Gets the building at location.
      * @throws RemoteException when RMI breaks.

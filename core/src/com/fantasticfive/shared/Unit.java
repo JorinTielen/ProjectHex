@@ -48,30 +48,23 @@ public class Unit implements Cloneable, Serializable {
         this.upgradeCost = upgradeCost;
     }
 
-    public boolean attack(Unit unitToAttack) {
-        if (calculateDistance(this.location, unitToAttack.getLocation()) <= attackRange && this.allowedToMove >= 1) {
-            unitToAttack.reduceHealth(attackPower - unitToAttack.getArmor());
-            allowedToMove = 0;
-            return true;
-        }
-        return false;
+    public void attack(Unit unitToAttack) {
+        unitToAttack.reduceHealth(attackPower - unitToAttack.getArmor());
+        allowedToMove = 0;
     }
 
     public boolean attack(Building buildingToAttack) {
-        if (calculateDistance(this.location, buildingToAttack.getLocation()) <= attackRange && this.allowedToMove >= 1) {
-            allowedToMove = 0;
-            return buildingToAttack.damageHealth(this.attackPower);
-        }
-        return false;
+        allowedToMove = 0;
+        return buildingToAttack.damageHealth(this.attackPower);
     }
 
     public void reduceHealth(int hp) {
-        if (health - hp > 0) {
-            health -= hp;
-        } else if (health - hp <= 0) {
-            health = 0;
-        }
+        health -= hp;
         System.out.println("Health has been reduced with " + hp + " to " + health);
+        if (health < 0) {
+            owner.removeUnit(this);
+            System.out.println("Unit has died");
+        }
     }
 
     public void setWalkableHexes(List<Hexagon> hexes){
@@ -83,20 +76,9 @@ public class Unit implements Cloneable, Serializable {
         return this.walkableHexes;
     }
 
-    public boolean canMoveTo(Point destination){
-        if (allowedToMove - calculateDistance(location, destination) < 0) {
-            return false;
-        }
-        return true;
-    }
-
-    public void move(Point destination) {
-        if (allowedToMove - calculateDistance(location, destination) < 0) {
-            System.out.println("Not allowed to walk :(");
-        } else {
-            this.allowedToMove -= calculateDistance(location, destination);
-            this.location = destination;
-        }
+    public void move(Point destination, int distance) {
+        this.location = destination;
+        allowedToMove -= distance;
     }
 
     public void upgrade() {
@@ -162,16 +144,6 @@ public class Unit implements Cloneable, Serializable {
 
     public Boolean getSelected() {
         return isSelected;
-    }
-
-    //Calculates distance from 2 selected points
-    public int calculateDistance(Point p1, Point p2) {
-        //TODO This formula isn't 100% correct yet
-
-        p1.z = -(p1.y + p1.x);
-        p2.z = -(p2.y + p2.x);
-
-        return (Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y) + Math.abs(p1.z - p2.z)) / 2;
     }
 
     public int getMovementLeft() {

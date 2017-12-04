@@ -293,41 +293,33 @@ public class ProjectHex extends ApplicationAdapter {
         //If not clicked on unit and unit is selected
         else if (game.getUnitOnHex(hex) == null && game.getSelectedUnit() != null) {
             Unit u = game.getSelectedUnit();
-            //Move unit to free hex
-            if (game.hexEmpty(hex.getLocation())) {
-                u.move(new Point(hex.getLocation().x, hex.getLocation().y));
-                u.toggleSelected();
-                game.updateFromLocal();
+            //Is there a building? if so, attack it.
+            Building b = game.getBuildingAtLocation(hex.getLocation());
+            if (b != null) {
+                game.attackBuilding(u, b);
+            //Move unit to hex if free
+            } else {
+                game.moveUnit(u, hex.getLocation());
             }
-            //Unit attacks enemy building
-            else if (game.getBuildingAtLocation(hex.getLocation()) != null
-                    && game.getBuildingAtLocation(hex.getLocation()).getOwner() != game.getThisPlayer()) {
-                game.attackBuilding(game.getSelectedUnit(), hex.getLocation());
-                u.toggleSelected();
-            }
-            //If clicked on unit and unit is selected
+
+        //If clicked on unit and unit is selected
         } else if (game.getUnitOnHex(hex) != null && game.getSelectedUnit() != null) {
             //If clicked on the selected unit
             if (game.getUnitOnHex(hex) == game.getSelectedUnit()) {
                 game.getSelectedUnit().toggleSelected();
-                //If clicked on a different unit with the same owner
+
+            //If clicked on a different unit with the same owner
             } else if (game.getUnitOnHex(hex).getOwner() == game.getSelectedUnit().getOwner()) {
                 game.getSelectedUnit().toggleSelected();
                 game.getUnitOnHex(hex).toggleSelected();
-                //If clicked on a unit with a different owner than the selected unit
+
+            //If clicked on a unit with a different owner than the selected unit
             } else if (game.getUnitOnHex(hex).getOwner() != game.getSelectedUnit().getOwner()) {
+                //Attack the other unit
+                Unit u = game.getSelectedUnit();
                 Unit enemy = game.getUnitOnHex(hex);
-                Unit playerUnit = game.getSelectedUnit();
-                if (playerUnit.attack(enemy)) {
-                    if (enemy.getHealth() == 0) {
-                        enemy.getOwner().removeUnit(enemy);
-                    }
-                }
-                playerUnit.toggleSelected();
-                if (enemy.getHealth() == 0) {
-                    enemy.getOwner().removeUnit(enemy);
-                }
-                game.updateFromLocal();
+
+                game.attackUnit(u, enemy);
             }
         }
     }
