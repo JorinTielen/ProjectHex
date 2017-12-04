@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 public class Unit implements Cloneable, Serializable {
     private static final Logger LOGGER = Logger.getLogger( Unit.class.getName() );
 
-    public transient Texture texture;
+    private transient Texture texture;
     private UnitType unitType;
     private int health;
     private int armor;
@@ -59,6 +59,10 @@ public class Unit implements Cloneable, Serializable {
     public boolean attack(Building buildingToAttack) {
         allowedToMove = 0;
         return buildingToAttack.damageHealth(this.attackPower);
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
     }
 
     public void reduceHealth(int hp) {
