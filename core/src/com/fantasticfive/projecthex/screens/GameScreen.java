@@ -215,7 +215,7 @@ public class GameScreen implements Screen{
         batch.end();
 
         //update UI information
-        //updatePlayerUI();
+        updatePlayerUI();
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
