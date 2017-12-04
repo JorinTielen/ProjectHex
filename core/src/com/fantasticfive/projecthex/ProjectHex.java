@@ -30,15 +30,15 @@ public class ProjectHex extends ApplicationAdapter {
 
     //game
     private LocalGame game;
-    private IMap map;
+    private Map map;
 
     //ui
     private Skin skin;
     private Stage stage;
     private Table table;
-    private Texture blankTexture; //blank texture for health bars
+    private Texture blankTexture;       //blank texture for health bars
     private Texture walkableHexTexture; //Texture overlay for hexes that unit can walk to
-    public SpriteAnimation explosionAnimation;
+    private SpriteAnimation explosionAnimation;
 
     //tables
     private Table unitShopTable;
@@ -100,7 +100,6 @@ public class ProjectHex extends ApplicationAdapter {
             table.addActor(buildingSellTable);
         }
 
-        createGameUI();
         createOptionsUI();
         if (optionsTable != null) {
             table.addActor(optionsTable);
@@ -257,7 +256,7 @@ public class ProjectHex extends ApplicationAdapter {
                 System.out.println("clicked hex: " + hex.getLocation().x + " " + hex.getLocation().y);
 
                 //Right click on own building
-                Building b = null;
+                Building b;
                 b = game.getBuildingAtLocation(hex.getLocation());
                 if (b != null && b.getOwner().getId() == game.getThisPlayer().getId()) {
                     if (b instanceof Barracks) {
@@ -275,7 +274,7 @@ public class ProjectHex extends ApplicationAdapter {
                     }
                 }
                 //Right click on own unit
-                Unit u = null;
+                Unit u;
                 u = game.getUnitOnHex(hex);
                 if (u != null) {
                     if (u.getOwner() == game.getThisPlayer())
@@ -296,47 +295,38 @@ public class ProjectHex extends ApplicationAdapter {
         //If not clicked on unit and unit is selected
         else if (game.getUnitOnHex(hex) == null && game.getSelectedUnit() != null) {
             Unit u = game.getSelectedUnit();
-            //Move unit to free hex
-            if (game.hexEmpty(hex.getLocation())) {
-                u.move(new Point(hex.getLocation().x, hex.getLocation().y));
-                u.toggleSelected();
-                game.updateFromLocal();
+            //Is there a building? if so, attack it.
+            Building b = game.getBuildingAtLocation(hex.getLocation());
+            if (b != null) {
+                game.attackBuilding(u, b);
+            //Move unit to hex if free
+            } else {
+                game.moveUnit(u, hex.getLocation());
             }
-            //Unit attacks enemy building
-            else if (game.getBuildingAtLocation(hex.getLocation()) != null
-                    && game.getBuildingAtLocation(hex.getLocation()).getOwner() != game.getThisPlayer()) {
-                game.attackBuilding(game.getSelectedUnit(), hex.getLocation());
-                u.toggleSelected();
-            }
-            //If clicked on unit and unit is selected
+
+        //If clicked on unit and unit is selected
         } else if (game.getUnitOnHex(hex) != null && game.getSelectedUnit() != null) {
             //If clicked on the selected unit
             if (game.getUnitOnHex(hex) == game.getSelectedUnit()) {
                 game.getSelectedUnit().toggleSelected();
-                //If clicked on a different unit with the same owner
+
+            //If clicked on a different unit with the same owner
             } else if (game.getUnitOnHex(hex).getOwner() == game.getSelectedUnit().getOwner()) {
                 game.getSelectedUnit().toggleSelected();
                 game.getUnitOnHex(hex).toggleSelected();
-                //If clicked on a unit with a different owner than the selected unit
+
+            //If clicked on a unit with a different owner than the selected unit
             } else if (game.getUnitOnHex(hex).getOwner() != game.getSelectedUnit().getOwner()) {
+                //Attack the other unit
+                Unit u = game.getSelectedUnit();
                 Unit enemy = game.getUnitOnHex(hex);
-                Unit playerUnit = game.getSelectedUnit();
-                if (playerUnit.attack(enemy)) {
-                    if (enemy.getHealth() == 0) {
-                        enemy.getOwner().removeUnit(enemy);
-                    }
-                }
-                playerUnit.toggleSelected();
-                if (enemy.getHealth() == 0) {
-                    enemy.getOwner().removeUnit(enemy);
-                }
-                game.updateFromLocal();
+
+                game.attackUnit(u, enemy);
             }
         }
     }
 
     private void clearUI() {
-        optionsTable.setVisible(false);
         buildingSellTable.setVisible(false);
         buildingShopTable.setVisible(false);
         unitSellTable.setVisible(false);
@@ -418,16 +408,8 @@ public class ProjectHex extends ApplicationAdapter {
     //  Game UI
     //  (Shows the next turn button and options)
     // ====================
-    private void createGameUI() {
-        table.addActor(new GameTable(this, skin));
-    }
-
     private void createOptionsUI() {
         optionsTable = new OptionsTable(game, skin);
-    }
-
-    public void showOptionsUI() {
-        optionsTable.setVisible(true);
     }
 
     private void createSkin() {
@@ -440,7 +422,6 @@ public class ProjectHex extends ApplicationAdapter {
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
         textButtonStyle.up = skin.newDrawable("white", Color.DARK_GRAY);
         textButtonStyle.down = skin.newDrawable("white", Color.DARK_GRAY);
-        textButtonStyle.checked = skin.newDrawable("white", Color.BLUE);
         textButtonStyle.over = skin.newDrawable("white", Color.LIGHT_GRAY);
         textButtonStyle.font = skin.getFont("default");
         skin.add("default", textButtonStyle);

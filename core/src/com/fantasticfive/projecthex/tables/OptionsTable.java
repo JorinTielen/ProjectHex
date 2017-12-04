@@ -7,8 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.fantasticfive.projecthex.LocalGame;
-import com.fantasticfive.shared.IGame;
-import java.rmi.RemoteException;
 
 public class OptionsTable extends Table {
     private Table t;
@@ -17,8 +15,6 @@ public class OptionsTable extends Table {
     private Skin skin;
 
     public OptionsTable(LocalGame game, Skin skin) {
-        setVisible(false);
-
         this.game = game;
         this.skin = skin;
 
@@ -32,14 +28,11 @@ public class OptionsTable extends Table {
         t.add(buttonLeaveGame).fill();
         t.row();
 
-        t.setPosition(Gdx.graphics.getWidth() - 40, 55);
-
         buttonEndTurn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("Ending turn");
                 OptionsTable.this.game.endTurn();
-                setVisible(false);
             }
         });
 
@@ -48,9 +41,10 @@ public class OptionsTable extends Table {
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("Leaving game");
                 OptionsTable.this.game.leaveGame();
-                setVisible(false);
             }
         });
+
+        t.setPosition(Gdx.graphics.getWidth() - 60, 40);
 
         addActor(t);
     }

@@ -96,12 +96,16 @@ public class Hexagon implements Serializable {
             }
             objectImage = new Texture("rockBig.png");
         }
+        setColorTexture();
+
+        groundImage.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+    }
+
+    public void setColorTexture() {
         if(owner != null){
             this.colorCoding = new Texture("terrainColor.png");
             setColor();
         }
-
-        groundImage.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
     }
 
     //returns the real x,y position of this hex
@@ -115,12 +119,6 @@ public class Hexagon implements Serializable {
         float x = (float) (horiz * (this.location.y + this.location.x / 2f));
         float y = (float) (vert * this.location.x);
 
-        if (this.location.x % 2 == 0) {
-            x -= (this.location.x * (width / 2));
-        } else {
-            x -= (this.location.x * (width / 2));
-            x += (width / 2);
-        }
         return new Vector2(x, y);
     }
 

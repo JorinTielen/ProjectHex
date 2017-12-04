@@ -68,6 +68,14 @@ public class LocalGame {
             if (this.thisPlayer.getId() == p.getId()) {
                 this.thisPlayer = p;
             }
+            for (Hexagon h : map.getHexagons()) {
+                for (Hexagon h2 : p.getOwnedHexagons()) {
+                    if (h.getLocation().equals(h2.getLocation())) {
+                        h.setOwner(p);
+                    }
+                }
+                h.setColorTexture();
+            }
             for (Building b : p.getBuildings()) {
                 b.setImage();
             }
@@ -142,7 +150,15 @@ public class LocalGame {
         }
     }
 
-    public Unit getUnitOnHex(Hexagon hex) {
+    public void moveUnit(Unit u, Point location) {
+        try {
+            remoteGame.moveUnit(u, location, thisPlayer.getId());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    Unit getUnitOnHex(Hexagon hex) {
         Unit unit = null;
         for (Player p : getPlayers()) {
             for (Unit u : p.getUnits()) {
@@ -167,9 +183,17 @@ public class LocalGame {
         return unit;
     }
 
-    public void attackBuilding(Unit attacker, Point location) {
+    public void attackUnit(Unit attacker, Unit defender) {
         try {
-            remoteGame.attackBuilding(attacker, location);
+            remoteGame.attackUnit(attacker, defender);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void attackBuilding(Unit attacker, Building b) {
+        try {
+            remoteGame.attackBuilding(attacker, b);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -177,8 +201,7 @@ public class LocalGame {
 
     public Building getBuildingPreset(BuildingType type) {
         try {
-            Building b = remoteGame.getBuildingPreset(type);
-            return b;
+            return remoteGame.getBuildingPreset(type);
         } catch (RemoteException e) {
             e.printStackTrace();
             return null;
@@ -213,7 +236,7 @@ public class LocalGame {
     public void setWalkableHexesForUnit(Unit unit){
         List<Hexagon> walkableHexes = new ArrayList<>();
         for (Hexagon hex : map.getHexagons()){
-            if (unit.canMoveTo(hex.getLocation()) && hexEmpty(hex.getLocation())){
+            if (map.canMoveTo(unit, hex.getLocation()) && hexEmpty(hex.getLocation())){
                 walkableHexes.add(hex);
             }
         }
