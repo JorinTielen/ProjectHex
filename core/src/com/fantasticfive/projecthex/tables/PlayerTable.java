@@ -13,6 +13,7 @@ public class PlayerTable extends Table {
     private Table t;
     private Label lGold;
     private Label lGpt;
+    private Label lCUser;
 
     final private LocalGame game;
     private Skin skin;
@@ -31,9 +32,18 @@ public class PlayerTable extends Table {
         } else {
             lGpt.setColor(Color.WHITE);
         }
-        t.add(lGpt).width(90);
+        t.add(lGpt).width(70);
 
-        t.setPosition(100, Gdx.graphics.getHeight() - 10);
+        if (game.isMyTurn()) {
+            lCUser = new Label(" It is your turn!", skin);
+            lCUser.setColor(Color.GREEN);
+        } else {
+            lCUser = new Label(" Please wait...", skin);
+            lCUser.setColor(Color.RED);
+        }
+        t.add(lCUser).width(100).pad(5);
+
+        t.setPosition(160, Gdx.graphics.getHeight() - 15);
 
         addActor(t);
     }
@@ -45,6 +55,14 @@ public class PlayerTable extends Table {
             lGpt.setColor(Color.RED);
         } else {
             lGpt.setColor(Color.WHITE);
+        }
+
+        if (game.isMyTurn()) {
+            lCUser.setText(" It is your turn!");
+            lCUser.setColor(Color.GREEN);
+        } else {
+            lCUser.setText(" Please wait...");
+            lCUser.setColor(Color.RED);
         }
     }
 }
