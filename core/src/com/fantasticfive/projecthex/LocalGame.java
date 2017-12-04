@@ -158,7 +158,7 @@ public class LocalGame {
         }
     }
 
-    Unit getUnitOnHex(Hexagon hex) {
+    public Unit getUnitOnHex(Hexagon hex) {
         Unit unit = null;
         for (Player p : getPlayers()) {
             for (Unit u : p.getUnits()) {
