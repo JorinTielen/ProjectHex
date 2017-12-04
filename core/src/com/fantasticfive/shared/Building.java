@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 public abstract class Building implements Cloneable, Serializable {
     private static final Logger LOGGER = Logger.getLogger( Building.class.getName() );
 
-    protected transient Texture image;
+    public transient Texture image;
     protected int health;
     protected GroundType[] buildableOn;
     private Point location;
