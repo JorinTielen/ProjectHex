@@ -2,6 +2,7 @@ package com.fantasticfive.server;
 
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.enums.*;
+
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -9,8 +10,11 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Logger;
 
 public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
+    private static final Logger LOGGER = Logger.getLogger( RemoteGame.class.getName() );
+
     private int version = 0;
     private List<Player> players = new ArrayList<>();
     private Player currentPlayer;
@@ -35,22 +39,22 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         //Create registry at port number
         try {
             registry = LocateRegistry.createRegistry(portNumber);
-            System.out.println("Server: Registry created on port number " + portNumber);
+            LOGGER.info("Server: Registry created on port number " + portNumber);
         } catch (RemoteException e) {
-            System.out.println("Server: Cannot create registry");
-            System.out.println("Server: RemoteException: " + e.getMessage());
+            LOGGER.info("Server: Cannot create registry");
+            LOGGER.info("Server: RemoteException: " + e.getMessage());
         }
 
         //Bind using registry
         try {
             registry.rebind(bindingName, this);
-            System.out.println("Server: Game bound to registry");
+            LOGGER.info("Server: Game bound to registry");
         } catch (RemoteException e) {
-            System.out.println("Server: Cannot bind Game");
-            System.out.println("Server: RemoteException: " + e.getMessage());
+            LOGGER.info("Server: Cannot bind Game");
+            LOGGER.info("Server: RemoteException: " + e.getMessage());
         } catch (NullPointerException e) {
-            System.out.println("Server: Port already in use. \nServer: Please check if the server isn't already running");
-            System.out.println("Server: NullPointerException: " + e.getMessage());
+            LOGGER.info("Server: Port already in use. \nServer: Please check if the server isn't already running");
+            LOGGER.info("Server: NullPointerException: " + e.getMessage());
         }
     }
 
@@ -95,7 +99,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         }
 
         if (players.size() == 1) {
-            System.out.println(currentPlayer.getUsername() + " has won the game!");
+            LOGGER.info(currentPlayer.getUsername() + " has won the game!");
         }
         version++;
     }
@@ -171,7 +175,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         this.players.remove(player);
 
         if (players.size() == 1) {
-            System.out.println(currentPlayer.getUsername() + " has won the game!");
+            LOGGER.info(currentPlayer.getUsername() + " has won the game!");
         }
         version++;
     }
@@ -201,7 +205,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             }
             //When hex is not empty
             else {
-                System.out.println("Hex not empty");
+                LOGGER.info("Hex not empty");
             }
         }
         version++;
@@ -256,35 +260,35 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
 
     //Checks if claimed land has any mountain next to it, if it does it claims it.
     private void claimMountains(Point location){
-        Hexagon h = map.getHexAtLocation(new Point(location.x - 1, location.y - 1));
+        Hexagon h = map.getHexAtLocation(new Point(location.getX() - 1, location.getY() - 1));
         if (!h.hasOwner() && h.getIsMountain()){
             currentPlayer.addHexagon(h);
         }
-        h = map.getHexAtLocation(new Point(location.x - 1, location.y ));
+        h = map.getHexAtLocation(new Point(location.getX() - 1, location.getY() ));
         if (!h.hasOwner() && h.getIsMountain()){
             currentPlayer.addHexagon(h);
         }
-        h = map.getHexAtLocation(new Point(location.x - 1, location.y + 1));
+        h = map.getHexAtLocation(new Point(location.getX() - 1, location.getY() + 1));
         if (!h.hasOwner() && h.getIsMountain()){
             currentPlayer.addHexagon(h);
         }
-        h = map.getHexAtLocation(new Point(location.x, location.y - 1));
+        h = map.getHexAtLocation(new Point(location.getX(), location.getY() - 1));
         if (!h.hasOwner() && h.getIsMountain()){
             currentPlayer.addHexagon(h);
         }
-        h = map.getHexAtLocation(new Point(location.x, location.y + 1));
+        h = map.getHexAtLocation(new Point(location.getX(), location.getY() + 1));
         if (!h.hasOwner() && h.getIsMountain()){
             currentPlayer.addHexagon(h);
         }
-        h = map.getHexAtLocation(new Point(location.x + 1, location.y - 1));
+        h = map.getHexAtLocation(new Point(location.getX() + 1, location.getY() - 1));
         if (!h.hasOwner() && h.getIsMountain()){
             currentPlayer.addHexagon(h);
         }
-        h = map.getHexAtLocation(new Point(location.x + 1, location.y));
+        h = map.getHexAtLocation(new Point(location.getX() + 1, location.getY()));
         if (!h.hasOwner() && h.getIsMountain()){
             currentPlayer.addHexagon(h);
         }
-        h = map.getHexAtLocation(new Point(location.x + 1, location.y + 1));
+        h = map.getHexAtLocation(new Point(location.getX() + 1, location.getY() + 1));
         if (!h.hasOwner() && h.getIsMountain()){
             currentPlayer.addHexagon(h);
         }

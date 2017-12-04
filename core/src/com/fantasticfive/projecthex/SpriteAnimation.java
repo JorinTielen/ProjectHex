@@ -3,8 +3,6 @@ package com.fantasticfive.projecthex;
 import com.badlogic.gdx.graphics.Texture;
 import com.fantasticfive.shared.Point;
 
-import java.io.File;
-
 public class SpriteAnimation {
     private Texture sprite;
     private String spriteName;

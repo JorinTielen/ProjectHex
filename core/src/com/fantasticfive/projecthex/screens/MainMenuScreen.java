@@ -16,9 +16,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.fantasticfive.projecthex.LocalGame;
-import com.fantasticfive.server.RMIServer;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.Map;
+import com.fantasticfive.shared.enums.Color;
+import com.fantasticfive.shared.enums.UnitType;
 import com.fantasticfive.shared.Point;
 import com.fantasticfive.shared.enums.*;
 import com.fantasticfive.shared.enums.Color;
@@ -30,8 +31,11 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class MainMenuScreen implements Screen {
+
+    private static final Logger LOGGER = Logger.getLogger( MainMenuScreen.class.getName() );
 
     private final GameMain game;
 
@@ -109,17 +113,17 @@ public class MainMenuScreen implements Screen {
 
         //Move camera
         camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
+        game.getBatch().setProjectionMatrix(camera.combined);
         camera.translate(new Vector2(0.75f, 1));
 
         //draw all the sprites
-        game.batch.begin();
+        game.getBatch().begin();
 
         //draw all hexes from the map
         for (Hexagon hex : map.getHexagons()) {
-            game.batch.draw(hex.groundImage, hex.getPos().x, hex.getPos().y);
-            if (hex.objectImage != null) {
-                game.batch.draw(hex.objectImage, hex.getPos().x, hex.getPos().y);
+            game.getBatch().draw(hex.getGroundImage(), hex.getPos().x, hex.getPos().y);
+            if (hex.getObjectImage() != null) {
+                game.getBatch().draw(hex.getObjectImage(), hex.getPos().x, hex.getPos().y);
             }
         }
 
@@ -127,10 +131,10 @@ public class MainMenuScreen implements Screen {
         for (Player p : players) {
             for (Unit u : p.getUnits()) {
                 Hexagon h = map.getHexAtLocation(u.getLocation());
-                game.batch.draw(u.getTexture(), h.getPos().x, h.getPos().y);
+                game.getBatch().draw(u.getTexture(), h.getPos().x, h.getPos().y);
             }
         }
-        game.batch.end();
+        game.getBatch().end();
 
         createMenuBatch();
 

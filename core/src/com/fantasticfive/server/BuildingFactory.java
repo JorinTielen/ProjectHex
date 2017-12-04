@@ -3,11 +3,12 @@ package com.fantasticfive.server;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.enums.BuildingType;
 import com.fantasticfive.shared.enums.UnitType;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The com.fantasticfive.server.BuildingFactory class contains all presets for buildings and produces instances of these buildings.
+ * The BuildingFactory class contains all presets for buildings and produces instances of these buildings.
  */
 public class BuildingFactory {
     private List<Building> buildingPresets;
