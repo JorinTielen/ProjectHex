@@ -10,7 +10,7 @@ public interface IRemoteGame extends Remote {
     //RMI
 
     /**
-     * Get's the version number.
+     * Gets the version number.
      * @return the current version number of the game, increases when players do stuff.
      * @throws RemoteException when RMI breaks.
      */
@@ -19,7 +19,7 @@ public interface IRemoteGame extends Remote {
     //GAME
 
     /**
-     * Start's the game.
+     * Starts the game.
      * @throws RemoteException when RMI breaks.
      */
     void startGame() throws RemoteException;
@@ -45,12 +45,12 @@ public interface IRemoteGame extends Remote {
      */
     Player addPlayer(String username) throws RemoteException;
     /**
-     * Get's the list of players, this will be quite a lot of data.
+     * Gets the list of players, this will be quite a lot of data.
      * @throws RemoteException when RMI breaks.
      */
     List<Player> getPlayers() throws RemoteException;
     /**
-     * Get's the player who's turn it currently is.
+     * Gets the player who's turn it currently is.
      * @throws RemoteException when RMI breaks.
      */
     Player getCurrentPlayer() throws RemoteException;
@@ -58,7 +58,7 @@ public interface IRemoteGame extends Remote {
     //UNITS
 
     /**
-     * Get's the unit preset for a certain UnitType.
+     * Gets the unit preset for a certain UnitType.
      * @throws RemoteException when RMI breaks.
      */
     Unit getUnitPreset(UnitType type) throws RemoteException;
@@ -76,12 +76,12 @@ public interface IRemoteGame extends Remote {
     //BUILDINGS
 
     /**
-     * Get's a building preset of buildingType.
+     * Gets a building preset of buildingType.
      * @throws RemoteException when RMI breaks.
      */
     Building getBuildingPreset(BuildingType type) throws RemoteException;
     /**
-     * Buy's a building of buildingType, for the current player at location.
+     * Buys a building of buildingType, for the current player at location.
      * @throws RemoteException when RMI breaks.
      */
     void buyBuilding(BuildingType buildingType, Point location) throws RemoteException;
@@ -96,7 +96,7 @@ public interface IRemoteGame extends Remote {
      */
     void attackBuilding(Unit unit, Point location) throws RemoteException;
     /**
-     * Get's the building at location.
+     * Gets the building at location.
      * @throws RemoteException when RMI breaks.
      */
     Building getBuildingAtLocation(Point location) throws RemoteException;
@@ -104,7 +104,7 @@ public interface IRemoteGame extends Remote {
     //MAP
 
     /**
-     * Get's the map. Used at the start of the game.
+     * Gets the map. Used at the start of the game.
      * @throws RemoteException when RMI breaks.
      */
     Map getMap() throws RemoteException;
