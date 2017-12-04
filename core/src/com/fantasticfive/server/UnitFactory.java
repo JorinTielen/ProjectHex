@@ -6,8 +6,12 @@ import com.fantasticfive.shared.Point;
 import com.fantasticfive.shared.Unit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UnitFactory {
+    private static final Logger LOGGER = Logger.getLogger( UnitFactory.class.getName() );
+
     private List<Unit> unitPresets;
 
     UnitFactory() {
@@ -34,7 +38,7 @@ public class UnitFactory {
                     break;
             }
         } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
             if (unit != null) {
             unit.setOwner(owner);

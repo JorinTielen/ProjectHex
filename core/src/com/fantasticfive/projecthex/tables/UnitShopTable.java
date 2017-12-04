@@ -47,7 +47,7 @@ public class UnitShopTable extends Table {
         buttonBuyArcher.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("you bought an archer");
-                UnitShopTable.this.game.buyUnit(UnitType.ARCHER, new Point(building.getLocation().x + 1, building.getLocation().y));
+                UnitShopTable.this.game.buyUnit(UnitType.ARCHER, new Point(building.getLocation().getX() + 1, building.getLocation().getY()));
                 setVisible(false);
             }
         });
@@ -57,7 +57,7 @@ public class UnitShopTable extends Table {
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("you bought a swordsman");
 
-                UnitShopTable.this.game.buyUnit(UnitType.SWORDSMAN, new Point(building.getLocation().x + 1, building.getLocation().y));
+                UnitShopTable.this.game.buyUnit(UnitType.SWORDSMAN, new Point(building.getLocation().getX() + 1, building.getLocation().getY()));
                 setVisible(false);
             }
         });
@@ -66,7 +66,7 @@ public class UnitShopTable extends Table {
         buttonBuyScout.addListener(new ChangeListener() {
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("you bought a scout");
-                UnitShopTable.this.game.buyUnit(UnitType.SCOUT, new Point(building.getLocation().x + 1, building.getLocation().y));
+                UnitShopTable.this.game.buyUnit(UnitType.SCOUT, new Point(building.getLocation().getX() + 1, building.getLocation().getY()));
                 setVisible(false);
             }
         });

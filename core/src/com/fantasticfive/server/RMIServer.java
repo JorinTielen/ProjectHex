@@ -5,8 +5,11 @@ import com.fantasticfive.shared.IRemoteGame;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RMIServer {
+    private static final Logger LOGGER = Logger.getLogger( RMIServer.class.getName() );
 
     private String ipAddress;
     private static final int portNumber = 1099;
@@ -23,7 +26,7 @@ public class RMIServer {
         try {
             localhost = InetAddress.getLocalHost();
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
         ipAddress = localhost.getHostAddress();
         System.out.println("Server: IP Address: " + ipAddress);
@@ -35,6 +38,7 @@ public class RMIServer {
         } catch (RemoteException e) {
             System.out.println("Server: Cannot create Game");
             System.out.println("Server: RemoteException: " + e.getMessage());
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 

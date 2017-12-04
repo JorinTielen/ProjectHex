@@ -21,8 +21,12 @@ import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.enums.BuildingType;
 
 import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GameScreen implements Screen{
+    private static final Logger LOGGER = Logger.getLogger( GameScreen.class.getName() );
+
     final GameMain game;
 
     //lib gdx
@@ -143,12 +147,12 @@ public class GameScreen implements Screen{
 
         //draw all hexes from the map
         for (Hexagon hex : map.getHexagons()) {
-            batch.draw(hex.groundImage, hex.getPos().x, hex.getPos().y);
-            if (hex.objectImage != null) {
-                batch.draw(hex.objectImage, hex.getPos().x, hex.getPos().y);
+            batch.draw(hex.getGroundImage(), hex.getPos().x, hex.getPos().y);
+            if (hex.getObjectImage() != null) {
+                batch.draw(hex.getObjectImage(), hex.getPos().x, hex.getPos().y);
             }
-            if (hex.colorCoding != null) {
-                batch.draw(hex.colorCoding, hex.getPos().x, hex.getPos().y);
+            if (hex.getColorCoding() != null) {
+                batch.draw(hex.getColorCoding(), hex.getPos().x, hex.getPos().y);
             }
         }
 
@@ -194,7 +198,7 @@ public class GameScreen implements Screen{
         if (explosionAnimation != null) {
             if (explosionAnimation.getActive()) {
                 explosionAnimation.animate();
-                batch.draw(explosionAnimation.getTexture(), explosionAnimation.getLocation().x, explosionAnimation.getLocation().y);
+                batch.draw(explosionAnimation.getTexture(), explosionAnimation.getLocation().getX(), explosionAnimation.getLocation().getY());
             }
         }
 
@@ -248,9 +252,9 @@ public class GameScreen implements Screen{
 
         for (Hexagon hex : map.getHexagons()) {
             Rectangle clickArea = new Rectangle(hex.getPos().x, hex.getPos().y,
-                    hex.groundImage.getWidth(), hex.groundImage.getHeight());
+                    hex.getGroundImage().getWidth(), hex.getGroundImage().getHeight());
             if (clickArea.contains(tmp.x, tmp.y)) {
-                System.out.println("clicked hex: " + hex.getLocation().x + " " + hex.getLocation().y);
+                System.out.println("clicked hex: " + hex.getLocation().getX() + " " + hex.getLocation().getY());
 
                 //When clicked on unit or unit is selected
                 if (localGame.getUnitOnHex(hex) != null || localGame.getSelectedUnit() != null) {
@@ -280,9 +284,9 @@ public class GameScreen implements Screen{
 
         for (Hexagon hex : map.getHexagons()) {
             Rectangle clickArea = new Rectangle(hex.getPos().x, hex.getPos().y,
-                    hex.groundImage.getWidth(), hex.groundImage.getHeight());
+                    hex.getGroundImage().getWidth(), hex.getGroundImage().getHeight());
             if (clickArea.contains(tmp.x, tmp.y)) {
-                System.out.println("clicked hex: " + hex.getLocation().x + " " + hex.getLocation().y);
+                System.out.println("clicked hex: " + hex.getLocation().getX() + " " + hex.getLocation().getY());
 
                 //Right click on own building
                 Building b;
@@ -425,7 +429,7 @@ public class GameScreen implements Screen{
         try {
             playerTable = new PlayerTable(localGame, skin);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 

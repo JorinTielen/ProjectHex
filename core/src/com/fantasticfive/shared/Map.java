@@ -70,7 +70,7 @@ public class Map implements Serializable {
     }
 
     public int distance(Point a, Point b) {
-        return (Math.abs(a.y - b.y) + Math.abs(a.x + a.y - b.x - b.y) + Math.abs(a.x - b.x)) / 2;
+        return (Math.abs(a.getY() - b.getY()) + Math.abs(a.getX() + a.getY() - b.getX() - b.getY()) + Math.abs(a.getX() - b.getX())) / 2;
     }
 
     private void Generate() {
@@ -123,35 +123,35 @@ public class Map implements Serializable {
     }
 
     public boolean bordersOwnLand(Point location, Player currentPlayer) {
-        Hexagon h = getHexAtLocation(new Point(location.x - 1, location.y - 1));
+        Hexagon h = getHexAtLocation(new Point(location.getX() - 1, location.getY() - 1));
         if (h.getOwner() == currentPlayer){
             return true;
         }
-        h = getHexAtLocation(new Point(location.x - 1, location.y ));
+        h = getHexAtLocation(new Point(location.getX() - 1, location.getY() ));
         if (h.getOwner() == currentPlayer){
             return true;
         }
-        h = getHexAtLocation(new Point(location.x - 1, location.y + 1));
+        h = getHexAtLocation(new Point(location.getX() - 1, location.getY() + 1));
         if (h.getOwner() == currentPlayer){
             return true;
         }
-        h = getHexAtLocation(new Point(location.x, location.y - 1));
+        h = getHexAtLocation(new Point(location.getX(), location.getY() - 1));
         if (h.getOwner() == currentPlayer){
             return true;
         }
-        h = getHexAtLocation(new Point(location.x, location.y + 1));
+        h = getHexAtLocation(new Point(location.getX(), location.getY() + 1));
         if (h.getOwner() == currentPlayer){
             return true;
         }
-        h = getHexAtLocation(new Point(location.x + 1, location.y - 1));
+        h = getHexAtLocation(new Point(location.getX() + 1, location.getY() - 1));
         if (h.getOwner() == currentPlayer){
             return true;
         }
-        h = getHexAtLocation(new Point(location.x + 1, location.y));
+        h = getHexAtLocation(new Point(location.getX() + 1, location.getY()));
         if (h.getOwner() == currentPlayer){
             return true;
         }
-        h = getHexAtLocation(new Point(location.x + 1, location.y + 1));
+        h = getHexAtLocation(new Point(location.getX() + 1, location.getY() + 1));
         if (h.getOwner() == currentPlayer){
             return true;
         }
@@ -170,7 +170,7 @@ public class Map implements Serializable {
     //Returns hexagon at a specific location
     public Hexagon getHexAtLocation(Point loc) {
         for (Hexagon hex : hexagons) {
-            if (hex.getLocation().x == loc.x && hex.getLocation().y == loc.y) {
+            if (hex.getLocation().getX() == loc.getX() && hex.getLocation().getY() == loc.getY()) {
                 return hex;
             }
         }

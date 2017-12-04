@@ -3,9 +3,9 @@ package com.fantasticfive.shared;
 import java.io.Serializable;
 
 public class Point implements Serializable {
-    public int x;
-    public int y;
-    public int z;
+    private int x;
+    private int y;
+    private int z;
 
     // X = r | row
     // Y = q | column
@@ -29,6 +29,22 @@ public class Point implements Serializable {
         } else {
             return false;
         }
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 
     public Point value(){

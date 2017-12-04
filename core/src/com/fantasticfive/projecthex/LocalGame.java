@@ -12,8 +12,13 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LocalGame {
+
+    private static final Logger LOGGER = Logger.getLogger( LocalGame.class.getName() );
+
     private List<Player> players = new ArrayList<>();
     private Player thisPlayer;
     private Map map;
@@ -35,7 +40,7 @@ public class LocalGame {
                         });
                     }
                 } catch (RemoteException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.ALL, e.getMessage());
                 }
             }
         },0, 250);
@@ -45,7 +50,7 @@ public class LocalGame {
         try {
             this.thisPlayer = remoteGame.addPlayer(username);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 
@@ -53,7 +58,7 @@ public class LocalGame {
         try {
             remoteGame.leaveGame(thisPlayer.getId());
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 
@@ -61,7 +66,7 @@ public class LocalGame {
         try {
             players = remoteGame.getPlayers();
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
 
         for (Player p : players) {
@@ -92,7 +97,7 @@ public class LocalGame {
         try {
             remoteGame.updateFromLocal(players);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 
@@ -100,7 +105,7 @@ public class LocalGame {
         try {
             return thisPlayer.getId() == remoteGame.getCurrentPlayer().getId();
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
             return false;
         }
     }
@@ -109,7 +114,7 @@ public class LocalGame {
         try {
             remoteGame.endTurn(thisPlayer.getId());
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 
@@ -129,7 +134,7 @@ public class LocalGame {
         try {
             remoteGame.claimLand(unit);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 
@@ -137,7 +142,7 @@ public class LocalGame {
         try {
             return remoteGame.getUnitPreset(type);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
             return null;
         }
     }
@@ -146,7 +151,7 @@ public class LocalGame {
         try {
             remoteGame.buyUnit(type, location, thisPlayer.getId());
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 
@@ -154,7 +159,7 @@ public class LocalGame {
         try {
             remoteGame.moveUnit(u, location, thisPlayer.getId());
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 
@@ -162,7 +167,7 @@ public class LocalGame {
         Unit unit = null;
         for (Player p : getPlayers()) {
             for (Unit u : p.getUnits()) {
-                if (u.getLocation().x == hex.getLocation().x && u.getLocation().y == hex.getLocation().y) {
+                if (u.getLocation().getX() == hex.getLocation().getX() && u.getLocation().getY() == hex.getLocation().getY()) {
                     unit = u;
                 }
             }
@@ -187,7 +192,7 @@ public class LocalGame {
         try {
             remoteGame.attackUnit(attacker, defender);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 
@@ -195,7 +200,7 @@ public class LocalGame {
         try {
             remoteGame.attackBuilding(attacker, b);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 
@@ -203,7 +208,7 @@ public class LocalGame {
         try {
             return remoteGame.getBuildingPreset(type);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
             return null;
         }
     }
@@ -212,7 +217,7 @@ public class LocalGame {
         try {
             remoteGame.buyBuilding(type, location);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 
@@ -220,7 +225,7 @@ public class LocalGame {
         try {
             remoteGame.sellBuilding(location);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 
@@ -228,7 +233,7 @@ public class LocalGame {
         try {
             return remoteGame.getBuildingAtLocation(location);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
             return null;
         }
     }
@@ -247,7 +252,7 @@ public class LocalGame {
         try {
             return remoteGame.hexEmpty(location);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
             return false;
         }
     }
@@ -300,7 +305,7 @@ public class LocalGame {
                 map = remoteGame.getMap();
                 map.setTextures();
             } catch (RemoteException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.ALL, e.getMessage());
             }
             System.out.println("Client: remoteGame retrieved");
         } else {

@@ -92,17 +92,17 @@ public class MainMenuScreen implements Screen {
 
         //Move camera
         camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
+        game.getBatch().setProjectionMatrix(camera.combined);
         camera.translate(new Vector2(0.75f, 1));
 
         //draw all the sprites
-        game.batch.begin();
+        game.getBatch().begin();
 
         //draw all hexes from the map
         for (Hexagon hex : map.getHexagons()) {
-            game.batch.draw(hex.groundImage, hex.getPos().x, hex.getPos().y);
-            if (hex.objectImage != null) {
-                game.batch.draw(hex.objectImage, hex.getPos().x, hex.getPos().y);
+            game.getBatch().draw(hex.getGroundImage(), hex.getPos().x, hex.getPos().y);
+            if (hex.getObjectImage() != null) {
+                game.getBatch().draw(hex.getObjectImage(), hex.getPos().x, hex.getPos().y);
             }
         }
 
@@ -110,10 +110,10 @@ public class MainMenuScreen implements Screen {
         for (Player p : players) {
             for (Unit u : p.getUnits()) {
                 Hexagon h = map.getHexAtLocation(u.getLocation());
-                game.batch.draw(u.getTexture(), h.getPos().x, h.getPos().y);
+                game.getBatch().draw(u.getTexture(), h.getPos().x, h.getPos().y);
             }
         }
-        game.batch.end();
+        game.getBatch().end();
 
         menuBatch.begin();
         title = new Texture("title.png");
@@ -186,11 +186,11 @@ public class MainMenuScreen implements Screen {
                         Point randomLocation = u.getLocation().value();
                         int randomXY = random.nextInt(2);
                         if (randomXY == 0) {
-                            randomLocation.x += randomx;
+                            randomLocation.setX(randomLocation.getX() + randomx);
                         } else {
-                            randomLocation.y += randomy;
+                            randomLocation.setY(randomLocation.getY() + randomy);
                         }
-                        if (randomLocation.x >= 0 && randomLocation.x < mapWidth && randomLocation.y >= 0 && randomLocation.y < mapHeight)
+                        if (randomLocation.getX() >= 0 && randomLocation.getX() < mapWidth && randomLocation.getY() >= 0 && randomLocation.getY() < mapHeight)
                             u.setLocation(randomLocation);
                     }
                 }

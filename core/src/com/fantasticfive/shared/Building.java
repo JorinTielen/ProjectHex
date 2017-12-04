@@ -10,7 +10,7 @@ import java.io.Serializable;
  * The Buidling class contains all the base information and functionality that all buildings share.
  */
 public abstract class Building implements Cloneable, Serializable {
-    public transient Texture image;
+    protected transient Texture image;
     protected int health;
     protected GroundType[] buildableOn;
     private Point location;
