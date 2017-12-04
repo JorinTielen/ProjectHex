@@ -89,6 +89,12 @@ public interface IRemoteGame extends Remote {
      */
     void attackUnit(Unit attacker, Unit defender) throws RemoteException;
     /**
+     * Makes a unit attack another.
+     * @param u the unit you want to sell.
+     * @throws RemoteException
+     */
+    void sellUnit(Unit u) throws RemoteException;
+    /**
      * Claims land for the current player.
      * @throws RemoteException when RMI breaks.
      */

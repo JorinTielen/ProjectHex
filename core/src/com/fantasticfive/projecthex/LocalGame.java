@@ -191,6 +191,14 @@ public class LocalGame {
         }
     }
 
+    public void sellUnit(Unit u) {
+        try {
+            remoteGame.sellUnit(u);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void attackBuilding(Unit attacker, Building b) {
         try {
             remoteGame.attackBuilding(attacker, b);

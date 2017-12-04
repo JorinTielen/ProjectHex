@@ -210,13 +210,26 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     }
 
     @Override
-    public void attackUnit(Unit attacker, Unit defender) throws RemoteException {
+    public void attackUnit(Unit attacker, Unit defender) {
         if (map.canMoveTo(attacker, defender.getLocation())) {
             Unit realAttacker = getUnitAtLocation(attacker.getLocation());
             Unit realDefender = getUnitAtLocation(defender.getLocation());
             realAttacker.attack(realDefender);
         }
         version++;
+    }
+
+    @Override
+    public void sellUnit(Unit u) {
+        for(Player p : players) {
+            for (Unit unit : p.getUnits()) {
+                if (unit.getLocation().equals(u.getLocation())) {
+                    p.sellUnit(unit);
+                    version++;
+                    return;
+                }
+            }
+        }
     }
 
     @Override

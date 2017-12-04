@@ -36,7 +36,7 @@ public class UnitSellTable extends Table {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("Selling unit");
-                UnitSellTable.this.game.getThisPlayer().sellUnit(unit);
+                UnitSellTable.this.game.sellUnit(unit);
                 setVisible(false);
             }
         });
