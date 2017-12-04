@@ -5,6 +5,10 @@ import com.fantasticfive.shared.enums.BuildingType;
 import com.fantasticfive.shared.enums.GroundType;
 import com.fantasticfive.shared.enums.UnitType;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.Properties;
 
@@ -15,16 +19,30 @@ public class Database {
     private Connection conn;
 
     private void setConnection() throws SQLException {
-        Properties connectionProps = new Properties();
-        connectionProps.put("user", "sven");
-        connectionProps.put("password", "sven123");
+        Properties prop = new Properties();
+        InputStream input;
+
         try {
+            input = new FileInputStream("database.properties");
+            prop.load(input);
+
+            String url = prop.getProperty("url");
+            String username = prop.getProperty("username");
+            String password = prop.getProperty("password");
+
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://thedin.nl/projecthex", connectionProps);
+            conn = DriverManager.getConnection(url, username, password);
             System.out.println("Connection to database SUCCEED");
+
         } catch (ClassNotFoundException ex) {
             System.out.println(ex.getMessage());
             System.out.println("Connection to database FAILED");
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Couldn't find properties file for database");
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Error with loading properties file for database");
         }
     }
 
@@ -52,10 +70,10 @@ public class Database {
                         myRs.getInt("purchaseCost"),
                         getBuildableOn(BuildingType.BARRACKS.toString()));
             }
-
-            closeConnection();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
+        } finally {
+            closeConnection();
         }
 
         return barracks;
@@ -74,10 +92,10 @@ public class Database {
                         myRs.getInt("productionPerTurn"),
                         getBuildableOn(BuildingType.RESOURCE.toString()));
             }
-
-            closeConnection();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
+        } finally {
+            closeConnection();
         }
 
         return resource;
@@ -95,10 +113,10 @@ public class Database {
                         myRs.getInt("purchaseCost"),
                         getBuildableOn(BuildingType.FORTIFICATION.toString()));
             }
-
-            closeConnection();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
+        } finally {
+            closeConnection();
         }
 
         return fortification;
@@ -115,10 +133,10 @@ public class Database {
                 townCentre = new TownCentre(myRs.getInt("health"),
                         getBuildableOn(BuildingType.TOWNCENTRE.toString()));
             }
-
-            closeConnection();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
+        } finally {
+            closeConnection();
         }
 
         return townCentre;
@@ -158,10 +176,10 @@ public class Database {
                         myRs.getBoolean("canTakeLand"),
                         myRs.getInt("upgradeCost"));
             }
-
-            closeConnection();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
+        } finally {
+            closeConnection();
         }
 
         return swordsman;
@@ -186,10 +204,10 @@ public class Database {
                         myRs.getBoolean("canTakeLand"),
                         myRs.getInt("upgradeCost"));
             }
-
-            closeConnection();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
+        } finally {
+            closeConnection();
         }
 
         return archer;
@@ -214,10 +232,10 @@ public class Database {
                         myRs.getBoolean("canTakeLand"),
                         myRs.getInt("upgradeCost"));
             }
-
-            closeConnection();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
+        } finally {
+            closeConnection();
         }
 
         return scout;
