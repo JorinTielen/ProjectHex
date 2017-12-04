@@ -7,8 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.fantasticfive.projecthex.LocalGame;
-import com.fantasticfive.shared.IGame;
-import java.rmi.RemoteException;
 
 public class OptionsTable extends Table {
     private Table t;

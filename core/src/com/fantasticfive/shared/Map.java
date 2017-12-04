@@ -1,10 +1,12 @@
 package com.fantasticfive.shared;
 
 import com.fantasticfive.shared.enums.*;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Map implements IMap {
+public class Map implements Serializable {
     private List<Hexagon> hexagons;
     private int id;
     private int width;
@@ -37,7 +39,7 @@ public class Map implements IMap {
     private void Generate() {
         Noise.setSeed(1234); //This value is used to calculate the map
         float scale = 0.10f; //To determine the density
-        float[][] noiseValues = Noise.Calc2DNoise(height, width, scale);
+        float[][] noiseValues = Noise.Calc2DNoise(width, height, scale);
 
         int maxNoise1 = 75;
         int maxNoise2 = 125;
@@ -82,7 +84,6 @@ public class Map implements IMap {
         return hexagons;
     }
 
-    @Override
     public boolean bordersOwnLand(Point location, Player currentPlayer) {
         Hexagon h = getHexAtLocation(new Point(location.x - 1, location.y - 1));
         if (h.getOwner() == currentPlayer){

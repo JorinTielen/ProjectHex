@@ -27,15 +27,15 @@ public class ProjectHex extends ApplicationAdapter {
 
     //game
     private LocalGame game;
-    private IMap map;
+    private Map map;
 
     //ui
     private Skin skin;
     private Stage stage;
     private Table table;
-    private Texture blankTexture; //blank texture for health bars
+    private Texture blankTexture;       //blank texture for health bars
     private Texture walkableHexTexture; //Texture overlay for hexes that unit can walk to
-    public SpriteAnimation explosionAnimation;
+    private SpriteAnimation explosionAnimation;
 
     //tables
     private Table unitShopTable;
@@ -254,7 +254,7 @@ public class ProjectHex extends ApplicationAdapter {
                 System.out.println("clicked hex: " + hex.getLocation().x + " " + hex.getLocation().y);
 
                 //Right click on own building
-                Building b = null;
+                Building b;
                 b = game.getBuildingAtLocation(hex.getLocation());
                 if (b != null && b.getOwner().getId() == game.getThisPlayer().getId()) {
                     if (b instanceof Barracks) {
@@ -272,7 +272,7 @@ public class ProjectHex extends ApplicationAdapter {
                     }
                 }
                 //Right click on own unit
-                Unit u = null;
+                Unit u;
                 u = game.getUnitOnHex(hex);
                 if (u != null) {
                     if (u.getOwner() == game.getThisPlayer())
