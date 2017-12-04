@@ -16,5 +16,8 @@ public class TownCentre extends Building {
     @Override
     public void setImage() {
         this.image = new Texture("townCentre.png");
+        if(owner != null) {
+            setColor();
+        }
     }
 }

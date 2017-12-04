@@ -10,9 +10,7 @@ import java.rmi.registry.Registry;
 public class RMIServer {
 
     private static final int portNumber = 1099;
-    private static final String bindingName = "ProjectHex";
 
-    private Registry registry = null;
     private IRemoteGame game = null;
 
     public RMIServer() {

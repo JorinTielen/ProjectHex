@@ -60,6 +60,7 @@ public class Player implements Serializable {
             if (this.gold - ((Resource) building).getPurchaseCost() >= 0) {
                 this.removeGold(((Resource) building).getPurchaseCost());
                 this.buildings.add(building);
+                System.out.println("Resource built");
             } else {
                 System.out.println("Not enough money");
             }
@@ -69,6 +70,7 @@ public class Player implements Serializable {
             if (this.gold - ((Fortification) building).getPurchaseCost() >= 0) {
                 this.removeGold(((Fortification) building).getPurchaseCost());
                 this.buildings.add(building);
+                System.out.println("Fortification built");
             } else {
                 System.out.println("Not enough money");
             }
@@ -78,6 +80,7 @@ public class Player implements Serializable {
             if (this.gold - ((Barracks) building).getPurchaseCost() >= 0) {
                 this.removeGold(((Barracks) building).getPurchaseCost());
                 this.buildings.add(building);
+                System.out.println("Barracks built");
             } else {
                 System.out.println("Not enough money");
             }
@@ -85,6 +88,20 @@ public class Player implements Serializable {
         //Adds town centre
         else if (building instanceof TownCentre) {
             this.buildings.add(building);
+            System.out.println("TownCentre built");
+        }
+    }
+
+    public boolean purchaseBuildingOnMountain(Building building){
+        if (this.gold - ((Resource) building).getPurchaseCost() >= 0) {
+            this.removeGold(((Resource) building).getPurchaseCost());
+            building.setMineOnMountain();
+            this.buildings.add(building);
+            System.out.println("Resource on mountain built");
+            return true;
+        } else {
+            System.out.println("Not enough money");
+            return false;
         }
     }
 
@@ -99,6 +116,10 @@ public class Player implements Serializable {
         if (buildings.contains(building)) {
             buildings.remove(building);
         }
+    }
+
+    public void destroyBuilding(Building building){
+        building.destroy();
     }
 
     public List<Building> getBuildings() {
@@ -147,6 +168,7 @@ public class Player implements Serializable {
 
     public void addHexagon(Hexagon hexagon) {
         this.hexagons.add(hexagon);
+        hexagon.setOwner(this);
     }
 
     public void removeHexagon(Hexagon hexagon) {

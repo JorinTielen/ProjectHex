@@ -15,7 +15,6 @@ import java.util.*;
 
 public class LocalGame {
     private List<Player> players = new ArrayList<>();
-    private Player currentPlayer;
     private Player thisPlayer;
     private Map map;
 
@@ -39,7 +38,7 @@ public class LocalGame {
                     e.printStackTrace();
                 }
             }
-        },0, 500);
+        },0, 250);
     }
 
     private void join(String username) {
@@ -81,6 +80,14 @@ public class LocalGame {
         System.out.println("Updated from Remote");
     }
 
+    public void updateFromLocal() {
+        try {
+            remoteGame.updateFromLocal(players);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
     boolean isMyTurn() {
         try {
             return thisPlayer.getId() == remoteGame.getCurrentPlayer().getId();
@@ -108,6 +115,14 @@ public class LocalGame {
 
     public Map getMap() {
         return map;
+    }
+
+    public void claimLand(Unit unit){
+        try {
+            remoteGame.claimLand(unit);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     public Unit getUnitPreset(UnitType type) {
@@ -163,7 +178,6 @@ public class LocalGame {
     public Building getBuildingPreset(BuildingType type) {
         try {
             Building b = remoteGame.getBuildingPreset(type);
-            b.setImage();
             return b;
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -194,6 +208,16 @@ public class LocalGame {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void setWalkableHexesForUnit(Unit unit){
+        List<Hexagon> walkableHexes = new ArrayList<>();
+        for (Hexagon hex : map.getHexagons()){
+            if (unit.canMoveTo(hex.getLocation()) && hexEmpty(hex.getLocation())){
+                walkableHexes.add(hex);
+            }
+        }
+        unit.setWalkableHexes(walkableHexes);
     }
 
     public boolean hexEmpty(Point location) {

@@ -36,6 +36,9 @@ public class ProjectHex extends ApplicationAdapter {
     private Skin skin;
     private Stage stage;
     private Table table;
+    private Texture blankTexture; //blank texture for health bars
+    private Texture walkableHexTexture; //Texture overlay for hexes that unit can walk to
+    public SpriteAnimation explosionAnimation;
 
     //tables
     private Table unitShopTable;
@@ -103,12 +106,15 @@ public class ProjectHex extends ApplicationAdapter {
             table.addActor(optionsTable);
         }
 
-
         //Input processor
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(input);
         Gdx.input.setInputProcessor(inputMultiplexer);
+
+        //set blank texture
+        blankTexture = new Texture("whitePixel.png");
+        walkableHexTexture = new Texture("movableHex.png");
     }
 
     @Override
@@ -134,20 +140,37 @@ public class ProjectHex extends ApplicationAdapter {
             if (hex.objectImage != null) {
                 batch.draw(hex.objectImage, hex.getPos().x, hex.getPos().y);
             }
+            if (hex.colorCoding != null) {
+                batch.draw(hex.colorCoding, hex.getPos().x, hex.getPos().y);
+            }
         }
 
         //draw all buildings and units from all players
         for (Player p : game.getPlayers()) {
             for (Building b : p.getBuildings()) {
-                if(b.getImage() == null) {
+                if (b.getImage() == null) {
                     System.out.println("no image");
                 }
                 Hexagon h = map.getHexAtLocation(b.getLocation());
                 batch.draw(b.getImage(), h.getPos().x, h.getPos().y);
+                batch.setColor(Color.RED);
+                batch.draw(blankTexture, h.getPos().x + 35, h.getPos().y + 100, 50, 5);
+                batch.setColor(Color.GREEN);
+                batch.draw(blankTexture, h.getPos().x + 35, h.getPos().y + 100, (int) ((double) 50 * ((double) b.getHealth() / (double) b.getMaxHealth())), 5);
+                batch.setColor(Color.WHITE);
+                if (b.getDestroyed()) {
+                    explosionAnimation = new SpriteAnimation("explosion", b.getLocation());
+                    b.getOwner().removeBuilding(b);
+                }
             }
             for (Unit u : p.getUnits()) {
                 Hexagon h = map.getHexAtLocation(u.getLocation());
                 batch.draw(u.getTexture(), h.getPos().x, h.getPos().y);
+                batch.setColor(Color.RED);
+                batch.draw(blankTexture, h.getPos().x + 35, h.getPos().y + 100, 50, 5);
+                batch.setColor(Color.GREEN);
+                batch.draw(blankTexture, h.getPos().x + 35, h.getPos().y + 100, (int) ((double) 50 * ((double) u.getHealth() / (double) u.getMaxHealth())), 5);
+                batch.setColor(Color.WHITE);
             }
         }
 
@@ -155,7 +178,24 @@ public class ProjectHex extends ApplicationAdapter {
         if (buildingToBuild != null) {
             Vector3 mousePos = new Vector3(Gdx.input.getX() - 80, Gdx.input.getY() + 80, 0); //Image position gets set hard-coded to get it under the cursor.
             camera.unproject(mousePos);
+            buildingToBuild.setImage();
             batch.draw(buildingToBuild.getImage(), mousePos.x, mousePos.y);
+        }
+
+        //draw explosion animation
+        if (explosionAnimation != null) {
+            if (explosionAnimation.getActive()) {
+                explosionAnimation.animate();
+                batch.draw(explosionAnimation.getTexture(), explosionAnimation.getLocation().x, explosionAnimation.getLocation().y);
+            }
+        }
+
+        //draw area where unit can walk
+        if (game.getSelectedUnit() != null) {
+            for (Hexagon h : game.getSelectedUnit().getWalkableHexes()) {
+                //Maybe batch.enableBlending();
+                batch.draw(walkableHexTexture, h.getPos().x, h.getPos().y);
+            }
         }
 
         batch.end();
@@ -193,13 +233,10 @@ public class ProjectHex extends ApplicationAdapter {
                 else if (buildingToBuild != null) {
                     if (buildingToBuild instanceof Resource) {
                         game.buyBuilding(BuildingType.RESOURCE, hex.getLocation());
-                        System.out.println("com.fantasticfive.shared.Resource built");
                     } else if (buildingToBuild instanceof Fortification) {
                         game.buyBuilding(BuildingType.FORTIFICATION, hex.getLocation());
-                        System.out.println("com.fantasticfive.shared.Fortification built");
                     } else if (buildingToBuild instanceof Barracks) {
                         game.buyBuilding(BuildingType.BARRACKS, hex.getLocation());
-                        System.out.println("com.fantasticfive.shared.Barracks built");
                     }
                     buildingToBuild = null;
                 }
@@ -254,15 +291,18 @@ public class ProjectHex extends ApplicationAdapter {
         if (game.getUnitOnHex(hex) != null && game.getSelectedUnit() == null && game.getUnitOnHex(hex).getOwner() == game.getThisPlayer()) {
             Unit u = game.getUnitOnHex(hex);
             u.toggleSelected();
-            //If not clicked on unit and unit is selected
-        } else if (game.getUnitOnHex(hex) == null && game.getSelectedUnit() != null) {
+            game.setWalkableHexesForUnit(u);
+        }
+        //If not clicked on unit and unit is selected
+        else if (game.getUnitOnHex(hex) == null && game.getSelectedUnit() != null) {
             Unit u = game.getSelectedUnit();
             //Move unit to free hex
             if (game.hexEmpty(hex.getLocation())) {
                 u.move(new Point(hex.getLocation().x, hex.getLocation().y));
                 u.toggleSelected();
+                game.updateFromLocal();
             }
-            //com.fantasticfive.shared.Unit attacks enemy building
+            //Unit attacks enemy building
             else if (game.getBuildingAtLocation(hex.getLocation()) != null
                     && game.getBuildingAtLocation(hex.getLocation()).getOwner() != game.getThisPlayer()) {
                 game.attackBuilding(game.getSelectedUnit(), hex.getLocation());
@@ -281,11 +321,16 @@ public class ProjectHex extends ApplicationAdapter {
             } else if (game.getUnitOnHex(hex).getOwner() != game.getSelectedUnit().getOwner()) {
                 Unit enemy = game.getUnitOnHex(hex);
                 Unit playerUnit = game.getSelectedUnit();
-                playerUnit.attack(enemy);
+                if (playerUnit.attack(enemy)) {
+                    if (enemy.getHealth() == 0) {
+                        enemy.getOwner().removeUnit(enemy);
+                    }
+                }
                 playerUnit.toggleSelected();
                 if (enemy.getHealth() == 0) {
                     enemy.getOwner().removeUnit(enemy);
                 }
+                game.updateFromLocal();
             }
         }
     }
