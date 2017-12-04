@@ -12,13 +12,20 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.fantasticfive.projecthex.LocalGame;
 import com.fantasticfive.server.RMIServer;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.Map;
+import com.fantasticfive.shared.Point;
 import com.fantasticfive.shared.enums.*;
+import com.fantasticfive.shared.enums.Color;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
@@ -199,25 +206,33 @@ public class MainMenuScreen implements Screen {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
+                Point randomLocation = new Point(0, 0);
                 for (Player p : players) {
                     for (Unit u : p.getUnits()) {
-                        int low = -1;
-                        int high = 2;
-                        int randomx = random.nextInt(high - low) + low;
-                        int randomy = random.nextInt(high - low) + low;
-                        Point randomLocation = u.getLocation().value();
-                        int randomXY = random.nextInt(2);
-                        if (randomXY == 0) {
-                            randomLocation.x += randomx;
-                        } else {
-                            randomLocation.y += randomy;
+                        while (!u.getLocation().equals(randomLocation)){
+                            int low = -1;
+                            int high = 2;
+                            int randomx = random.nextInt(high - low) + low;
+                            int randomy = random.nextInt(high - low) + low;
+                            randomLocation = u.getLocation().value();
+                            int randomXY = random.nextInt(2);
+                            if (randomXY == 0) {
+                                randomLocation.x += randomx;
+                            } else {
+                                randomLocation.y += randomy;
+                            }
+                            if (map.getHexAtLocation(randomLocation) != null) {
+                                if (!map.getHexAtLocation(randomLocation).getIsMountain() && map.getHexAtLocation(randomLocation).getGroundType() != GroundType.WATER) {
+                                    if (randomLocation.x >= 0 && randomLocation.x < mapWidth && randomLocation.y >= 0 && randomLocation.y < mapHeight) {
+                                        u.setLocation(randomLocation);
+                                    }
+                                }
+                            }
                         }
-                        if (randomLocation.x >= 0 && randomLocation.x < mapWidth && randomLocation.y >= 0 && randomLocation.y < mapHeight)
-                            u.setLocation(randomLocation);
                     }
                 }
             }
-        }, 0, 1500);
+        }, 0, 1000);
     }
 
     private void createPlayers() {
@@ -254,6 +269,14 @@ public class MainMenuScreen implements Screen {
             for (Unit u : p.getUnits()) {
                 u.setOwner(p);
                 u.setTexture();
+                Point randomLocation = new Point(0,0);
+                boolean validHex = false;
+                while(!validHex){
+                    randomLocation = new Point(random.nextInt(mapWidth), random.nextInt(mapHeight));
+                    if(!map.getHexAtLocation(randomLocation).getIsMountain() && map.getHexAtLocation(randomLocation).getGroundType() != GroundType.WATER ){
+                        validHex = true;
+                    }
+                }
                 u.setLocation(new Point(random.nextInt(mapWidth), random.nextInt(mapHeight)));
             }
         }
@@ -346,7 +369,7 @@ public class MainMenuScreen implements Screen {
             final TextField txtUsername = new TextField("", skin);
 
             t.add(ipLabel = new Label("Server ip address: ", skin));
-            t.add(btnCopyToClipboard).width(collumnWidth).height(collumnHeight).pad(5);
+            t.add(btnCopyToClipboard).width(collumnWidth / 2).height(collumnHeight / 2).pad(5);
             t.row();
             t.add(new Label("Username: ", skin));
             t.add(txtUsername).width(collumnWidth).height(collumnHeight).pad(5);
@@ -361,7 +384,10 @@ public class MainMenuScreen implements Screen {
             btnCopyToClipboard.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    //add to clipboard
+                    //https://stackoverflow.com/questions/6710350/copying-text-to-the-clipboard-using-java
+                    StringSelection stringSelection = new StringSelection(ipAddress);
+                    Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
+                    clpbrd.setContents(stringSelection, null);
                 }
             });
 
