@@ -117,32 +117,36 @@ public class RemoteGameTest extends SettingsTest {
     }
 
     @Test
-    public void testAttackBuilding() {
+    public void testAttackBuilding() throws RemoteException {
+        Unit unit = game.getUnitPreset(UnitType.SWORDSMAN);
+        game.addPlayer("Player 2");
+        unit.setOwner(game.getPlayers().get(1));
 
+        game.attackBuilding(unit, new Point(1,0));
     }
 
     @Test
     public void testGetBuildingAtLocation() {
-
+        Assert.assertTrue("Not yet implemented",false);
     }
 
     @Test
     public void testHexEmpty() {
-
+        Assert.assertTrue("Not yet implemented",false);
     }
 
     @Test
     public void testHexEmptyResource() {
-
+        Assert.assertTrue("Not yet implemented",false);
     }
 
     @Test
     public void testGetUnitOnHex() {
-
+        Assert.assertTrue("Not yet implemented",false);
     }
 
     @Test
     public void testGetSelectedUnit() {
-
+        Assert.assertTrue("Not yet implemented",false);
     }
 }
