@@ -8,7 +8,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.fantasticfive.projecthex.LocalGame;
 import com.fantasticfive.projecthex.screens.GameScreen;
-import com.fantasticfive.shared.*;
+import com.fantasticfive.shared.Barracks;
+import com.fantasticfive.shared.Building;
+import com.fantasticfive.shared.Fortification;
+import com.fantasticfive.shared.Resource;
 import com.fantasticfive.shared.enums.BuildingType;
 
 public class BuildingShopTable extends Table {

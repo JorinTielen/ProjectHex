@@ -1,9 +1,10 @@
 package com.fantasticfive.server;
 
 import com.fantasticfive.shared.Player;
-import com.fantasticfive.shared.enums.UnitType;
 import com.fantasticfive.shared.Point;
 import com.fantasticfive.shared.Unit;
+import com.fantasticfive.shared.enums.UnitType;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;

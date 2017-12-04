@@ -1,7 +1,6 @@
 package com.fantasticfive.projecthex;
 
 import com.badlogic.gdx.Gdx;
-import com.fantasticfive.shared.IRemoteGame;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.Map;
 import com.fantasticfive.shared.enums.BuildingType;

@@ -1,9 +1,10 @@
 package com.fantasticfive.shared;
 
 import com.badlogic.gdx.graphics.Pixmap;
-import com.fantasticfive.shared.enums.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.fantasticfive.shared.enums.GroundType;
+import com.fantasticfive.shared.enums.ObjectType;
 
 import java.io.Serializable;
 import java.util.Random;

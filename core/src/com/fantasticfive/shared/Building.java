@@ -2,7 +2,7 @@ package com.fantasticfive.shared;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.fantasticfive.shared.enums.*;
+import com.fantasticfive.shared.enums.GroundType;
 
 import java.io.Serializable;
 

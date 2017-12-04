@@ -14,10 +14,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.fantasticfive.projecthex.LocalGame;
-import com.fantasticfive.server.RMIServer;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.Map;
-import com.fantasticfive.shared.enums.*;
+import com.fantasticfive.shared.enums.Color;
+import com.fantasticfive.shared.enums.UnitType;
 
 import java.util.*;
 import java.util.List;

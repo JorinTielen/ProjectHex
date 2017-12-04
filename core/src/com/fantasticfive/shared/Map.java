@@ -1,6 +1,7 @@
 package com.fantasticfive.shared;
 
-import com.fantasticfive.shared.enums.*;
+import com.fantasticfive.shared.enums.GroundType;
+import com.fantasticfive.shared.enums.ObjectType;
 
 import java.io.Serializable;
 import java.util.ArrayList;

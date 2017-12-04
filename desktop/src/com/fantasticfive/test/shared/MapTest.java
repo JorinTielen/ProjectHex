@@ -9,7 +9,9 @@ import com.fantasticfive.shared.enums.Color;
 import com.fantasticfive.shared.enums.GroundType;
 import com.fantasticfive.shared.enums.ObjectType;
 import com.fantasticfive.test.settings.SettingsTest;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class MapTest extends SettingsTest {
