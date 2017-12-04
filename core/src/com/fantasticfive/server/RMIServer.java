@@ -5,7 +5,6 @@ import com.fantasticfive.shared.IRemoteGame;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
-import java.rmi.registry.Registry;
 
 public class RMIServer {
 
