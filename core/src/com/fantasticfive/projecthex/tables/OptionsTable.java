@@ -8,7 +8,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.fantasticfive.projecthex.LocalGame;
 
+import java.util.logging.Logger;
+
 public class OptionsTable extends Table {
+    private static final Logger LOGGER = Logger.getLogger( OptionsTable.class.getName() );
+
     private Table t;
 
     final private LocalGame game;
@@ -31,7 +35,7 @@ public class OptionsTable extends Table {
         buttonEndTurn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Ending turn");
+                LOGGER.info("Ending turn");
                 OptionsTable.this.game.endTurn();
             }
         });
@@ -39,7 +43,7 @@ public class OptionsTable extends Table {
         buttonLeaveGame.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("Leaving game");
+                LOGGER.info("Leaving game");
                 OptionsTable.this.game.leaveGame();
             }
         });

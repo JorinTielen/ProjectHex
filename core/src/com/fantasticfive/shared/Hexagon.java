@@ -1,17 +1,18 @@
 package com.fantasticfive.shared;
 
 import com.badlogic.gdx.graphics.Pixmap;
-import com.fantasticfive.shared.enums.*;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.fantasticfive.shared.enums.GroundType;
+import com.fantasticfive.shared.enums.ObjectType;
 
 import java.io.Serializable;
 import java.util.Random;
 
 public class Hexagon implements Serializable {
-    public transient Texture colorCoding;
-    public transient Texture groundImage;
-    public transient Texture objectImage;
+    private transient Texture colorCoding;
+    private transient Texture groundImage;
+    private transient Texture objectImage;
     private GroundType groundType;
     private ObjectType objectType;
     private boolean accessible;
@@ -38,6 +39,18 @@ public class Hexagon implements Serializable {
         if (objectType == ObjectType.MOUNTAIN){
             this.isMountain = true;
         }
+    }
+
+    public Texture getColorCoding() {
+        return colorCoding;
+    }
+
+    public Texture getGroundImage() {
+        return groundImage;
+    }
+
+    public Texture getObjectImage() {
+        return objectImage;
     }
 
     public void setTextures() {
@@ -116,8 +129,8 @@ public class Hexagon implements Serializable {
         double vert = height * 0.75f;
         double horiz = width;
 
-        float x = (float) (horiz * (this.location.y + this.location.x / 2f));
-        float y = (float) (vert * this.location.x);
+        float x = (float) (horiz * (this.location.getY() + this.location.getX() / 2f));
+        float y = (float) (vert * this.location.getX());
 
         return new Vector2(x, y);
     }

@@ -1,7 +1,7 @@
 package com.fantasticfive.shared;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.fantasticfive.shared.enums.*;
+import com.fantasticfive.shared.enums.GroundType;
 
 public class Fortification extends Building {
     private int purchaseCost;

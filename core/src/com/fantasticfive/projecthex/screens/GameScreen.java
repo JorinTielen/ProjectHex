@@ -21,8 +21,12 @@ import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.enums.BuildingType;
 
 import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GameScreen implements Screen{
+    private static final Logger LOGGER = Logger.getLogger( GameScreen.class.getName() );
+
     final GameMain game;
 
     //lib gdx
@@ -143,21 +147,21 @@ public class GameScreen implements Screen{
 
         //draw all hexes from the map
         for (Hexagon hex : map.getHexagons()) {
-            batch.draw(hex.groundImage, hex.getPos().x, hex.getPos().y);
-            if (hex.objectImage != null) {
-                batch.draw(hex.objectImage, hex.getPos().x, hex.getPos().y);
+            batch.draw(hex.getGroundImage(), hex.getPos().x, hex.getPos().y);
+            if (hex.getObjectImage() != null) {
+                batch.draw(hex.getObjectImage(), hex.getPos().x, hex.getPos().y);
             }
-            if (hex.colorCoding != null) {
-                batch.draw(hex.colorCoding, hex.getPos().x, hex.getPos().y);
+            if (hex.getColorCoding() != null) {
+                batch.draw(hex.getColorCoding(), hex.getPos().x, hex.getPos().y);
             }
         }
 
         //draw all buildings and units from all players
         for (Player p : localGame.getPlayers()) {
             for (Building b : p.getBuildings()) {
-                b.setImage();
                 if (b.getImage() == null) {
-                    System.out.println("no image");
+                    b.setImage();
+                    LOGGER.info("no image");
                 }
                 Hexagon h = map.getHexAtLocation(b.getLocation());
                 batch.draw(b.getImage(), h.getPos().x, h.getPos().y);
@@ -186,17 +190,19 @@ public class GameScreen implements Screen{
         if (buildingToBuild != null) {
             Vector3 mousePos = new Vector3(Gdx.input.getX() - 80, Gdx.input.getY() + 80, 0); //Image position gets set hard-coded to get it under the cursor.
             camera.unproject(mousePos);
-            buildingToBuild.setImage();
+            if (buildingToBuild.image == null) {
+                buildingToBuild.setImage();
+            }
             batch.draw(buildingToBuild.getImage(), mousePos.x, mousePos.y);
         }
 
         //draw explosion animation
-        if (explosionAnimation != null) {
+        /*if (explosionAnimation != null) {
             if (explosionAnimation.getActive()) {
                 explosionAnimation.animate();
-                batch.draw(explosionAnimation.getTexture(), explosionAnimation.getLocation().x, explosionAnimation.getLocation().y);
+                batch.draw(explosionAnimation.getTexture(), explosionAnimation.getLocation().getX(), explosionAnimation.getLocation().getY());
             }
-        }
+        }*/
 
         //draw area where unit can walk
         if (localGame.getSelectedUnit() != null) {
@@ -209,7 +215,7 @@ public class GameScreen implements Screen{
         batch.end();
 
         //update UI information
-        updatePlayerUI();
+        //updatePlayerUI();
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();
@@ -248,9 +254,9 @@ public class GameScreen implements Screen{
 
         for (Hexagon hex : map.getHexagons()) {
             Rectangle clickArea = new Rectangle(hex.getPos().x, hex.getPos().y,
-                    hex.groundImage.getWidth(), hex.groundImage.getHeight());
+                    hex.getGroundImage().getWidth(), hex.getGroundImage().getHeight());
             if (clickArea.contains(tmp.x, tmp.y)) {
-                System.out.println("clicked hex: " + hex.getLocation().x + " " + hex.getLocation().y);
+                LOGGER.info("clicked hex: " + hex.getLocation().getX() + " " + hex.getLocation().getY());
 
                 //When clicked on unit or unit is selected
                 if (localGame.getUnitOnHex(hex) != null || localGame.getSelectedUnit() != null) {
@@ -280,25 +286,25 @@ public class GameScreen implements Screen{
 
         for (Hexagon hex : map.getHexagons()) {
             Rectangle clickArea = new Rectangle(hex.getPos().x, hex.getPos().y,
-                    hex.groundImage.getWidth(), hex.groundImage.getHeight());
+                    hex.getGroundImage().getWidth(), hex.getGroundImage().getHeight());
             if (clickArea.contains(tmp.x, tmp.y)) {
-                System.out.println("clicked hex: " + hex.getLocation().x + " " + hex.getLocation().y);
+                LOGGER.info("clicked hex: " + hex.getLocation().getX() + " " + hex.getLocation().getY());
 
                 //Right click on own building
                 Building b;
                 b = localGame.getBuildingAtLocation(hex.getLocation());
                 if (b != null && b.getOwner().getId() == localGame.getThisPlayer().getId()) {
                     if (b instanceof Barracks) {
-                        System.out.println("You clicked on a Barracks");
+                        LOGGER.info("You clicked on a Barracks");
                         showUnitShopUI(x, y, b);
                     } else if (b instanceof TownCentre) {
-                        System.out.println("You clicked on a TownCentre");
+                        LOGGER.info("You clicked on a TownCentre");
                         showBuildingShopUI(x, y);
                     } else if (b instanceof Resource) {
-                        System.out.println("You clicked on a Resource");
+                        LOGGER.info("You clicked on a Resource");
                         showBuildingSellUI(x, y, b);
                     } else if (b instanceof Fortification) {
-                        System.out.println("You clicked on a Fortification");
+                        LOGGER.info("You clicked on a Fortification");
                         showBuildingSellUI(x, y, b);
                     }
                 }
@@ -308,7 +314,7 @@ public class GameScreen implements Screen{
                 if (u != null) {
                     if (u.getOwner() == localGame.getThisPlayer())
                         showUnitSellUI(x, y, u);
-                    System.out.println("You clicked on a unit!");
+                    LOGGER.info("You clicked on a unit!");
                 }
             }
         }
@@ -425,7 +431,7 @@ public class GameScreen implements Screen{
         try {
             playerTable = new PlayerTable(localGame, skin);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 

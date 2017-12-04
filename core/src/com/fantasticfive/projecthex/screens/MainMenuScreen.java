@@ -19,6 +19,8 @@ import com.fantasticfive.projecthex.LocalGame;
 import com.fantasticfive.server.RMIServer;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.Map;
+import com.fantasticfive.shared.enums.Color;
+import com.fantasticfive.shared.enums.UnitType;
 import com.fantasticfive.shared.Point;
 import com.fantasticfive.shared.enums.*;
 import com.fantasticfive.shared.enums.Color;
@@ -30,8 +32,11 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class MainMenuScreen implements Screen {
+
+    private static final Logger LOGGER = Logger.getLogger( MainMenuScreen.class.getName() );
 
     private final GameMain game;
 
@@ -48,6 +53,9 @@ public class MainMenuScreen implements Screen {
     private Stage stage;
     private Table table;
     private SpriteBatch menuBatch = new SpriteBatch();
+
+    Texture title;
+    Texture titleStart;
 
     private Music menuMusic;
 
@@ -90,6 +98,8 @@ public class MainMenuScreen implements Screen {
         createUIElements();
 
         startMusic();
+        title = new Texture("title.png");
+        titleStart = new Texture("titleStart.png");
     }
 
     @Override
@@ -104,17 +114,17 @@ public class MainMenuScreen implements Screen {
 
         //Move camera
         camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
+        game.getBatch().setProjectionMatrix(camera.combined);
         camera.translate(new Vector2(0.75f, 1));
 
         //draw all the sprites
-        game.batch.begin();
+        game.getBatch().begin();
 
         //draw all hexes from the map
         for (Hexagon hex : map.getHexagons()) {
-            game.batch.draw(hex.groundImage, hex.getPos().x, hex.getPos().y);
-            if (hex.objectImage != null) {
-                game.batch.draw(hex.objectImage, hex.getPos().x, hex.getPos().y);
+            game.getBatch().draw(hex.getGroundImage(), hex.getPos().x, hex.getPos().y);
+            if (hex.getObjectImage() != null) {
+                game.getBatch().draw(hex.getObjectImage(), hex.getPos().x, hex.getPos().y);
             }
         }
 
@@ -122,10 +132,10 @@ public class MainMenuScreen implements Screen {
         for (Player p : players) {
             for (Unit u : p.getUnits()) {
                 Hexagon h = map.getHexAtLocation(u.getLocation());
-                game.batch.draw(u.getTexture(), h.getPos().x, h.getPos().y);
+                game.getBatch().draw(u.getTexture(), h.getPos().x, h.getPos().y);
             }
         }
-        game.batch.end();
+        game.getBatch().end();
 
         createMenuBatch();
 
@@ -156,7 +166,9 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void dispose() {
-        menuMusic.dispose();
+        menuBatch.dispose();
+        game.batch.dispose();
+        if (menuMusic != null) menuMusic.dispose();
     }
 
     public void startMusic() {
@@ -187,12 +199,8 @@ public class MainMenuScreen implements Screen {
     }
 
     private void createMenuBatch() {
-        Texture title;
-        Texture titleStart;
         menuBatch.begin();
 
-        title = new Texture("title.png");
-        titleStart = new Texture("titleStart.png");
 
         menuBatch.draw(title, (screenWidth / 2) - (title.getWidth() / 2), screenHeight / 100 * 80);
         if (startScreen) {
@@ -262,7 +270,7 @@ public class MainMenuScreen implements Screen {
         p4.purchaseUnit(new Unit(UnitType.ARCHER, 100, 100, 10, 10, 1, 10, 0, false, 1));
         p4.purchaseUnit(new Unit(UnitType.SCOUT, 100, 100, 10, 10, 1, 10, 0, false, 1));
         p4.purchaseUnit(new Unit(UnitType.SWORDSMAN, 100, 100, 10, 10, 1, 10, 0, false, 1));
-        players.add(p3);
+        players.add(p4);
 
 
         for (Player p : players) {
@@ -340,9 +348,7 @@ public class MainMenuScreen implements Screen {
 
             btnExitGame.addListener(new ChangeListener() {
                 @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    game.dispose();
-                }
+                public void changed(ChangeEvent event, Actor actor) {Gdx.app.exit(); }
             });
 
             addActor(t);

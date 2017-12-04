@@ -2,14 +2,17 @@ package com.fantasticfive.shared;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.fantasticfive.shared.enums.*;
+import com.fantasticfive.shared.enums.GroundType;
 
 import java.io.Serializable;
+import java.util.logging.Logger;
 
 /**
  * The Buidling class contains all the base information and functionality that all buildings share.
  */
 public abstract class Building implements Cloneable, Serializable {
+    private static final Logger LOGGER = Logger.getLogger( Building.class.getName() );
+
     public transient Texture image;
     protected int health;
     protected GroundType[] buildableOn;
@@ -70,7 +73,7 @@ public abstract class Building implements Cloneable, Serializable {
         if (health <= 0) {
             health = 0;
         }
-        System.out.println("Health has been reduced with " + hp + " to " + health);
+        LOGGER.info("Health has been reduced with " + hp + " to " + health);
         return health <= 0;
     }
 
