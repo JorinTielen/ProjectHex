@@ -26,7 +26,7 @@ public class Database {
         InputStream input;
 
         try {
-            input = new FileInputStream("core/database.properties");
+            input = new FileInputStream("database.properties");
             prop.load(input);
 
             String url = prop.getProperty("url");
