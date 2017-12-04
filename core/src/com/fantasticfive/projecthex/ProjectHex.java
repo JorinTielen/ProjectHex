@@ -97,7 +97,6 @@ public class ProjectHex extends ApplicationAdapter {
             table.addActor(buildingSellTable);
         }
 
-        createGameUI();
         createOptionsUI();
         if (optionsTable != null) {
             table.addActor(optionsTable);
@@ -325,7 +324,6 @@ public class ProjectHex extends ApplicationAdapter {
     }
 
     private void clearUI() {
-        optionsTable.setVisible(false);
         buildingSellTable.setVisible(false);
         buildingShopTable.setVisible(false);
         unitSellTable.setVisible(false);
@@ -407,16 +405,8 @@ public class ProjectHex extends ApplicationAdapter {
     //  Game UI
     //  (Shows the next turn button and options)
     // ====================
-    private void createGameUI() {
-        table.addActor(new GameTable(this, skin));
-    }
-
     private void createOptionsUI() {
         optionsTable = new OptionsTable(game, skin);
-    }
-
-    public void showOptionsUI() {
-        optionsTable.setVisible(true);
     }
 
     private void createSkin() {
@@ -429,7 +419,6 @@ public class ProjectHex extends ApplicationAdapter {
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
         textButtonStyle.up = skin.newDrawable("white", Color.DARK_GRAY);
         textButtonStyle.down = skin.newDrawable("white", Color.DARK_GRAY);
-        textButtonStyle.checked = skin.newDrawable("white", Color.BLUE);
         textButtonStyle.over = skin.newDrawable("white", Color.LIGHT_GRAY);
         textButtonStyle.font = skin.getFont("default");
         skin.add("default", textButtonStyle);
