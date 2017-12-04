@@ -9,6 +9,7 @@ import java.rmi.registry.Registry;
 
 public class RMIServer {
 
+    private String ipAddress;
     private static final int portNumber = 1099;
 
     private IRemoteGame game = null;
@@ -25,7 +26,8 @@ public class RMIServer {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-        System.out.println("Server: IP Address: " + localhost.getHostAddress());
+        ipAddress = localhost.getHostAddress();
+        System.out.println("Server: IP Address: " + ipAddress);
         System.out.println("Server: Port number " + portNumber);
 
         try {
@@ -41,4 +43,7 @@ public class RMIServer {
         RMIServer server = new RMIServer();
     }
 
+    public String getIpAddress(){
+        return ipAddress;
+    }
 }

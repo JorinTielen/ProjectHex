@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.fantasticfive.projecthex.InputManager;
 import com.fantasticfive.projecthex.LocalGame;
+import com.fantasticfive.projecthex.SpriteAnimation;
 import com.fantasticfive.projecthex.tables.*;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.enums.BuildingType;
@@ -37,6 +38,9 @@ public class GameScreen implements Screen{
     private Skin skin;
     private Stage stage;
     private Table table;
+    private Texture blankTexture; //blank texture for health bars
+    private Texture walkableHexTexture; //Texture overlay for hexes that unit can walk to
+    public SpriteAnimation explosionAnimation;
 
     //tables
     private Table unitShopTable;
@@ -47,7 +51,7 @@ public class GameScreen implements Screen{
     private Table optionsTable;
     private Building buildingToBuild;
 
-    public GameScreen(final GameMain game) {
+    public GameScreen(final GameMain game, LocalGame localGame) {
         this.game = game;
 
         //Setup Camera
@@ -57,7 +61,7 @@ public class GameScreen implements Screen{
         //Setup Map
 
         //Setup Game
-        localGame = new LocalGame();
+        this.localGame = localGame;
         map = localGame.getMap();
 
         //Setup window
@@ -110,6 +114,10 @@ public class GameScreen implements Screen{
         inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(input);
         Gdx.input.setInputProcessor(inputMultiplexer);
+
+        //set blank texture
+        blankTexture = new Texture("whitePixel.png");
+        walkableHexTexture = new Texture("movableHex.png");
     }
 
     @Override
@@ -140,20 +148,38 @@ public class GameScreen implements Screen{
             if (hex.objectImage != null) {
                 batch.draw(hex.objectImage, hex.getPos().x, hex.getPos().y);
             }
+            if (hex.colorCoding != null) {
+                batch.draw(hex.colorCoding, hex.getPos().x, hex.getPos().y);
+            }
         }
 
         //draw all buildings and units from all players
         for (Player p : localGame.getPlayers()) {
             for (Building b : p.getBuildings()) {
-                if(b.getImage() == null) {
+                b.setImage();
+                if (b.getImage() == null) {
                     System.out.println("no image");
                 }
                 Hexagon h = map.getHexAtLocation(b.getLocation());
                 batch.draw(b.getImage(), h.getPos().x, h.getPos().y);
+                batch.setColor(Color.RED);
+                batch.draw(blankTexture, h.getPos().x + 35, h.getPos().y + 100, 50, 5);
+                batch.setColor(Color.GREEN);
+                batch.draw(blankTexture, h.getPos().x + 35, h.getPos().y + 100, (int) ((double) 50 * ((double) b.getHealth() / (double) b.getMaxHealth())), 5);
+                batch.setColor(Color.WHITE);
+                if (b.getDestroyed()) {
+                    explosionAnimation = new SpriteAnimation("explosion", b.getLocation());
+                    b.getOwner().removeBuilding(b);
+                }
             }
             for (Unit u : p.getUnits()) {
                 Hexagon h = map.getHexAtLocation(u.getLocation());
                 batch.draw(u.getTexture(), h.getPos().x, h.getPos().y);
+                batch.setColor(Color.RED);
+                batch.draw(blankTexture, h.getPos().x + 35, h.getPos().y + 100, 50, 5);
+                batch.setColor(Color.GREEN);
+                batch.draw(blankTexture, h.getPos().x + 35, h.getPos().y + 100, (int) ((double) 50 * ((double) u.getHealth() / (double) u.getMaxHealth())), 5);
+                batch.setColor(Color.WHITE);
             }
         }
 
@@ -161,7 +187,24 @@ public class GameScreen implements Screen{
         if (buildingToBuild != null) {
             Vector3 mousePos = new Vector3(Gdx.input.getX() - 80, Gdx.input.getY() + 80, 0); //Image position gets set hard-coded to get it under the cursor.
             camera.unproject(mousePos);
+            buildingToBuild.setImage();
             batch.draw(buildingToBuild.getImage(), mousePos.x, mousePos.y);
+        }
+
+        //draw explosion animation
+        if (explosionAnimation != null) {
+            if (explosionAnimation.getActive()) {
+                explosionAnimation.animate();
+                batch.draw(explosionAnimation.getTexture(), explosionAnimation.getLocation().x, explosionAnimation.getLocation().y);
+            }
+        }
+
+        //draw area where unit can walk
+        if (localGame.getSelectedUnit() != null) {
+            for (Hexagon h : localGame.getSelectedUnit().getWalkableHexes()) {
+                //Maybe batch.enableBlending();
+                batch.draw(walkableHexTexture, h.getPos().x, h.getPos().y);
+            }
         }
 
         batch.end();
@@ -219,13 +262,10 @@ public class GameScreen implements Screen{
                 else if (buildingToBuild != null) {
                     if (buildingToBuild instanceof Resource) {
                         localGame.buyBuilding(BuildingType.RESOURCE, hex.getLocation());
-                        System.out.println("com.fantasticfive.shared.Resource built");
                     } else if (buildingToBuild instanceof Fortification) {
                         localGame.buyBuilding(BuildingType.FORTIFICATION, hex.getLocation());
-                        System.out.println("com.fantasticfive.shared.Fortification built");
                     } else if (buildingToBuild instanceof Barracks) {
                         localGame.buyBuilding(BuildingType.BARRACKS, hex.getLocation());
-                        System.out.println("com.fantasticfive.shared.Barracks built");
                     }
                     buildingToBuild = null;
                 }
@@ -280,15 +320,18 @@ public class GameScreen implements Screen{
         if (localGame.getUnitOnHex(hex) != null && localGame.getSelectedUnit() == null && localGame.getUnitOnHex(hex).getOwner() == localGame.getThisPlayer()) {
             Unit u = localGame.getUnitOnHex(hex);
             u.toggleSelected();
-            //If not clicked on unit and unit is selected
-        } else if (localGame.getUnitOnHex(hex) == null && localGame.getSelectedUnit() != null) {
+            localGame.setWalkableHexesForUnit(u);
+        }
+        //If not clicked on unit and unit is selected
+        else if (localGame.getUnitOnHex(hex) == null && localGame.getSelectedUnit() != null) {
             Unit u = localGame.getSelectedUnit();
             //Move unit to free hex
             if (localGame.hexEmpty(hex.getLocation())) {
                 u.move(new Point(hex.getLocation().x, hex.getLocation().y));
                 u.toggleSelected();
+                localGame.updateFromLocal();
             }
-            //com.fantasticfive.shared.Unit attacks enemy building
+            //Unit attacks enemy building
             else if (localGame.getBuildingAtLocation(hex.getLocation()) != null
                     && localGame.getBuildingAtLocation(hex.getLocation()).getOwner() != localGame.getThisPlayer()) {
                 localGame.attackBuilding(localGame.getSelectedUnit(), hex.getLocation());
@@ -307,11 +350,16 @@ public class GameScreen implements Screen{
             } else if (localGame.getUnitOnHex(hex).getOwner() != localGame.getSelectedUnit().getOwner()) {
                 Unit enemy = localGame.getUnitOnHex(hex);
                 Unit playerUnit = localGame.getSelectedUnit();
-                playerUnit.attack(enemy);
+                if (playerUnit.attack(enemy)) {
+                    if (enemy.getHealth() == 0) {
+                        enemy.getOwner().removeUnit(enemy);
+                    }
+                }
                 playerUnit.toggleSelected();
                 if (enemy.getHealth() == 0) {
                     enemy.getOwner().removeUnit(enemy);
                 }
+                localGame.updateFromLocal();
             }
         }
     }

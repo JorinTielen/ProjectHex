@@ -21,8 +21,8 @@ public class LocalGame {
     private int version = 0;
     private IRemoteGame remoteGame;
 
-    public LocalGame() {
-        getRemoteGame();
+    public LocalGame(String ipAddress, String username) {
+        getRemoteGame(ipAddress, username);
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -229,18 +229,8 @@ public class LocalGame {
         }
     }
 
-    private void getRemoteGame() {
-        //Get ip address of server
-        Scanner input = new Scanner(System.in);
-        System.out.print("Client: Enter IP address of server: ");
-        String ipAddress = input.nextLine();
-
-        //Get port number
+    private void getRemoteGame(String ipAddress, String username) {
         int portNumber = 1099;
-
-        //get username
-        System.out.print("Client: Enter username: ");
-        String username = input.nextLine();
 
         // Print IP address and port number for registry
         System.out.println("Client: IP Address: " + ipAddress);
