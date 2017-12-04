@@ -39,6 +39,7 @@ public class MainMenuScreen implements Screen {
     private static final Logger LOGGER = Logger.getLogger( MainMenuScreen.class.getName() );
 
     private final GameMain game;
+    private LocalGame localGame;
 
     private OrthographicCamera camera;
     private float camZoom = 2f;
@@ -291,7 +292,7 @@ public class MainMenuScreen implements Screen {
     }
 
     private void connectToServer(String ipAdress, String username) {
-        LocalGame localGame = new LocalGame(ipAdress, username);
+        localGame = new LocalGame(ipAdress, username);
         game.setScreen(new GameScreen(game, localGame));
         dispose();
     }
@@ -325,6 +326,7 @@ public class MainMenuScreen implements Screen {
                     gameSelectTable.setVisible(false);
                     serverThread = new Thread(() -> {
                         RMIServer server = new RMIServer();
+
                     });
                     serverThread.start();
                     InetAddress localhost = null;
