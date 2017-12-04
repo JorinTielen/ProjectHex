@@ -1,10 +1,13 @@
 package com.fantasticfive.shared;
 
 import com.fantasticfive.shared.enums.*;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-public class Map implements IMap {
+public class Map implements Serializable {
     private List<Hexagon> hexagons;
     private int id;
     private int width;
@@ -34,17 +37,54 @@ public class Map implements IMap {
         }
     }
 
+    public Point randomPoint() {
+        Random rnd = new Random();
+        int i;
+        do {
+            i = rnd.nextInt(hexagons.size());
+        } while (hexagons.get(i).getGroundType() != GroundType.GRASS);
+        return hexagons.get(i).getLocation();
+
+    }
+
+    public boolean canMoveTo(Unit u, Point location) {
+        List<Hexagon> movableHexes = hexesInCirle(u.getLocation(), u.getMovementLeft());
+        for (Hexagon hex : movableHexes) {
+            if(hex.getLocation().equals(location)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<Hexagon> hexesInCirle(Point location, int radius) {
+        List<Hexagon> results = new ArrayList<>();
+        for (Hexagon hex : hexagons) {
+            int distance = distance(location, hex.getLocation());
+            if (distance >= -radius &&
+                    distance <= radius) {
+                results.add(hex);
+            }
+        }
+        return results;
+    }
+
+    public int distance(Point a, Point b) {
+        return (Math.abs(a.y - b.y) + Math.abs(a.x + a.y - b.x - b.y) + Math.abs(a.x - b.x)) / 2;
+    }
+
     private void Generate() {
-        Noise.setSeed(1234); //This value is used to calculate the map
+        //old seed: 1234
+        Noise.setSeed(365); //This value is used to calculate the map
         float scale = 0.10f; //To determine the density
         float[][] noiseValues = Noise.Calc2DNoise(height, width, scale);
 
-        int maxNoise1 = 75;
-        int maxNoise2 = 125;
-        int maxNoise3 = 150;
-        int maxNoise4 = 220;
-        int maxNoise5 = 235;
-        int maxNoise6 = 255;
+        int maxNoise1 = 60;
+        int maxNoise2 = 90;
+        int maxNoise3 = 120;
+        int maxNoise4 = 200;
+        int maxNoise5 = 220;
+        int maxNoise6 = 250;
 
         for (int column = 0; column < width; column++) {
             for (int row = 0; row < height; row++) {
@@ -82,7 +122,6 @@ public class Map implements IMap {
         return hexagons;
     }
 
-    @Override
     public boolean bordersOwnLand(Point location, Player currentPlayer) {
         Hexagon h = getHexAtLocation(new Point(location.x - 1, location.y - 1));
         if (h.getOwner() == currentPlayer){

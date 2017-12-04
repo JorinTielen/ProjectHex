@@ -7,24 +7,23 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.fantasticfive.projecthex.LocalGame;
+import com.fantasticfive.projecthex.screens.GameScreen;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.enums.BuildingType;
-import com.fantasticfive.projecthex.ProjectHex;
-import java.rmi.RemoteException;
 
 public class BuildingShopTable extends Table {
     private Table t;
 
-    final private ProjectHex projectHex;
+    final private GameScreen gameScreen;
 
     final private LocalGame game;
     private Skin skin;
     private Building buildingToBuild;
 
-    public BuildingShopTable(ProjectHex projectHex, LocalGame game, Skin skin) {
+    public BuildingShopTable(GameScreen gameScreen, LocalGame game, Skin skin) {
         setVisible(false);
         t = new Table();
-        this.projectHex = projectHex;
+        this.gameScreen = gameScreen;
 
         this.game = game;
         this.skin = skin;
@@ -79,6 +78,6 @@ public class BuildingShopTable extends Table {
     }
 
     private void update() {
-        projectHex.updateBuildingToBuild(buildingToBuild);
+        gameScreen.updateBuildingToBuild(buildingToBuild);
     }
 }
