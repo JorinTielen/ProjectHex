@@ -20,7 +20,6 @@ public class GameMain extends Game {
     }
 
     public void dispose() {
-        batch.dispose();
         font.dispose();
     }
 

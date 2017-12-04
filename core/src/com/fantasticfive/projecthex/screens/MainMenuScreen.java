@@ -97,7 +97,7 @@ public class MainMenuScreen implements Screen {
 
         createUIElements();
 
-        //startMusic();
+        startMusic();
         title = new Texture("title.png");
         titleStart = new Texture("titleStart.png");
     }
@@ -348,9 +348,7 @@ public class MainMenuScreen implements Screen {
 
             btnExitGame.addListener(new ChangeListener() {
                 @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    game.dispose();
-                }
+                public void changed(ChangeEvent event, Actor actor) {Gdx.app.exit(); }
             });
 
             addActor(t);
