@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
-import com.fantasticfive.projecthex.screens.GameMain;
 import com.fantasticfive.projecthex.screens.GameScreen;
 
 public class InputManager implements InputProcessor {

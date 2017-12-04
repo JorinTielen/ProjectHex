@@ -1,7 +1,6 @@
 package com.fantasticfive.projecthex;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-import com.fantasticfive.shared.*;
 
 public class Main {
     public Main() {

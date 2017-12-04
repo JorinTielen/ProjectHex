@@ -2,6 +2,7 @@ package com.fantasticfive.shared;
 
 import com.fantasticfive.shared.enums.BuildingType;
 import com.fantasticfive.shared.enums.UnitType;
+
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -88,6 +89,12 @@ public interface IRemoteGame extends Remote {
      * @throws RemoteException
      */
     void attackUnit(Unit attacker, Unit defender) throws RemoteException;
+    /**
+     * Makes a unit attack another.
+     * @param u the unit you want to sell.
+     * @throws RemoteException
+     */
+    void sellUnit(Unit u) throws RemoteException;
     /**
      * Claims land for the current player.
      * @throws RemoteException when RMI breaks.

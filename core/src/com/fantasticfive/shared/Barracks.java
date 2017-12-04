@@ -1,7 +1,8 @@
 package com.fantasticfive.shared;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.fantasticfive.shared.enums.*;
+import com.fantasticfive.shared.enums.GroundType;
+import com.fantasticfive.shared.enums.UnitType;
 
 /**
  * The barracks class. Extends the com.fantasticfive.shared.Building class. Used in the game to purchase units.
