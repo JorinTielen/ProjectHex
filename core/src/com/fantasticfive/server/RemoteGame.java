@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Random;
 
 public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
+
     private int version = 0;
     private List<Player> players = new ArrayList<>();
     private Player currentPlayer;
