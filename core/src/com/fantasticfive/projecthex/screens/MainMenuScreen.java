@@ -123,7 +123,6 @@ public class MainMenuScreen implements Screen {
         //Move camera
 
         Vector2 camVec = new Vector2(camera.position.x - screenWidth, camera.position.y - screenHeight);
-        System.out.println(camVec.x + " " + camVec.y);
         if (camVec.y >= map.getHexAtLocation(new Point(mapHeight - 1, 0)).getPos().y - (screenHeight * camZoom)) cameraUp = false;
         if (camVec.y <= map.getHexAtLocation(new Point(0, 0)).getPos().y) cameraUp = true;
 
@@ -317,7 +316,7 @@ public class MainMenuScreen implements Screen {
                         validHex = true;
                     }
                 }
-                u.setLocation(new Point(random.nextInt(mapWidth), random.nextInt(mapHeight)));
+                u.setLocation(randomLocation);
             }
         }
     }
