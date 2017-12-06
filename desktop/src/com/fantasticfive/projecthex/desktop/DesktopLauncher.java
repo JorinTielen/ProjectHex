@@ -10,7 +10,6 @@ public class DesktopLauncher {
 		config.width = 1600;
 		config.height = 800;
 		config.fullscreen = false;
-		//new LwjglApplication(new ProjectHex(), config);
 		new LwjglApplication(new GameMain(), config);
 	}
 }
