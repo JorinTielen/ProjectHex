@@ -36,9 +36,10 @@ import java.util.logging.Logger;
 
 public class MainMenuScreen implements Screen {
 
-    private static final Logger LOGGER = Logger.getLogger( MainMenuScreen.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger(MainMenuScreen.class.getName());
 
     private final GameMain game;
+    private LocalGame localGame;
 
     private OrthographicCamera camera;
     private float camZoom = 2f;
@@ -54,8 +55,9 @@ public class MainMenuScreen implements Screen {
     private Table table;
     private SpriteBatch menuBatch = new SpriteBatch();
 
-    Texture title;
-    Texture titleStart;
+    Texture title = new Texture("title.png");
+
+    Texture titleStart = new Texture("titleStart.png");
 
     private Music menuMusic;
 
@@ -68,6 +70,7 @@ public class MainMenuScreen implements Screen {
     private float screenWidth = Gdx.graphics.getWidth();
     private float screenHeight = Gdx.graphics.getHeight();
     private boolean startScreen = true;
+    private boolean cameraUp = true;
 
     Thread serverThread;
 
@@ -77,6 +80,7 @@ public class MainMenuScreen implements Screen {
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, screenWidth * camZoom, screenHeight * camZoom);
+           camera.translate(new Vector2(1250, 0));
 
         //Setup UI
         skin = new Skin(Gdx.files.internal("uiskin.json"));
@@ -90,6 +94,12 @@ public class MainMenuScreen implements Screen {
         //Create map
         map = new Map(mapWidth, mapHeight);
         map.setTextures();
+        Vector2 vec1 = map.getHexAtLocation(new Point(0, 0)).getPos();
+        System.out.println(vec1.x + " " + vec1.y);
+        Vector2 vec2 = map.getHexAtLocation(new Point(0, 1)).getPos();
+        System.out.println(vec2.x + " " + vec2.y);
+        Vector2 vec3 = map.getHexAtLocation(new Point(0, 2)).getPos();
+        System.out.println(vec3.x + " " + vec3.y);
 
         createPlayers();
 
@@ -98,8 +108,6 @@ public class MainMenuScreen implements Screen {
         createUIElements();
 
         startMusic();
-        title = new Texture("title.png");
-        titleStart = new Texture("titleStart.png");
     }
 
     @Override
@@ -113,9 +121,19 @@ public class MainMenuScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         //Move camera
+
+        Vector2 camVec = new Vector2(camera.position.x - screenWidth, camera.position.y - screenHeight);
+        if (camVec.y >= map.getHexAtLocation(new Point(mapHeight - 1, 0)).getPos().y - (screenHeight * camZoom)) cameraUp = false;
+        if (camVec.y <= map.getHexAtLocation(new Point(0, 0)).getPos().y) cameraUp = true;
+
+        if (cameraUp) {
+            camera.translate(new Vector2(0.75f, 1));
+        } else {
+            camera.translate(new Vector2(-0.75f, -1));
+        }
         camera.update();
         game.getBatch().setProjectionMatrix(camera.combined);
-        camera.translate(new Vector2(0.75f, 1));
+
 
         //draw all the sprites
         game.getBatch().begin();
@@ -217,7 +235,7 @@ public class MainMenuScreen implements Screen {
                 Point randomLocation = new Point(0, 0);
                 for (Player p : players) {
                     for (Unit u : p.getUnits()) {
-                        while (!u.getLocation().equals(randomLocation)){
+                        while (!u.getLocation().equals(randomLocation)) {
                             int low = -1;
                             int high = 2;
                             int randomx = random.nextInt(high - low) + low;
@@ -272,26 +290,39 @@ public class MainMenuScreen implements Screen {
         p4.purchaseUnit(new Unit(UnitType.SWORDSMAN, 100, 100, 10, 10, 1, 10, 0, false, 1));
         players.add(p4);
 
+        Player p5 = new Player("bot1", Color.PURPLE, 5);
+        p5.addGold(1000);
+        p5.purchaseUnit(new Unit(UnitType.ARCHER, 100, 100, 10, 10, 1, 10, 0, false, 1));
+        p5.purchaseUnit(new Unit(UnitType.SCOUT, 100, 100, 10, 10, 1, 10, 0, false, 1));
+        p5.purchaseUnit(new Unit(UnitType.SWORDSMAN, 100, 100, 10, 10, 1, 10, 0, false, 1));
+        players.add(p5);
+
+        Player p6 = new Player("bot1", Color.ORANGE, 6);
+        p6.addGold(1000);
+        p6.purchaseUnit(new Unit(UnitType.ARCHER, 100, 100, 10, 10, 1, 10, 0, false, 1));
+        p6.purchaseUnit(new Unit(UnitType.SCOUT, 100, 100, 10, 10, 1, 10, 0, false, 1));
+        p6.purchaseUnit(new Unit(UnitType.SWORDSMAN, 100, 100, 10, 10, 1, 10, 0, false, 1));
+        players.add(p6);
 
         for (Player p : players) {
             for (Unit u : p.getUnits()) {
                 u.setOwner(p);
                 u.setTexture();
-                Point randomLocation = new Point(0,0);
+                Point randomLocation = new Point(0, 0);
                 boolean validHex = false;
-                while(!validHex){
+                while (!validHex) {
                     randomLocation = new Point(random.nextInt(mapWidth), random.nextInt(mapHeight));
-                    if(!map.getHexAtLocation(randomLocation).getIsMountain() && map.getHexAtLocation(randomLocation).getGroundType() != GroundType.WATER ){
+                    if (!map.getHexAtLocation(randomLocation).getIsMountain() && map.getHexAtLocation(randomLocation).getGroundType() != GroundType.WATER) {
                         validHex = true;
                     }
                 }
-                u.setLocation(new Point(random.nextInt(mapWidth), random.nextInt(mapHeight)));
+                u.setLocation(randomLocation);
             }
         }
     }
 
     private void connectToServer(String ipAdress, String username) {
-        LocalGame localGame = new LocalGame(ipAdress, username);
+        localGame = new LocalGame(ipAdress, username);
         game.setScreen(new GameScreen(game, localGame));
         dispose();
     }
@@ -325,6 +356,7 @@ public class MainMenuScreen implements Screen {
                     gameSelectTable.setVisible(false);
                     serverThread = new Thread(() -> {
                         RMIServer server = new RMIServer();
+
                     });
                     serverThread.start();
                     InetAddress localhost = null;
@@ -348,7 +380,9 @@ public class MainMenuScreen implements Screen {
 
             btnExitGame.addListener(new ChangeListener() {
                 @Override
-                public void changed(ChangeEvent event, Actor actor) {Gdx.app.exit(); }
+                public void changed(ChangeEvent event, Actor actor) {
+                    Gdx.app.exit();
+                }
             });
 
             addActor(t);

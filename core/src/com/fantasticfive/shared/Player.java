@@ -16,7 +16,7 @@ public class Player implements Serializable {
     private List<Unit> units;
     private List<Hexagon> hexagons;
     private Color color;
-    private int gold = 0;
+    private int gold;
     private String username;
     private int id;
 

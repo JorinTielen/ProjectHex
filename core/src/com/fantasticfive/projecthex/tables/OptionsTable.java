@@ -25,12 +25,10 @@ public class OptionsTable extends Table {
         t = new Table();
 
         final TextButton buttonEndTurn = new TextButton("End turn", skin);
-        t.add(buttonEndTurn).fill();
-        t.row();
+        t.add(buttonEndTurn).fill().size(130,40).padRight(5);
 
         final TextButton buttonLeaveGame = new TextButton("Leave game", skin);
-        t.add(buttonLeaveGame).fill();
-        t.row();
+        t.add(buttonLeaveGame).fill().size(130,40);
 
         buttonEndTurn.addListener(new ChangeListener() {
             @Override
@@ -48,7 +46,7 @@ public class OptionsTable extends Table {
             }
         });
 
-        t.setPosition(Gdx.graphics.getWidth() - 60, 40);
+        t.setPosition(Gdx.graphics.getWidth() - 150, 40);
 
         addActor(t);
     }

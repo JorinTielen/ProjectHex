@@ -16,12 +16,12 @@ import java.util.logging.Logger;
 
 public class LocalGame {
 
-    private static final Logger LOGGER = Logger.getLogger( LocalGame.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger(LocalGame.class.getName());
 
     private List<Player> players = new ArrayList<>();
     private Player thisPlayer;
     private Map map;
-
+    private Fog fog;
     private int version = 0;
     private IRemoteGame remoteGame;
 
@@ -35,14 +35,15 @@ public class LocalGame {
                     int remoteVersion = remoteGame.getVersion();
                     if (remoteVersion != version) {
                         Gdx.app.postRunnable(() ->
-                            UpdateFromRemote(remoteVersion)
+                                UpdateFromRemote(remoteVersion)
                         );
                     }
                 } catch (RemoteException e) {
                     LOGGER.log(Level.ALL, e.getMessage());
                 }
             }
-        },0, 250);
+        }, 0, 250);
+        fog = new Fog(thisPlayer, thisPlayer.getOwnedHexagons(), this.map);
     }
 
     private void join(String username) {
@@ -53,7 +54,7 @@ public class LocalGame {
         }
     }
 
-    public void leaveGame()  {
+    public void leaveGame() {
         try {
             remoteGame.leaveGame(thisPlayer.getId());
         } catch (RemoteException e) {
@@ -100,7 +101,7 @@ public class LocalGame {
         }
     }
 
-    boolean isMyTurn() {
+    public boolean isMyTurn() {
         try {
             return thisPlayer.getId() == remoteGame.getCurrentPlayer().getId();
         } catch (RemoteException e) {
@@ -129,7 +130,9 @@ public class LocalGame {
         return map;
     }
 
-    public void claimLand(Unit unit){
+    public Fog getFog() { return this.fog; }
+
+    public void claimLand(Unit unit) {
         try {
             remoteGame.claimLand(unit);
         } catch (RemoteException e) {
@@ -148,6 +151,7 @@ public class LocalGame {
 
     public void buyUnit(UnitType type, Point location) {
         try {
+            getFog().unitCreated(map.getHexAtLocation(location));
             remoteGame.buyUnit(type, location, thisPlayer.getId());
         } catch (RemoteException e) {
             LOGGER.log(Level.ALL, e.getMessage());
@@ -156,7 +160,9 @@ public class LocalGame {
 
     public void moveUnit(Unit u, Point location) {
         try {
-            remoteGame.moveUnit(u, location, thisPlayer.getId());
+            if (remoteGame.moveUnit(u, location, thisPlayer.getId())){
+                fog.unitMovement(map.getHexAtLocation(u.getLocation()), map.getHexAtLocation(location));
+            }
         } catch (RemoteException e) {
             LOGGER.log(Level.ALL, e.getMessage());
         }
@@ -174,14 +180,11 @@ public class LocalGame {
         return unit;
     }
 
-    //TODO: Make a singe unit selected?
     public Unit getSelectedUnit() {
         Unit unit = null;
-        for (Player p : getPlayers()) {
-            for (Unit u : p.getUnits()) {
-                if (u.getSelected()) {
-                    unit = u;
-                }
+        for (Unit u : thisPlayer.getUnits()) {
+            if (u.getSelected()) {
+                unit = u;
             }
         }
         return unit;
@@ -245,10 +248,10 @@ public class LocalGame {
         }
     }
 
-    public void setWalkableHexesForUnit(Unit unit){
+    public void setWalkableHexesForUnit(Unit unit) {
         List<Hexagon> walkableHexes = new ArrayList<>();
-        for (Hexagon hex : map.getHexagons()){
-            if (map.canMoveTo(unit, hex.getLocation()) && hexEmpty(hex.getLocation())){
+        for (Hexagon hex : map.getHexagons()) {
+            if (map.canMoveTo(unit, hex.getLocation()) && hexEmpty(hex.getLocation())) {
                 walkableHexes.add(hex);
             }
         }

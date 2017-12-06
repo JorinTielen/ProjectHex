@@ -13,9 +13,10 @@ import java.util.Random;
 import java.util.logging.Logger;
 
 public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
-    private static final Logger LOGGER = Logger.getLogger( RemoteGame.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger(RemoteGame.class.getName());
 
     private int version = 0;
+    private boolean ready;
     private List<Player> players = new ArrayList<>();
     private Player currentPlayer;
     private Map map;
@@ -31,8 +32,8 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
 
     RemoteGame(int portNumber) throws RemoteException {
         RemoteSetup(portNumber);
-
         map = new Map(20, 10);
+        ready = true;
     }
 
     private void RemoteSetup(int portNumber) {
@@ -95,6 +96,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             if (playerId == p.getId()) {
                 endTurn(playerId);
                 players.remove(p);
+                break;
             }
         }
 
@@ -115,7 +117,6 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         version++;
     }
 
-    //TODO: fix de locaties van town center
     @Override
     public Player addPlayer(String username) {
         Color color;
@@ -188,7 +189,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     public Unit getUnitAtLocation(Point location) {
         for (Player p : players) {
             for (Unit u : p.getUnits()) {
-                if (u.getLocation() .equals(location)) {
+                if (u.getLocation().equals(location)) {
                     return u;
                 }
             }
@@ -212,14 +213,21 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     }
 
     @Override
-    public void moveUnit(Unit u, Point location, int playerId) {
-        if(playerId == currentPlayer.getId()) {
-            if(map.canMoveTo(u, location)) {
+    public boolean moveUnit(Unit u, Point location, int playerId) {
+        if (playerId == currentPlayer.getId()) {
+            if (map.canMoveTo(u, location) &&
+                    getBuildingAtLocation(location) == null &&
+                    getUnitAtLocation(location) == null &&
+                    map.getHexAtLocation(location).getGroundType() != GroundType.WATER &&
+                    map.getHexAtLocation(location).getObjectType() != ObjectType.MOUNTAIN) {
                 Unit realUnit = getUnitAtLocation(u.getLocation());
                 realUnit.move(location, map.distance(u.getLocation(), location));
+                version++;
+                return true;
             }
         }
         version++;
+        return false;
     }
 
     @Override
@@ -234,7 +242,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
 
     @Override
     public void sellUnit(Unit u) {
-        for(Player p : players) {
+        for (Player p : players) {
             for (Unit unit : p.getUnits()) {
                 if (unit.getLocation().equals(u.getLocation())) {
                     p.sellUnit(unit);
@@ -259,37 +267,37 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     }
 
     //Checks if claimed land has any mountain next to it, if it does it claims it.
-    private void claimMountains(Point location){
+    private void claimMountains(Point location) {
         Hexagon h = map.getHexAtLocation(new Point(location.getX() - 1, location.getY() - 1));
-        if (!h.hasOwner() && h.getIsMountain()){
+        if (!h.hasOwner() && h.getIsMountain()) {
             currentPlayer.addHexagon(h);
         }
-        h = map.getHexAtLocation(new Point(location.getX() - 1, location.getY() ));
-        if (!h.hasOwner() && h.getIsMountain()){
+        h = map.getHexAtLocation(new Point(location.getX() - 1, location.getY()));
+        if (!h.hasOwner() && h.getIsMountain()) {
             currentPlayer.addHexagon(h);
         }
         h = map.getHexAtLocation(new Point(location.getX() - 1, location.getY() + 1));
-        if (!h.hasOwner() && h.getIsMountain()){
+        if (!h.hasOwner() && h.getIsMountain()) {
             currentPlayer.addHexagon(h);
         }
         h = map.getHexAtLocation(new Point(location.getX(), location.getY() - 1));
-        if (!h.hasOwner() && h.getIsMountain()){
+        if (!h.hasOwner() && h.getIsMountain()) {
             currentPlayer.addHexagon(h);
         }
         h = map.getHexAtLocation(new Point(location.getX(), location.getY() + 1));
-        if (!h.hasOwner() && h.getIsMountain()){
+        if (!h.hasOwner() && h.getIsMountain()) {
             currentPlayer.addHexagon(h);
         }
         h = map.getHexAtLocation(new Point(location.getX() + 1, location.getY() - 1));
-        if (!h.hasOwner() && h.getIsMountain()){
+        if (!h.hasOwner() && h.getIsMountain()) {
             currentPlayer.addHexagon(h);
         }
         h = map.getHexAtLocation(new Point(location.getX() + 1, location.getY()));
-        if (!h.hasOwner() && h.getIsMountain()){
+        if (!h.hasOwner() && h.getIsMountain()) {
             currentPlayer.addHexagon(h);
         }
         h = map.getHexAtLocation(new Point(location.getX() + 1, location.getY() + 1));
-        if (!h.hasOwner() && h.getIsMountain()){
+        if (!h.hasOwner() && h.getIsMountain()) {
             currentPlayer.addHexagon(h);
         }
         version++;
@@ -300,7 +308,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         return buildingFactory.getBuildingPreset(type);
     }
 
-    public void buyBuilding(BuildingType buildingType, Point location)  {
+    public void buyBuilding(BuildingType buildingType, Point location) {
         if (map.isHexBuildable(location, currentPlayer)) {
             if (buildingType == BuildingType.RESOURCE && hexEmptyResource(location)) {
                 if (currentPlayer.purchaseBuildingOnMountain(buildingFactory.createBuilding(buildingType, location, currentPlayer))) {
@@ -326,7 +334,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             } else if (building instanceof Resource) {
                 cost = ((Resource) buildingFactory.getBuildingPreset(BuildingType.RESOURCE)).getPurchaseCost();
             }
-            if (map.getHexAtLocation(location).getIsMountain()){
+            if (map.getHexAtLocation(location).getIsMountain()) {
                 map.getHexAtLocation(location).setMountain();
             }
             currentPlayer.sellBuilding(building, cost);
@@ -396,7 +404,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
 
         //Check if hex is a mountain for resource
         Hexagon hex = map.getHexAtLocation(location);
-        return  (hex.getObjectType() == ObjectType.MOUNTAIN
+        return (hex.getObjectType() == ObjectType.MOUNTAIN
                 && getBuildingAtLocation(location) == null
                 && hex.getGroundType() != GroundType.WATER);
     }
