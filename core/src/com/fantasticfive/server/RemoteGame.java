@@ -213,14 +213,21 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     }
 
     @Override
-    public void moveUnit(Unit u, Point location, int playerId) {
+    public boolean moveUnit(Unit u, Point location, int playerId) {
         if (playerId == currentPlayer.getId()) {
-            if (map.canMoveTo(u, location)) {
+            if (map.canMoveTo(u, location) &&
+                    getBuildingAtLocation(location) == null &&
+                    getUnitAtLocation(location) == null &&
+                    map.getHexAtLocation(location).getGroundType() != GroundType.WATER &&
+                    map.getHexAtLocation(location).getObjectType() != ObjectType.MOUNTAIN) {
                 Unit realUnit = getUnitAtLocation(u.getLocation());
                 realUnit.move(location, map.distance(u.getLocation(), location));
+                version++;
+                return true;
             }
         }
         version++;
+        return false;
     }
 
     @Override

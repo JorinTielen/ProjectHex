@@ -21,7 +21,7 @@ public class LocalGame {
     private List<Player> players = new ArrayList<>();
     private Player thisPlayer;
     private Map map;
-
+    private Fog fog;
     private int version = 0;
     private IRemoteGame remoteGame;
 
@@ -43,6 +43,7 @@ public class LocalGame {
                 }
             }
         }, 0, 250);
+        fog = new Fog(thisPlayer, thisPlayer.getOwnedHexagons(), this.map);
     }
 
     private void join(String username) {
@@ -129,6 +130,8 @@ public class LocalGame {
         return map;
     }
 
+    public Fog getFog() { return this.fog; }
+
     public void claimLand(Unit unit) {
         try {
             remoteGame.claimLand(unit);
@@ -148,6 +151,7 @@ public class LocalGame {
 
     public void buyUnit(UnitType type, Point location) {
         try {
+            getFog().unitCreated(map.getHexAtLocation(location));
             remoteGame.buyUnit(type, location, thisPlayer.getId());
         } catch (RemoteException e) {
             LOGGER.log(Level.ALL, e.getMessage());
@@ -156,7 +160,9 @@ public class LocalGame {
 
     public void moveUnit(Unit u, Point location) {
         try {
-            remoteGame.moveUnit(u, location, thisPlayer.getId());
+            if (remoteGame.moveUnit(u, location, thisPlayer.getId())){
+                fog.unitMovement(map.getHexAtLocation(u.getLocation()), map.getHexAtLocation(location));
+            }
         } catch (RemoteException e) {
             LOGGER.log(Level.ALL, e.getMessage());
         }

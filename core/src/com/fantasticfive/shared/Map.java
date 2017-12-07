@@ -4,9 +4,7 @@ import com.fantasticfive.shared.enums.GroundType;
 import com.fantasticfive.shared.enums.ObjectType;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Map implements Serializable {
     private List<Hexagon> hexagons;
@@ -166,6 +164,40 @@ public class Map implements Serializable {
         return (hex.getOwner() == player &&
                 hex.getGroundType() != GroundType.WATER &&
                 hex.getObjectType() != ObjectType.MOUNTAIN);
+    }
+
+    public List<Hexagon> getPath(Hexagon startHex, Hexagon destination){
+        //TODO Maak gebruik van accessible boolean in Hexagon om te bepalen of je er op kan lopen.
+        List<Hexagon> path = new ArrayList<>();
+        List<Hexagon> frontier = new ArrayList<>();
+        HashMap pathMap = new HashMap();
+        boolean found = false;
+        Hexagon current;
+        int i = 0;
+        frontier.add(startHex);
+        while (!found){
+            current = frontier.get(i);
+            if (current == destination){
+                found = true;
+            }
+
+            for (Hexagon h : hexesInCirle(current.getLocation(), 1)){
+                if (!pathMap.containsKey(h) && h.getObjectType() != ObjectType.MOUNTAIN && h.getGroundType() != GroundType.WATER){
+                    frontier.add(h);
+                    pathMap.put(h, current);
+                }
+            }
+            i++;
+        }
+
+        path.add(destination);
+        current = destination;
+        while (current != startHex){
+            current = (Hexagon)pathMap.get(current);
+            path.add(current);
+        }
+        Collections.reverse(path);
+        return path;
     }
 
     //Returns hexagon at a specific location
