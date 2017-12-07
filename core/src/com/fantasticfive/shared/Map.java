@@ -122,37 +122,10 @@ public class Map implements Serializable {
     }
 
     public boolean bordersOwnLand(Point location, Player currentPlayer) {
-        Hexagon h = getHexAtLocation(new Point(location.getX() - 1, location.getY() - 1));
-        if (h.getOwner() == currentPlayer){
-            return true;
-        }
-        h = getHexAtLocation(new Point(location.getX() - 1, location.getY() ));
-        if (h.getOwner() == currentPlayer){
-            return true;
-        }
-        h = getHexAtLocation(new Point(location.getX() - 1, location.getY() + 1));
-        if (h.getOwner() == currentPlayer){
-            return true;
-        }
-        h = getHexAtLocation(new Point(location.getX(), location.getY() - 1));
-        if (h.getOwner() == currentPlayer){
-            return true;
-        }
-        h = getHexAtLocation(new Point(location.getX(), location.getY() + 1));
-        if (h.getOwner() == currentPlayer){
-            return true;
-        }
-        h = getHexAtLocation(new Point(location.getX() + 1, location.getY() - 1));
-        if (h.getOwner() == currentPlayer){
-            return true;
-        }
-        h = getHexAtLocation(new Point(location.getX() + 1, location.getY()));
-        if (h.getOwner() == currentPlayer){
-            return true;
-        }
-        h = getHexAtLocation(new Point(location.getX() + 1, location.getY() + 1));
-        if (h.getOwner() == currentPlayer){
-            return true;
+        for (Hexagon h : hexesInCirle(location, 1)){
+            if (h.getOwner() == currentPlayer){
+                return true;
+            }
         }
         return false;
     }

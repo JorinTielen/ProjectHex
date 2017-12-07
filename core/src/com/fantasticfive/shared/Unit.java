@@ -176,6 +176,10 @@ public class Unit implements Cloneable, Serializable {
         return texture;
     }
 
+    public void claimedLand(){
+        this.allowedToMove = 0;
+    }
+
     public void setColor(){
         texture.getTextureData().prepare();
         Pixmap pixmap = texture.getTextureData().consumePixmap();

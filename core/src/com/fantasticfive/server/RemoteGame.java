@@ -261,6 +261,8 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
                 h.setOwner(currentPlayer);
                 currentPlayer.addHexagon(h);
                 claimMountains(unit.getLocation());
+                Unit realUnit = getUnitAtLocation(unit.getLocation());
+                realUnit.claimedLand();
             }
         }
         version++;
@@ -268,37 +270,10 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
 
     //Checks if claimed land has any mountain next to it, if it does it claims it.
     private void claimMountains(Point location) {
-        Hexagon h = map.getHexAtLocation(new Point(location.getX() - 1, location.getY() - 1));
-        if (!h.hasOwner() && h.getIsMountain()) {
-            currentPlayer.addHexagon(h);
-        }
-        h = map.getHexAtLocation(new Point(location.getX() - 1, location.getY()));
-        if (!h.hasOwner() && h.getIsMountain()) {
-            currentPlayer.addHexagon(h);
-        }
-        h = map.getHexAtLocation(new Point(location.getX() - 1, location.getY() + 1));
-        if (!h.hasOwner() && h.getIsMountain()) {
-            currentPlayer.addHexagon(h);
-        }
-        h = map.getHexAtLocation(new Point(location.getX(), location.getY() - 1));
-        if (!h.hasOwner() && h.getIsMountain()) {
-            currentPlayer.addHexagon(h);
-        }
-        h = map.getHexAtLocation(new Point(location.getX(), location.getY() + 1));
-        if (!h.hasOwner() && h.getIsMountain()) {
-            currentPlayer.addHexagon(h);
-        }
-        h = map.getHexAtLocation(new Point(location.getX() + 1, location.getY() - 1));
-        if (!h.hasOwner() && h.getIsMountain()) {
-            currentPlayer.addHexagon(h);
-        }
-        h = map.getHexAtLocation(new Point(location.getX() + 1, location.getY()));
-        if (!h.hasOwner() && h.getIsMountain()) {
-            currentPlayer.addHexagon(h);
-        }
-        h = map.getHexAtLocation(new Point(location.getX() + 1, location.getY() + 1));
-        if (!h.hasOwner() && h.getIsMountain()) {
-            currentPlayer.addHexagon(h);
+        for (Hexagon h : map.hexesInCirle(location, 1)){
+            if(!h.hasOwner() && h.getIsMountain()){
+                currentPlayer.addHexagon(h);
+            }
         }
         version++;
     }

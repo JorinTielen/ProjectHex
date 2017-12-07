@@ -19,6 +19,7 @@ import com.fantasticfive.projecthex.SpriteAnimation;
 import com.fantasticfive.projecthex.tables.*;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.enums.BuildingType;
+import com.fantasticfive.shared.enums.UnitType;
 
 import java.rmi.RemoteException;
 import java.util.logging.Level;
@@ -55,6 +56,7 @@ public class GameScreen implements Screen {
     private Table unitSellTable;
     private Table buildingSellTable;
     private Table optionsTable;
+    private Table unitScoutTable;
     private Building buildingToBuild;
 
     public GameScreen(final GameMain game, LocalGame localGame) {
@@ -102,6 +104,11 @@ public class GameScreen implements Screen {
         createUnitSellUI();
         if (unitSellTable != null) {
             table.addActor(unitSellTable);
+        }
+
+        createUnitScoutUI();
+        if (unitScoutTable != null){
+            table.addActor(unitScoutTable);
         }
 
         createBuildingSellUI();
@@ -331,9 +338,15 @@ public class GameScreen implements Screen {
                     Unit u;
                     u = localGame.getUnitOnHex(hex);
                     if (u != null) {
-                        if (u.getOwner() == localGame.getThisPlayer())
-                            showUnitSellUI(x, y, u);
-                        LOGGER.info("You clicked on a unit!");
+                        if (u.getOwner() == localGame.getThisPlayer()){
+                            if (u.getUnitType() == UnitType.SCOUT){
+                                showUnitScoutUI(x, y, u);
+                            }
+                            else {
+                                showUnitSellUI(x, y, u);
+                            }
+                            LOGGER.info("You clicked on a unit!");
+                        }
                     }
                 }
             }
@@ -429,6 +442,17 @@ public class GameScreen implements Screen {
         unitSellTable.setPosition(x, Gdx.graphics.getHeight() - y);
         unitSellTable.setVisible(true);
     }
+
+    private void createUnitScoutUI() {
+        unitScoutTable = new UnitScoutTable(localGame, skin);
+    }
+
+    private void showUnitScoutUI(float x, float y, Unit unit) {
+        ((UnitScoutTable) unitScoutTable).setUnit(unit);
+        unitScoutTable.setPosition(x, Gdx.graphics.getHeight() - y);
+        unitScoutTable.setVisible(true);
+    }
+
 
     // ====================
     //  Building UI
