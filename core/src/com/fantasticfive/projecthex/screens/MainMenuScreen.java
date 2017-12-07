@@ -34,6 +34,8 @@ import java.util.*;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
+
 public class MainMenuScreen implements Screen {
 
     private static final Logger LOGGER = Logger.getLogger(MainMenuScreen.class.getName());
@@ -56,8 +58,8 @@ public class MainMenuScreen implements Screen {
     private SpriteBatch menuBatch = new SpriteBatch();
 
     Texture title = new Texture("title.png");
-
     Texture titleStart = new Texture("titleStart.png");
+    Texture titleCopyright = new Texture("titleCopyright.png");
 
     private Music menuMusic;
 
@@ -65,6 +67,7 @@ public class MainMenuScreen implements Screen {
     private GameSelectTable gameSelectTable;
     private CreateServerTable createServerTable;
     private JoinServerTable joinServerTable;
+    private OptionsTable optionsTable;
 
     private Random random = new Random();
     private float screenWidth = Gdx.graphics.getWidth();
@@ -80,7 +83,7 @@ public class MainMenuScreen implements Screen {
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, screenWidth * camZoom, screenHeight * camZoom);
-           camera.translate(new Vector2(1250, 0));
+        camera.translate(new Vector2(1500, 50));
 
         //Setup UI
         skin = new Skin(Gdx.files.internal("uiskin.json"));
@@ -94,12 +97,8 @@ public class MainMenuScreen implements Screen {
         //Create map
         map = new Map(mapWidth, mapHeight);
         map.setTextures();
-        Vector2 vec1 = map.getHexAtLocation(new Point(0, 0)).getPos();
-        System.out.println(vec1.x + " " + vec1.y);
-        Vector2 vec2 = map.getHexAtLocation(new Point(0, 1)).getPos();
-        System.out.println(vec2.x + " " + vec2.y);
-        Vector2 vec3 = map.getHexAtLocation(new Point(0, 2)).getPos();
-        System.out.println(vec3.x + " " + vec3.y);
+
+        startMusic();
 
         createPlayers();
 
@@ -107,11 +106,13 @@ public class MainMenuScreen implements Screen {
 
         createUIElements();
 
-        startMusic();
+
     }
 
     @Override
     public void show() {
+        stage.getRoot().getColor().a = 0;
+        stage.getRoot().addAction(fadeIn(0.5f));
     }
 
     @Override
@@ -123,7 +124,8 @@ public class MainMenuScreen implements Screen {
         //Move camera
 
         Vector2 camVec = new Vector2(camera.position.x - screenWidth, camera.position.y - screenHeight);
-        if (camVec.y >= map.getHexAtLocation(new Point(mapHeight - 1, 0)).getPos().y - (screenHeight * camZoom)) cameraUp = false;
+        if (camVec.y >= map.getHexAtLocation(new Point(mapHeight - 1, 0)).getPos().y - (screenHeight * camZoom))
+            cameraUp = false;
         if (camVec.y <= map.getHexAtLocation(new Point(0, 0)).getPos().y) cameraUp = true;
 
         if (cameraUp) {
@@ -155,7 +157,7 @@ public class MainMenuScreen implements Screen {
         }
         game.getBatch().end();
 
-        createMenuBatch();
+        drawMenuBatch();
 
         if (Gdx.input.isTouched() && startScreen) {
             startScreen = false;
@@ -193,12 +195,26 @@ public class MainMenuScreen implements Screen {
         menuMusic = Gdx.audio.newMusic(new FileHandle("menuMusic.ogg"));
         menuMusic.setLooping(true);
         menuMusic.play();
+        // menuMusic.setVolume(0); //Comment if you want to turn off music
+    }
+
+    private void drawMenuBatch() {
+        menuBatch.begin();
+
+
+        menuBatch.draw(title, (screenWidth / 2) - (title.getWidth() / 2), screenHeight / 100 * 80);
+        menuBatch.draw(titleCopyright, 10, 10, resizeImage(titleCopyright.getWidth()), resizeImage(titleCopyright.getHeight()));
+        if (startScreen) {
+            menuBatch.draw(titleStart, (screenWidth / 2) - (titleStart.getWidth() / 2), screenHeight / 100 * 40);
+        }
+        menuBatch.end();
     }
 
     private void createUIElements() {
         gameSelectTable = new GameSelectTable();
         createServerTable = new CreateServerTable();
         joinServerTable = new JoinServerTable();
+        optionsTable = new OptionsTable();
 
         if (gameSelectTable != null) {
             table.addActor(gameSelectTable);
@@ -214,17 +230,11 @@ public class MainMenuScreen implements Screen {
             table.addActor(joinServerTable);
             joinServerTable.setVisible(false);
         }
-    }
 
-    private void createMenuBatch() {
-        menuBatch.begin();
-
-
-        menuBatch.draw(title, (screenWidth / 2) - (title.getWidth() / 2), screenHeight / 100 * 80);
-        if (startScreen) {
-            menuBatch.draw(titleStart, (screenWidth / 2) - (titleStart.getWidth() / 2), screenHeight / 100 * 40);
+        if (optionsTable != null) {
+            table.addActor(optionsTable);
+            optionsTable.setVisible(false);
         }
-        menuBatch.end();
     }
 
     private void createTimer() {
@@ -327,6 +337,10 @@ public class MainMenuScreen implements Screen {
         dispose();
     }
 
+    private float resizeImage(float originalSize) {
+        return originalSize / 1080 * screenHeight;
+    }
+
     private class GameSelectTable extends Table {
         private Table t;
         private float collumnWidth = screenWidth / 100 * 25;
@@ -339,11 +353,15 @@ public class MainMenuScreen implements Screen {
 
             final TextButton btnJoinServer = new TextButton("Join Server", skin);
 
+            final TextButton btnOptions = new TextButton("Options", skin);
+
             final TextButton btnExitGame = new TextButton("Exit", skin);
 
             t.add(btnCreateServer).width(collumnWidth).height(collumnHeight).pad(5);
             t.row();
             t.add(btnJoinServer).width(collumnWidth).height(collumnHeight).pad(5);
+            t.row();
+            t.add(btnOptions).width(collumnWidth).height(collumnHeight).pad(5);
             t.row();
             t.add(btnExitGame).width(collumnWidth).height(collumnHeight).pad(5);
             t.row();
@@ -375,6 +393,14 @@ public class MainMenuScreen implements Screen {
                 public void changed(ChangeEvent event, Actor actor) {
                     gameSelectTable.setVisible(false);
                     joinServerTable.setVisible(true);
+                }
+            });
+
+            btnOptions.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    gameSelectTable.setVisible(false);
+                    optionsTable.setVisible(true);
                 }
             });
 
@@ -502,4 +528,48 @@ public class MainMenuScreen implements Screen {
             addActor(t);
         }
     }
+
+    private class OptionsTable extends Table {
+        private Table t;
+        private float collumnWidth = screenWidth / 100 * 25;
+        private float collumnHeight = screenHeight / 100 * 6;
+
+        public OptionsTable() {
+            t = new Table();
+
+            final Slider sliderMusic = new Slider(0, 1, 0.01f, false, skin);
+            sliderMusic.setValue(menuMusic.getVolume());
+            Label musicLabel = new Label(Float.toString(sliderMusic.getValue() * 100), skin);
+
+            final TextButton btnBack = new TextButton("Back to menu", skin);
+
+            t.add(new Label("Music: ", skin));
+            t.add(sliderMusic).width(collumnWidth).height(collumnHeight).pad(5);
+            //  t.add(musicLabel);
+            t.row();
+            t.add(btnBack).height(collumnHeight).width(collumnWidth / 2).colspan(2).pad(5);
+            t.row();
+
+            t.setPosition(screenWidth / 2, screenHeight / 2);
+
+            sliderMusic.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    menuMusic.setVolume(sliderMusic.getValue());
+                    musicLabel.setText(Float.toString(sliderMusic.getValue() * 100));
+                }
+            });
+
+            btnBack.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    optionsTable.setVisible(false);
+                    gameSelectTable.setVisible(true);
+                }
+            });
+
+            addActor(t);
+        }
+    }
+
 }
