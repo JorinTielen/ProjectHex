@@ -28,6 +28,10 @@ import com.fantasticfive.shared.enums.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
@@ -533,6 +537,10 @@ public class MainMenuScreen implements Screen {
         private float collumnWidth = screenWidth / 100 * 25;
         private float collumnHeight = screenHeight / 100 * 6;
 
+        private Properties prop = new Properties();
+        private InputStream input;
+        private OutputStream out;
+
         public OptionsTable() {
             t = new Table();
 
@@ -550,13 +558,31 @@ public class MainMenuScreen implements Screen {
 
             final TextButton btnBack = new TextButton("Back to menu", skin);
 
+            try {
+                input = new FileInputStream("options.properties");
+                prop.load(input);
+                String propResolution = String.valueOf((int)screenWidth + "x" + (int)screenHeight);
+                System.out.println(propResolution);
+                for (int i = 0; i < resolutions.length; i++) {
+                    if (resolutions[i].equals(propResolution)) {
+                         selectResolution.setSelectedIndex(i);
+                    }
+                }
+                checkFullScreen.setChecked(Boolean.valueOf(prop.getProperty("fullscreen")));
+                sliderMusic.setValue(Float.valueOf(prop.getProperty("musicvolume")));
+                musicLabel.setText(String.format("%.0f", (sliderMusic.getValue() * 100)));
+                input.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             t.add(new Label("Resolution: ", skin));
             t.add(selectResolution);
             t.add(checkFullScreen);
             t.row();
             t.add(new Label("Music: ", skin));
             t.add(sliderMusic).width(collumnWidth).height(collumnHeight).pad(5);
-            //  t.add(musicLabel);
+            t.add(musicLabel);
             t.row();
             t.add(btnApplyChanges).height(collumnHeight).width(collumnWidth / 2).pad(5);
             t.add(btnBack).height(collumnHeight).width(collumnWidth / 2).pad(5);
@@ -568,18 +594,35 @@ public class MainMenuScreen implements Screen {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     menuMusic.setVolume(sliderMusic.getValue());
-                    musicLabel.setText(Float.toString(sliderMusic.getValue() * 100));
+                    musicLabel.setText(String.format("%.0f", (sliderMusic.getValue() * 100)));
                 }
             });
 
             btnApplyChanges.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    String resolution = (String)selectResolution.getSelected();
+                    String resolution = (String) selectResolution.getSelected();
                     String[] resolutionParts = resolution.split("x");
-                    Gdx.graphics.setWindowedMode(Integer.valueOf(resolutionParts[0]), Integer.valueOf(resolutionParts[1]));
                     if (checkFullScreen.isChecked()) {
-                        Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());}
+                        Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+                        resolution = String.valueOf(Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight());
+                    }
+                    else{
+                        Gdx.graphics.setWindowedMode(Integer.valueOf(resolutionParts[0]), Integer.valueOf(resolutionParts[1]));
+                    }
+
+                    try{
+                        out = new FileOutputStream("options.properties");
+                        prop.setProperty("resolution", resolution);
+                        prop.setProperty("fullscreen", String.valueOf(checkFullScreen.isChecked()));
+                        prop.setProperty("musicvolume", String.valueOf(sliderMusic.getValue()));
+                        prop.store(out, "");
+                        input.close();
+                    }
+                    catch(Exception e){
+                        e.printStackTrace();
+                    }
+
                     game.setScreen(new MainMenuScreen(game));
                 }
             });
