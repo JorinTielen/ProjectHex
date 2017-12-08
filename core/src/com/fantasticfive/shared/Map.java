@@ -57,7 +57,7 @@ public class Map implements Serializable {
     }
 
     public boolean isWithinAttackRange(Unit u, Point location) {
-        List<Hexagon> movableHexes = hexesInCirle(u.getLocation(), u.getAttackRange());
+        List<Hexagon> movableHexes = hexesInCirle(u.getLocation(), u.getAttackRangeLeft());
         for (Hexagon hex : movableHexes) {
             if(hex.getLocation().equals(location)) {
                 return true;

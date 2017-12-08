@@ -16,7 +16,6 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     private static final Logger LOGGER = Logger.getLogger(RemoteGame.class.getName());
 
     private int version = 0;
-    private boolean ready;
     private List<Player> players = new ArrayList<>();
     private Player currentPlayer;
     private Map map;
@@ -35,7 +34,6 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     RemoteGame(int portNumber) throws RemoteException {
         RemoteSetup(portNumber);
         map = new Map(20, 10);
-        ready = true;
     }
 
     private void RemoteSetup(int portNumber) {
@@ -323,12 +321,13 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     public void attackBuilding(Unit unit, Building building) {
         if (unit != null && building != null) {
             if (map.isWithinAttackRange(unit, building.getLocation())) {
-                if (unit.attack(building)) {
-                    Player enemy = building.getOwner();
-                    enemy.destroyBuilding(building);
-                    //enemy.removeBuilding(building); //TODO test if can be deleted
+                Unit realUnit = getUnitAtLocation(unit.getLocation());
+                Building realBuilding = getBuildingAtLocation(building.getLocation());
+                if (realUnit.attack(realBuilding)) {
+                    Player enemy = realBuilding.getOwner();
+                    enemy.destroyBuilding(realBuilding);
+                    enemy.removeBuilding(realBuilding);
                     if (building instanceof TownCentre) {
-                        enemy.destroyBuilding(building);
                         removePlayer(enemy);
                     }
                 }
