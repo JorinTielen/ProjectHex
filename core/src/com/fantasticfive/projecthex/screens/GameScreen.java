@@ -56,6 +56,7 @@ public class GameScreen implements Screen {
     private Table unitSellTable;
     private Table buildingSellTable;
     private Table optionsTable;
+    private Table playerWinTable;
     private Table unitScoutTable;
     private Building buildingToBuild;
 
@@ -119,6 +120,11 @@ public class GameScreen implements Screen {
         createOptionsUI();
         if (optionsTable != null) {
             table.addActor(optionsTable);
+        }
+
+        createPlayerWinUI();
+        if(playerWinTable != null) {
+            table.add(playerWinTable);
         }
 
         //Input processor
@@ -233,6 +239,10 @@ public class GameScreen implements Screen {
                     batch.draw(fogNeighbourTexture, h.getPos().x, h.getPos().y);
                 }
             }
+        }
+
+        if(localGame.lastPlayer()) {
+            showPlayerWinUI();
         }
 
         batch.end();
@@ -489,6 +499,24 @@ public class GameScreen implements Screen {
     // ====================
     private void createOptionsUI() {
         optionsTable = new OptionsTable(localGame, skin);
+    }
+
+    // ====================
+    //  Player won UI
+    //  (Shows which player has won the game)
+    // ====================
+    private void createPlayerWinUI() {
+        try {
+            playerWinTable = new PlayerWinTable(localGame, skin);
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL, e.getMessage());
+        }
+    }
+
+    private void showPlayerWinUI() {
+        playerWinTable.setPosition(Gdx.graphics.getWidth()/2 - playerWinTable.getWidth()/2,
+                Gdx.graphics.getHeight()/2 - playerWinTable.getHeight()/2);
+        playerWinTable.setVisible(true);
     }
 
     private void createSkin() {

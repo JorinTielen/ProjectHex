@@ -56,6 +56,12 @@ public interface IRemoteGame extends Remote {
      */
     Player getCurrentPlayer() throws RemoteException;
 
+    /**
+     * Check if there is only one player left
+     * @throws RemoteException when RMI breaks.
+     */
+    boolean lastPlayer() throws RemoteException;
+
     //UNITS
 
     /**

@@ -323,4 +323,13 @@ public class LocalGame {
             System.exit(0);
         }
     }
+
+    public boolean lastPlayer() {
+        try {
+            return remoteGame.lastPlayer() && remoteGame.getVersion()!=1;
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL,e.getMessage());
+        }
+        return false;
+    }
 }
