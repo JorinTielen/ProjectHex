@@ -1,6 +1,7 @@
 package com.fantasticfive.projecthex.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
@@ -23,7 +24,6 @@ import com.fantasticfive.shared.enums.Color;
 import com.fantasticfive.shared.enums.UnitType;
 import com.fantasticfive.shared.Point;
 import com.fantasticfive.shared.enums.*;
-import com.fantasticfive.shared.enums.Color;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -33,8 +33,6 @@ import java.net.UnknownHostException;
 import java.util.*;
 import java.util.List;
 import java.util.logging.Logger;
-
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
 
 public class MainMenuScreen implements Screen {
 
@@ -83,7 +81,7 @@ public class MainMenuScreen implements Screen {
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, screenWidth * camZoom, screenHeight * camZoom);
-        camera.translate(new Vector2(1500, 50));
+        camera.translate(new Vector2(screenWidth, 100));
 
         //Setup UI
         skin = new Skin(Gdx.files.internal("uiskin.json"));
@@ -105,14 +103,10 @@ public class MainMenuScreen implements Screen {
         createTimer();
 
         createUIElements();
-
-
     }
 
     @Override
     public void show() {
-        stage.getRoot().getColor().a = 0;
-        stage.getRoot().addAction(fadeIn(0.5f));
     }
 
     @Override
@@ -128,10 +122,13 @@ public class MainMenuScreen implements Screen {
             cameraUp = false;
         if (camVec.y <= map.getHexAtLocation(new Point(0, 0)).getPos().y) cameraUp = true;
 
+        float xMovement = 0.75f;
+        float yMovement = 1f;
+
         if (cameraUp) {
-            camera.translate(new Vector2(0.75f, 1));
+            camera.translate(new Vector2(xMovement, yMovement));
         } else {
-            camera.translate(new Vector2(-0.75f, -1));
+            camera.translate(new Vector2(-xMovement, -yMovement));
         }
         camera.update();
         game.getBatch().setProjectionMatrix(camera.combined);
@@ -170,6 +167,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
+
     }
 
     @Override
@@ -208,6 +206,7 @@ public class MainMenuScreen implements Screen {
             menuBatch.draw(titleStart, (screenWidth / 2) - (titleStart.getWidth() / 2), screenHeight / 100 * 40);
         }
         menuBatch.end();
+
     }
 
     private void createUIElements() {
@@ -537,17 +536,30 @@ public class MainMenuScreen implements Screen {
         public OptionsTable() {
             t = new Table();
 
+            final SelectBox selectResolution = new SelectBox(skin);
+            String[] resolutions = new String[]{"1920x1080", "1600x900", "1280x720"};
+            selectResolution.setItems(resolutions);
+
+            final CheckBox checkFullScreen = new CheckBox("Fullscreen", skin);
+
             final Slider sliderMusic = new Slider(0, 1, 0.01f, false, skin);
             sliderMusic.setValue(menuMusic.getVolume());
             Label musicLabel = new Label(Float.toString(sliderMusic.getValue() * 100), skin);
 
+            final TextButton btnApplyChanges = new TextButton("Apply changes", skin);
+
             final TextButton btnBack = new TextButton("Back to menu", skin);
 
+            t.add(new Label("Resolution: ", skin));
+            t.add(selectResolution);
+            t.add(checkFullScreen);
+            t.row();
             t.add(new Label("Music: ", skin));
             t.add(sliderMusic).width(collumnWidth).height(collumnHeight).pad(5);
             //  t.add(musicLabel);
             t.row();
-            t.add(btnBack).height(collumnHeight).width(collumnWidth / 2).colspan(2).pad(5);
+            t.add(btnApplyChanges).height(collumnHeight).width(collumnWidth / 2).pad(5);
+            t.add(btnBack).height(collumnHeight).width(collumnWidth / 2).pad(5);
             t.row();
 
             t.setPosition(screenWidth / 2, screenHeight / 2);
@@ -557,6 +569,18 @@ public class MainMenuScreen implements Screen {
                 public void changed(ChangeEvent event, Actor actor) {
                     menuMusic.setVolume(sliderMusic.getValue());
                     musicLabel.setText(Float.toString(sliderMusic.getValue() * 100));
+                }
+            });
+
+            btnApplyChanges.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    String resolution = (String)selectResolution.getSelected();
+                    String[] resolutionParts = resolution.split("x");
+                    Gdx.graphics.setWindowedMode(Integer.valueOf(resolutionParts[0]), Integer.valueOf(resolutionParts[1]));
+                    if (checkFullScreen.isChecked()) {
+                        Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());}
+                    game.setScreen(new MainMenuScreen(game));
                 }
             });
 
