@@ -27,6 +27,8 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     private BuildingFactory buildingFactory = new BuildingFactory();
     private UnitFactory unitFactory = new UnitFactory();
 
+    private boolean gameHasHadMultiplePlayers = false;
+
     private Registry registry;
     private static final String bindingName = "ProjectHex";
 
@@ -385,5 +387,17 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         return (hex.getObjectType() == ObjectType.MOUNTAIN
                 && getBuildingAtLocation(location) == null
                 && hex.getGroundType() != GroundType.WATER);
+    }
+
+    public boolean lastPlayer() throws RemoteException {
+        if(players.size() > 1) {
+            gameHasHadMultiplePlayers = true;
+        }
+        if(gameHasHadMultiplePlayers) {
+            if (players.size() == 1) {
+                return true;
+            }
+        }
+        return false;
     }
 }
