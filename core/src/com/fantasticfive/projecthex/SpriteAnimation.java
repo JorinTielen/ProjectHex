@@ -14,6 +14,7 @@ public class SpriteAnimation {
     private int totalCount;
     private boolean active;
     private Point location;
+    private int loopValue;
 
     public SpriteAnimation(String spriteName, Point location){
         this.spriteName = spriteName;
@@ -23,6 +24,7 @@ public class SpriteAnimation {
         this.totalAnimationFrames = 0;
         this.active = true;
         this.location = location;
+        loopValue = 3;
     }
 
     //Animates seperate images from a gif by changing image every other frame.
@@ -43,7 +45,7 @@ public class SpriteAnimation {
         }
         totalCount++;
         frame++;
-        if (totalCount >= totalAnimationFrames * 3 && totalAnimationFrames != 0){
+        if (totalCount >= totalAnimationFrames * loopValue && totalAnimationFrames != 0){
             sprite.dispose();
             active = false;
             return false;
