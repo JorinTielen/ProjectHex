@@ -134,6 +134,18 @@ public class Unit implements Cloneable, Serializable {
         return this.unitType;
     }
 
+    public Boolean getSelected() {
+        return isSelected;
+    }
+
+    public int getMovementLeft() {
+        return this.allowedToMove;
+    }
+
+    public int getAttackRange(){
+        return attackRange;
+    }
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
@@ -147,14 +159,6 @@ public class Unit implements Cloneable, Serializable {
             LOGGER.info("Unit selected");
             isSelected = true;
         }
-    }
-
-    public Boolean getSelected() {
-        return isSelected;
-    }
-
-    public int getMovementLeft() {
-        return this.allowedToMove;
     }
 
     public void setTexture() {

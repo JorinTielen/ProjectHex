@@ -56,6 +56,16 @@ public class Map implements Serializable {
         return false;
     }
 
+    public boolean isWithinAttackRange(Unit u, Point location) {
+        List<Hexagon> movableHexes = hexesInCirle(u.getLocation(), u.getAttackRange());
+        for (Hexagon hex : movableHexes) {
+            if(hex.getLocation().equals(location)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public List<Hexagon> hexesInCirle(Point location, int radius) {
         List<Hexagon> results = new ArrayList<>();
         for (Hexagon hex : hexagons) {
