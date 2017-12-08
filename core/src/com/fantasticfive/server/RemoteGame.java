@@ -232,7 +232,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
 
     @Override
     public void attackUnit(Unit attacker, Unit defender) {
-        if (map.canMoveTo(attacker, defender.getLocation())) {
+        if (map.isWithinAttackRange(attacker, defender.getLocation())) {
             Unit realAttacker = getUnitAtLocation(attacker.getLocation());
             Unit realDefender = getUnitAtLocation(defender.getLocation());
             realAttacker.attack(realDefender);
@@ -270,8 +270,8 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
 
     //Checks if claimed land has any mountain next to it, if it does it claims it.
     private void claimMountains(Point location) {
-        for (Hexagon h : map.hexesInCirle(location, 1)){
-            if(!h.hasOwner() && h.getIsMountain()){
+        for (Hexagon h : map.hexesInCirle(location, 1)) {
+            if (!h.hasOwner() && h.getIsMountain()) {
                 currentPlayer.addHexagon(h);
             }
         }
@@ -320,16 +320,19 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     @Override
     public void attackBuilding(Unit unit, Building building) {
         if (unit != null && building != null) {
-            if (unit.attack(building)) {
-                Player enemy = building.getOwner();
-                enemy.destroyBuilding(building);
-                //enemy.removeBuilding(building); //TODO test if can be deleted
-                if (building instanceof TownCentre) {
+            if (map.isWithinAttackRange(unit, building.getLocation())) {
+                if (unit.attack(building)) {
+                    Player enemy = building.getOwner();
                     enemy.destroyBuilding(building);
-                    removePlayer(enemy);
+                    //enemy.removeBuilding(building); //TODO test if can be deleted
+                    if (building instanceof TownCentre) {
+                        enemy.destroyBuilding(building);
+                        removePlayer(enemy);
+                    }
                 }
             }
         }
+        version++;
     }
 
     @Override
