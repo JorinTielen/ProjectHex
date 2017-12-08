@@ -1,5 +1,6 @@
 package com.fantasticfive.projecthex.tables;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -14,27 +15,25 @@ public class PlayerWinTable extends Table {
     private Table t;
     private Label l;
 
-    final private LocalGame game;
-    private Skin skin;
-
-    public PlayerWinTable(LocalGame game, Skin skin) throws RemoteException {
+    public PlayerWinTable(Skin skin) {
         setVisible(false);
 
-        this.game = game;
-        this.skin = skin;
-
         t = new Table();
-        Player winner = game.getPlayers().get(0);
-        l = new Label(winner.getUsername() + " has won the game!", skin);
+        l = new Label("", skin);
+
+        t.add(l);
+
+        addActor(t);
+    }
+
+    public void setEndGameLabel(LocalGame game) {
+        Player winner = game.getCurrentPlayer();
+        l.setText(winner.getUsername() + " has won the game!");
+
         if(winner.getUsername().equals(game.getThisPlayer().getUsername())) {
             l.setColor(Color.GREEN);
         } else {
             l.setColor(Color.RED);
         }
-        t.add(l);
-        t.row();
-
-        addActor(t);
     }
-
 }

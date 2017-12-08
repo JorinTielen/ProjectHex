@@ -94,7 +94,9 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     public void leaveGame(int playerId) {
         for (Player p : players) {
             if (playerId == p.getId()) {
-                endTurn(playerId);
+                if (playerId == currentPlayer.getId()){
+                    endTurn(playerId);
+                }
                 players.remove(p);
                 break;
             }
@@ -388,7 +390,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
                 && hex.getGroundType() != GroundType.WATER);
     }
 
-    public boolean lastPlayer() throws RemoteException {
+    public boolean lastPlayer() {
         if(players.size() > 1) {
             gameHasHadMultiplePlayers = true;
         }

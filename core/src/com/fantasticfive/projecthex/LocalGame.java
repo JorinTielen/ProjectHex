@@ -122,6 +122,15 @@ public class LocalGame {
         return thisPlayer;
     }
 
+    public Player getCurrentPlayer(){
+        try {
+            return remoteGame.getCurrentPlayer();
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL, e.getMessage());
+        }
+        return null;
+    }
+
     public List<Player> getPlayers() {
         return Collections.unmodifiableList(players);
     }

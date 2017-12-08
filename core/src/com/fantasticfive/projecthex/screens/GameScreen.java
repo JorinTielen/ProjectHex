@@ -108,7 +108,7 @@ public class GameScreen implements Screen {
         }
 
         createUnitScoutUI();
-        if (unitScoutTable != null){
+        if (unitScoutTable != null) {
             table.addActor(unitScoutTable);
         }
 
@@ -123,7 +123,7 @@ public class GameScreen implements Screen {
         }
 
         createPlayerWinUI();
-        if(playerWinTable != null) {
+        if (playerWinTable != null) {
             table.add(playerWinTable);
         }
 
@@ -230,18 +230,17 @@ public class GameScreen implements Screen {
         }
 
         //draw fog of war
-        if (localGame.getFog() != null){
-            for (Hexagon h : map.getHexagons()){
-                if (!localGame.getFog().isVisisted(h) && !localGame.getFog().isNeighbour(h)){
+        if (localGame.getFog() != null) {
+            for (Hexagon h : map.getHexagons()) {
+                if (!localGame.getFog().isVisisted(h) && !localGame.getFog().isNeighbour(h)) {
                     batch.draw(fogTexture, h.getPos().x, h.getPos().y);
-                }
-                else if (localGame.getFog().isNeighbour(h)){
+                } else if (localGame.getFog().isNeighbour(h)) {
                     batch.draw(fogNeighbourTexture, h.getPos().x, h.getPos().y);
                 }
             }
         }
 
-        if(localGame.lastPlayer()) {
+        if (localGame.lastPlayer()) {
             showPlayerWinUI();
         }
 
@@ -348,11 +347,10 @@ public class GameScreen implements Screen {
                     Unit u;
                     u = localGame.getUnitOnHex(hex);
                     if (u != null) {
-                        if (u.getOwner() == localGame.getThisPlayer()){
-                            if (u.getUnitType() == UnitType.SCOUT){
+                        if (u.getOwner() == localGame.getThisPlayer()) {
+                            if (u.getUnitType() == UnitType.SCOUT) {
                                 showUnitScoutUI(x, y, u);
-                            }
-                            else {
+                            } else {
                                 showUnitSellUI(x, y, u);
                             }
                             LOGGER.info("You clicked on a unit!");
@@ -506,17 +504,14 @@ public class GameScreen implements Screen {
     //  (Shows which player has won the game)
     // ====================
     private void createPlayerWinUI() {
-        try {
-            playerWinTable = new PlayerWinTable(localGame, skin);
-        } catch (RemoteException e) {
-            LOGGER.log(Level.ALL, e.getMessage());
-        }
+        playerWinTable = new PlayerWinTable(skin);
     }
 
     private void showPlayerWinUI() {
-        playerWinTable.setPosition(Gdx.graphics.getWidth()/2 - playerWinTable.getWidth()/2,
-                Gdx.graphics.getHeight()/2 - playerWinTable.getHeight()/2);
+        playerWinTable.setPosition(Gdx.graphics.getWidth() / 2 - playerWinTable.getWidth() / 2,
+                Gdx.graphics.getHeight() / 2 - playerWinTable.getHeight() / 2);
         playerWinTable.setVisible(true);
+        ((PlayerWinTable)playerWinTable).setEndGameLabel(localGame);
     }
 
     private void createSkin() {
