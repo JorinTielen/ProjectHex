@@ -177,10 +177,6 @@ public class Player implements Serializable {
         hexagon.setOwner(this);
     }
 
-    public void removeHexagon(Hexagon hexagon) {
-        this.hexagons.remove(hexagon);
-    }
-
     public void endTurn() {
         //Set unit fields back to normal
         for (Unit u : units) {

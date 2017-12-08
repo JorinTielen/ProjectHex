@@ -135,7 +135,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         Player p = new Player(username, color, id);
 
         Point location;
-        int distance = 999;
+        int distance;
         do {
             location = map.randomPoint();
             distance = 999;
