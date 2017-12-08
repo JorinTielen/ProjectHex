@@ -1,6 +1,9 @@
 package com.fantasticfive.projecthex;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.fantasticfive.shared.Building;
 import com.fantasticfive.shared.Point;
 
 public class SpriteAnimation {
@@ -24,13 +27,23 @@ public class SpriteAnimation {
 
     //Animates seperate images from a gif by changing image every other frame.
     public boolean animate(){
-        if (frame % 2 == 0){
-            sprite = new Texture(spriteName + frame + ".png");
-            totalCount++;
+        if (frame % 12 == 0 && totalAnimationFrames == 0){
+            try{
+                sprite = new Texture(spriteName + (frame / 12) + ".png");
+            }
+            catch (GdxRuntimeException e){
+                totalAnimationFrames = frame - 12;
+            }
         }
-        //catch exception where texture doesn't exist, set totalAnimationFrames to the frame.
+        else if (frame % 12 == 0){
+            if (frame > totalAnimationFrames){
+                frame = 0;
+            }
+            sprite = new Texture(spriteName + (frame / 12) + ".png");
+        }
+        totalCount++;
         frame++;
-        if (totalCount == totalAnimationFrames * 3){
+        if (totalCount >= totalAnimationFrames * 3 && totalAnimationFrames != 0){
             sprite.dispose();
             active = false;
             return false;
@@ -48,5 +61,18 @@ public class SpriteAnimation {
 
     public boolean getActive(){
         return this.active;
+    }
+
+    public Vector2 getPos() {
+        double height = 62 * 2;
+        double width = height;
+
+        double vert = height * 0.75f;
+        double horiz = width;
+
+        float x = (float) (horiz * (this.location.getY() + this.location.getX() / 2f));
+        float y = (float) (vert * this.location.getX());
+
+        return new Vector2(x, y);
     }
 }

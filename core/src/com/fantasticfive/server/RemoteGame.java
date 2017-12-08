@@ -328,7 +328,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
                 if (realUnit.attack(realBuilding)) {
                     Player enemy = realBuilding.getOwner();
                     enemy.destroyBuilding(realBuilding);
-                    enemy.removeBuilding(realBuilding);
+                    //enemy.removeBuilding(realBuilding);
                     if (building instanceof TownCentre) {
                         removePlayer(enemy);
                     }
@@ -348,6 +348,14 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
 
         }
         return null;
+    }
+
+    public void destroyBuilding(Building building){
+        Building realBuilding = getBuildingAtLocation(building.getLocation());
+        if (realBuilding != null){
+            realBuilding.getOwner().removeBuilding(realBuilding);
+        }
+        version++;
     }
 
     @Override

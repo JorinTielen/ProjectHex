@@ -188,9 +188,13 @@ public class GameScreen implements Screen {
                 batch.setColor(Color.GREEN);
                 batch.draw(blankTexture, h.getPos().x + 35, h.getPos().y + 100, (int) ((double) 50 * ((double) b.getHealth() / (double) b.getMaxHealth())), 5);
                 batch.setColor(Color.WHITE);
-                if (b.getDestroyed()) {
+                if (b.getDestroyed() && explosionAnimation == null) {
                     explosionAnimation = new SpriteAnimation("explosion", b.getLocation());
-                    b.getOwner().removeBuilding(b);
+                }
+                if (b.getDestroyed() && explosionAnimation != null){
+                    if (!explosionAnimation.getActive() && b.getLocation() != explosionAnimation.getLocation()){
+                        explosionAnimation = new SpriteAnimation("explosion", b.getLocation());
+                    }
                 }
             }
             for (Unit u : p.getUnits()) {
@@ -215,12 +219,17 @@ public class GameScreen implements Screen {
         }
 
         //draw explosion animation
-        /*if (explosionAnimation != null) {
+        if (explosionAnimation != null) {
             if (explosionAnimation.getActive()) {
-                explosionAnimation.animate();
-                batch.draw(explosionAnimation.getTexture(), explosionAnimation.getLocation().getX(), explosionAnimation.getLocation().getY());
+                batch.draw(explosionAnimation.getTexture(), explosionAnimation.getPos().x, explosionAnimation.getPos().y);
+                if (!explosionAnimation.animate()) {
+                    Building buildingToDestroy = localGame.getBuildingAtLocation(explosionAnimation.getLocation());
+                    if (buildingToDestroy != null){
+                        localGame.destroyBuilding(buildingToDestroy);
+                    }
+                }
             }
-        }*/
+        }
 
         //draw area where unit can walk
         if (localGame.getSelectedUnit() != null) {

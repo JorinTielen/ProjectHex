@@ -135,6 +135,14 @@ public interface IRemoteGame extends Remote {
      */
     Building getBuildingAtLocation(Point location) throws RemoteException;
 
+    /**
+     *
+     * @param building
+     * Removes the building at the location because it is destroyed.
+     * @throws RemoteException
+     */
+    void destroyBuilding(Building building) throws RemoteException;
+
     //MAP
 
     /**

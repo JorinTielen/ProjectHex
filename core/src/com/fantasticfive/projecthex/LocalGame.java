@@ -267,6 +267,14 @@ public class LocalGame {
         unit.setWalkableHexes(walkableHexes);
     }
 
+    public void destroyBuilding(Building building){
+        try {
+            remoteGame.destroyBuilding(building);
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL, e.getMessage());
+        }
+    }
+
     public boolean hexEmpty(Point location) {
         try {
             return remoteGame.hexEmpty(location);
