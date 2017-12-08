@@ -562,7 +562,6 @@ public class MainMenuScreen implements Screen {
                 input = new FileInputStream("options.properties");
                 prop.load(input);
                 String propResolution = String.valueOf((int)screenWidth + "x" + (int)screenHeight);
-                System.out.println(propResolution);
                 for (int i = 0; i < resolutions.length; i++) {
                     if (resolutions[i].equals(propResolution)) {
                          selectResolution.setSelectedIndex(i);
@@ -570,6 +569,7 @@ public class MainMenuScreen implements Screen {
                 }
                 checkFullScreen.setChecked(Boolean.valueOf(prop.getProperty("fullscreen")));
                 sliderMusic.setValue(Float.valueOf(prop.getProperty("musicvolume")));
+                menuMusic.setVolume(sliderMusic.getValue());
                 musicLabel.setText(String.format("%.0f", (sliderMusic.getValue() * 100)));
                 input.close();
             } catch (Exception e) {
@@ -622,8 +622,9 @@ public class MainMenuScreen implements Screen {
                     catch(Exception e){
                         e.printStackTrace();
                     }
-
+                    menuMusic.dispose();
                     game.setScreen(new MainMenuScreen(game));
+
                 }
             });
 
