@@ -56,6 +56,16 @@ public class Map implements Serializable {
         return false;
     }
 
+    public boolean isWithinAttackRange(Unit u, Point location) {
+        List<Hexagon> movableHexes = hexesInCirle(u.getLocation(), u.getAttackRangeLeft());
+        for (Hexagon hex : movableHexes) {
+            if(hex.getLocation().equals(location)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public List<Hexagon> hexesInCirle(Point location, int radius) {
         List<Hexagon> results = new ArrayList<>();
         for (Hexagon hex : hexagons) {
@@ -122,37 +132,10 @@ public class Map implements Serializable {
     }
 
     public boolean bordersOwnLand(Point location, Player currentPlayer) {
-        Hexagon h = getHexAtLocation(new Point(location.getX() - 1, location.getY() - 1));
-        if (h.getOwner() == currentPlayer){
-            return true;
-        }
-        h = getHexAtLocation(new Point(location.getX() - 1, location.getY() ));
-        if (h.getOwner() == currentPlayer){
-            return true;
-        }
-        h = getHexAtLocation(new Point(location.getX() - 1, location.getY() + 1));
-        if (h.getOwner() == currentPlayer){
-            return true;
-        }
-        h = getHexAtLocation(new Point(location.getX(), location.getY() - 1));
-        if (h.getOwner() == currentPlayer){
-            return true;
-        }
-        h = getHexAtLocation(new Point(location.getX(), location.getY() + 1));
-        if (h.getOwner() == currentPlayer){
-            return true;
-        }
-        h = getHexAtLocation(new Point(location.getX() + 1, location.getY() - 1));
-        if (h.getOwner() == currentPlayer){
-            return true;
-        }
-        h = getHexAtLocation(new Point(location.getX() + 1, location.getY()));
-        if (h.getOwner() == currentPlayer){
-            return true;
-        }
-        h = getHexAtLocation(new Point(location.getX() + 1, location.getY() + 1));
-        if (h.getOwner() == currentPlayer){
-            return true;
+        for (Hexagon h : hexesInCirle(location, 1)){
+            if (h.getOwner() == currentPlayer){
+                return true;
+            }
         }
         return false;
     }

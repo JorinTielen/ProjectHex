@@ -19,6 +19,7 @@ import com.fantasticfive.projecthex.SpriteAnimation;
 import com.fantasticfive.projecthex.tables.*;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.enums.BuildingType;
+import com.fantasticfive.shared.enums.UnitType;
 
 import java.rmi.RemoteException;
 import java.util.logging.Level;
@@ -55,6 +56,8 @@ public class GameScreen implements Screen {
     private Table unitSellTable;
     private Table buildingSellTable;
     private Table optionsTable;
+    private Table playerWinTable;
+    private Table unitScoutTable;
     private Building buildingToBuild;
 
     public GameScreen(final GameMain game, LocalGame localGame) {
@@ -104,6 +107,11 @@ public class GameScreen implements Screen {
             table.addActor(unitSellTable);
         }
 
+        createUnitScoutUI();
+        if (unitScoutTable != null) {
+            table.addActor(unitScoutTable);
+        }
+
         createBuildingSellUI();
         if (buildingSellTable != null) {
             table.addActor(buildingSellTable);
@@ -112,6 +120,11 @@ public class GameScreen implements Screen {
         createOptionsUI();
         if (optionsTable != null) {
             table.addActor(optionsTable);
+        }
+
+        createPlayerWinUI();
+        if (playerWinTable != null) {
+            table.add(playerWinTable);
         }
 
         //Input processor
@@ -175,9 +188,13 @@ public class GameScreen implements Screen {
                 batch.setColor(Color.GREEN);
                 batch.draw(blankTexture, h.getPos().x + 35, h.getPos().y + 100, (int) ((double) 50 * ((double) b.getHealth() / (double) b.getMaxHealth())), 5);
                 batch.setColor(Color.WHITE);
-                if (b.getDestroyed()) {
+                if (b.getDestroyed() && explosionAnimation == null) {
                     explosionAnimation = new SpriteAnimation("explosion", b.getLocation());
-                    b.getOwner().removeBuilding(b);
+                }
+                if (b.getDestroyed() && explosionAnimation != null){
+                    if (!explosionAnimation.getActive() && b.getLocation() != explosionAnimation.getLocation()){
+                        explosionAnimation = new SpriteAnimation("explosion", b.getLocation());
+                    }
                 }
             }
             for (Unit u : p.getUnits()) {
@@ -202,12 +219,17 @@ public class GameScreen implements Screen {
         }
 
         //draw explosion animation
-        /*if (explosionAnimation != null) {
+        if (explosionAnimation != null) {
             if (explosionAnimation.getActive()) {
-                explosionAnimation.animate();
-                batch.draw(explosionAnimation.getTexture(), explosionAnimation.getLocation().getX(), explosionAnimation.getLocation().getY());
+                batch.draw(explosionAnimation.getTexture(), explosionAnimation.getPos().x, explosionAnimation.getPos().y);
+                if (!explosionAnimation.animate()) {
+                    Building buildingToDestroy = localGame.getBuildingAtLocation(explosionAnimation.getLocation());
+                    if (buildingToDestroy != null){
+                        localGame.destroyBuilding(buildingToDestroy);
+                    }
+                }
             }
-        }*/
+        }
 
         //draw area where unit can walk
         if (localGame.getSelectedUnit() != null) {
@@ -217,15 +239,18 @@ public class GameScreen implements Screen {
         }
 
         //draw fog of war
-        if (localGame.getFog() != null){
-            for (Hexagon h : map.getHexagons()){
-                if (!localGame.getFog().isVisisted(h) && !localGame.getFog().isNeighbour(h)){
+        if (localGame.getFog() != null) {
+            for (Hexagon h : map.getHexagons()) {
+                if (!localGame.getFog().isVisisted(h) && !localGame.getFog().isNeighbour(h)) {
                     batch.draw(fogTexture, h.getPos().x, h.getPos().y);
-                }
-                else if (localGame.getFog().isNeighbour(h)){
+                } else if (localGame.getFog().isNeighbour(h)) {
                     batch.draw(fogNeighbourTexture, h.getPos().x, h.getPos().y);
                 }
             }
+        }
+
+        if (localGame.lastPlayer()) {
+            showPlayerWinUI();
         }
 
         batch.end();
@@ -331,9 +356,14 @@ public class GameScreen implements Screen {
                     Unit u;
                     u = localGame.getUnitOnHex(hex);
                     if (u != null) {
-                        if (u.getOwner() == localGame.getThisPlayer())
-                            showUnitSellUI(x, y, u);
-                        LOGGER.info("You clicked on a unit!");
+                        if (u.getOwner() == localGame.getThisPlayer()) {
+                            if (u.getUnitType() == UnitType.SCOUT) {
+                                showUnitScoutUI(x, y, u);
+                            } else {
+                                showUnitSellUI(x, y, u);
+                            }
+                            LOGGER.info("You clicked on a unit!");
+                        }
                     }
                 }
             }
@@ -430,6 +460,17 @@ public class GameScreen implements Screen {
         unitSellTable.setVisible(true);
     }
 
+    private void createUnitScoutUI() {
+        unitScoutTable = new UnitScoutTable(localGame, skin);
+    }
+
+    private void showUnitScoutUI(float x, float y, Unit unit) {
+        ((UnitScoutTable) unitScoutTable).setUnit(unit);
+        unitScoutTable.setPosition(x, Gdx.graphics.getHeight() - y);
+        unitScoutTable.setVisible(true);
+    }
+
+
     // ====================
     //  Building UI
     // ====================
@@ -465,6 +506,21 @@ public class GameScreen implements Screen {
     // ====================
     private void createOptionsUI() {
         optionsTable = new OptionsTable(localGame, skin);
+    }
+
+    // ====================
+    //  Player won UI
+    //  (Shows which player has won the game)
+    // ====================
+    private void createPlayerWinUI() {
+        playerWinTable = new PlayerWinTable(skin);
+    }
+
+    private void showPlayerWinUI() {
+        playerWinTable.setPosition(Gdx.graphics.getWidth() / 2 - playerWinTable.getWidth() / 2,
+                Gdx.graphics.getHeight() / 2 - playerWinTable.getHeight() / 2);
+        playerWinTable.setVisible(true);
+        ((PlayerWinTable)playerWinTable).setEndGameLabel(localGame);
     }
 
     private void createSkin() {

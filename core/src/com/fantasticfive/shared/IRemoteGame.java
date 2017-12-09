@@ -56,6 +56,12 @@ public interface IRemoteGame extends Remote {
      */
     Player getCurrentPlayer() throws RemoteException;
 
+    /**
+     * Check if there is only one player left
+     * @throws RemoteException when RMI breaks.
+     */
+    boolean lastPlayer() throws RemoteException;
+
     //UNITS
 
     /**
@@ -128,6 +134,14 @@ public interface IRemoteGame extends Remote {
      * @throws RemoteException when RMI breaks.
      */
     Building getBuildingAtLocation(Point location) throws RemoteException;
+
+    /**
+     *
+     * @param building
+     * Removes the building at the location because it is destroyed.
+     * @throws RemoteException
+     */
+    void destroyBuilding(Building building) throws RemoteException;
 
     //MAP
 

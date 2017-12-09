@@ -43,7 +43,7 @@ public class PlayerTable extends Table {
         }
         t.add(lCUser).width(100).pad(5);
 
-        t.setPosition(160, Gdx.graphics.getHeight() - 15);
+        t.setPosition(160, Gdx.graphics.getHeight() - 30);
 
         addActor(t);
     }

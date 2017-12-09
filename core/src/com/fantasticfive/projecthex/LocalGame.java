@@ -122,6 +122,15 @@ public class LocalGame {
         return thisPlayer;
     }
 
+    public Player getCurrentPlayer(){
+        try {
+            return remoteGame.getCurrentPlayer();
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL, e.getMessage());
+        }
+        return null;
+    }
+
     public List<Player> getPlayers() {
         return Collections.unmodifiableList(players);
     }
@@ -258,6 +267,14 @@ public class LocalGame {
         unit.setWalkableHexes(walkableHexes);
     }
 
+    public void destroyBuilding(Building building){
+        try {
+            remoteGame.destroyBuilding(building);
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL, e.getMessage());
+        }
+    }
+
     public boolean hexEmpty(Point location) {
         try {
             return remoteGame.hexEmpty(location);
@@ -322,5 +339,14 @@ public class LocalGame {
             LOGGER.info("Client: Something went wrong");
             System.exit(0);
         }
+    }
+
+    public boolean lastPlayer() {
+        try {
+            return remoteGame.lastPlayer() && remoteGame.getVersion()!=1;
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL,e.getMessage());
+        }
+        return false;
     }
 }

@@ -1,6 +1,7 @@
 package com.fantasticfive.projecthex.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
@@ -23,11 +24,14 @@ import com.fantasticfive.shared.enums.Color;
 import com.fantasticfive.shared.enums.UnitType;
 import com.fantasticfive.shared.Point;
 import com.fantasticfive.shared.enums.*;
-import com.fantasticfive.shared.enums.Color;
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
@@ -56,8 +60,8 @@ public class MainMenuScreen implements Screen {
     private SpriteBatch menuBatch = new SpriteBatch();
 
     Texture title = new Texture("title.png");
-
     Texture titleStart = new Texture("titleStart.png");
+    Texture titleCopyright = new Texture("titleCopyright.png");
 
     private Music menuMusic;
 
@@ -65,6 +69,7 @@ public class MainMenuScreen implements Screen {
     private GameSelectTable gameSelectTable;
     private CreateServerTable createServerTable;
     private JoinServerTable joinServerTable;
+    private OptionsTable optionsTable;
 
     private Random random = new Random();
     private float screenWidth = Gdx.graphics.getWidth();
@@ -80,7 +85,7 @@ public class MainMenuScreen implements Screen {
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, screenWidth * camZoom, screenHeight * camZoom);
-           camera.translate(new Vector2(1250, 0));
+        camera.translate(new Vector2(screenWidth, 100));
 
         //Setup UI
         skin = new Skin(Gdx.files.internal("uiskin.json"));
@@ -94,20 +99,14 @@ public class MainMenuScreen implements Screen {
         //Create map
         map = new Map(mapWidth, mapHeight);
         map.setTextures();
-        Vector2 vec1 = map.getHexAtLocation(new Point(0, 0)).getPos();
-        System.out.println(vec1.x + " " + vec1.y);
-        Vector2 vec2 = map.getHexAtLocation(new Point(0, 1)).getPos();
-        System.out.println(vec2.x + " " + vec2.y);
-        Vector2 vec3 = map.getHexAtLocation(new Point(0, 2)).getPos();
-        System.out.println(vec3.x + " " + vec3.y);
+
+        startMusic();
 
         createPlayers();
 
         createTimer();
 
         createUIElements();
-
-        startMusic();
     }
 
     @Override
@@ -123,13 +122,17 @@ public class MainMenuScreen implements Screen {
         //Move camera
 
         Vector2 camVec = new Vector2(camera.position.x - screenWidth, camera.position.y - screenHeight);
-        if (camVec.y >= map.getHexAtLocation(new Point(mapHeight - 1, 0)).getPos().y - (screenHeight * camZoom)) cameraUp = false;
+        if (camVec.y >= map.getHexAtLocation(new Point(mapHeight - 1, 0)).getPos().y - (screenHeight * camZoom))
+            cameraUp = false;
         if (camVec.y <= map.getHexAtLocation(new Point(0, 0)).getPos().y) cameraUp = true;
 
+        float xMovement = 0.75f;
+        float yMovement = 1f;
+
         if (cameraUp) {
-            camera.translate(new Vector2(0.75f, 1));
+            camera.translate(new Vector2(xMovement, yMovement));
         } else {
-            camera.translate(new Vector2(-0.75f, -1));
+            camera.translate(new Vector2(-xMovement, -yMovement));
         }
         camera.update();
         game.getBatch().setProjectionMatrix(camera.combined);
@@ -155,7 +158,7 @@ public class MainMenuScreen implements Screen {
         }
         game.getBatch().end();
 
-        createMenuBatch();
+        drawMenuBatch();
 
         if (Gdx.input.isTouched() && startScreen) {
             startScreen = false;
@@ -168,6 +171,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
+
     }
 
     @Override
@@ -193,12 +197,27 @@ public class MainMenuScreen implements Screen {
         menuMusic = Gdx.audio.newMusic(new FileHandle("menuMusic.ogg"));
         menuMusic.setLooping(true);
         menuMusic.play();
+        // menuMusic.setVolume(0); //Comment if you want to turn off music
+    }
+
+    private void drawMenuBatch() {
+        menuBatch.begin();
+
+
+        menuBatch.draw(title, (screenWidth / 2) - (title.getWidth() / 2), screenHeight / 100 * 80);
+        menuBatch.draw(titleCopyright, 10, 10, resizeImage(titleCopyright.getWidth()), resizeImage(titleCopyright.getHeight()));
+        if (startScreen) {
+            menuBatch.draw(titleStart, (screenWidth / 2) - (titleStart.getWidth() / 2), screenHeight / 100 * 40);
+        }
+        menuBatch.end();
+
     }
 
     private void createUIElements() {
         gameSelectTable = new GameSelectTable();
         createServerTable = new CreateServerTable();
         joinServerTable = new JoinServerTable();
+        optionsTable = new OptionsTable();
 
         if (gameSelectTable != null) {
             table.addActor(gameSelectTable);
@@ -214,17 +233,11 @@ public class MainMenuScreen implements Screen {
             table.addActor(joinServerTable);
             joinServerTable.setVisible(false);
         }
-    }
 
-    private void createMenuBatch() {
-        menuBatch.begin();
-
-
-        menuBatch.draw(title, (screenWidth / 2) - (title.getWidth() / 2), screenHeight / 100 * 80);
-        if (startScreen) {
-            menuBatch.draw(titleStart, (screenWidth / 2) - (titleStart.getWidth() / 2), screenHeight / 100 * 40);
+        if (optionsTable != null) {
+            table.addActor(optionsTable);
+            optionsTable.setVisible(false);
         }
-        menuBatch.end();
     }
 
     private void createTimer() {
@@ -327,6 +340,10 @@ public class MainMenuScreen implements Screen {
         dispose();
     }
 
+    private float resizeImage(float originalSize) {
+        return originalSize / 1080 * screenHeight;
+    }
+
     private class GameSelectTable extends Table {
         private Table t;
         private float collumnWidth = screenWidth / 100 * 25;
@@ -339,11 +356,15 @@ public class MainMenuScreen implements Screen {
 
             final TextButton btnJoinServer = new TextButton("Join Server", skin);
 
+            final TextButton btnOptions = new TextButton("Options", skin);
+
             final TextButton btnExitGame = new TextButton("Exit", skin);
 
             t.add(btnCreateServer).width(collumnWidth).height(collumnHeight).pad(5);
             t.row();
             t.add(btnJoinServer).width(collumnWidth).height(collumnHeight).pad(5);
+            t.row();
+            t.add(btnOptions).width(collumnWidth).height(collumnHeight).pad(5);
             t.row();
             t.add(btnExitGame).width(collumnWidth).height(collumnHeight).pad(5);
             t.row();
@@ -375,6 +396,14 @@ public class MainMenuScreen implements Screen {
                 public void changed(ChangeEvent event, Actor actor) {
                     gameSelectTable.setVisible(false);
                     joinServerTable.setVisible(true);
+                }
+            });
+
+            btnOptions.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    gameSelectTable.setVisible(false);
+                    optionsTable.setVisible(true);
                 }
             });
 
@@ -502,4 +531,113 @@ public class MainMenuScreen implements Screen {
             addActor(t);
         }
     }
+
+    private class OptionsTable extends Table {
+        private Table t;
+        private float collumnWidth = screenWidth / 100 * 25;
+        private float collumnHeight = screenHeight / 100 * 6;
+
+        private Properties prop = new Properties();
+        private InputStream input;
+        private OutputStream out;
+
+        public OptionsTable() {
+            t = new Table();
+
+            final SelectBox selectResolution = new SelectBox(skin);
+            String[] resolutions = new String[]{"1920x1080", "1600x900", "1280x720"};
+            selectResolution.setItems(resolutions);
+
+            final CheckBox checkFullScreen = new CheckBox("Fullscreen", skin);
+
+            final Slider sliderMusic = new Slider(0, 1, 0.01f, false, skin);
+            sliderMusic.setValue(menuMusic.getVolume());
+            Label musicLabel = new Label(Float.toString(sliderMusic.getValue() * 100), skin);
+
+            final TextButton btnApplyChanges = new TextButton("Apply changes", skin);
+
+            final TextButton btnBack = new TextButton("Back to menu", skin);
+
+            try {
+                input = new FileInputStream("options.properties");
+                prop.load(input);
+                String propResolution = String.valueOf((int)screenWidth + "x" + (int)screenHeight);
+                for (int i = 0; i < resolutions.length; i++) {
+                    if (resolutions[i].equals(propResolution)) {
+                         selectResolution.setSelectedIndex(i);
+                    }
+                }
+                checkFullScreen.setChecked(Boolean.valueOf(prop.getProperty("fullscreen")));
+                sliderMusic.setValue(Float.valueOf(prop.getProperty("musicvolume")));
+                menuMusic.setVolume(sliderMusic.getValue());
+                musicLabel.setText(String.format("%.0f", (sliderMusic.getValue() * 100)));
+                input.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            t.add(new Label("Resolution: ", skin));
+            t.add(selectResolution);
+            t.add(checkFullScreen);
+            t.row();
+            t.add(new Label("Music: ", skin));
+            t.add(sliderMusic).width(collumnWidth).height(collumnHeight).pad(5);
+            t.add(musicLabel);
+            t.row();
+            t.add(btnApplyChanges).height(collumnHeight).width(collumnWidth / 2).pad(5);
+            t.add(btnBack).height(collumnHeight).width(collumnWidth / 2).pad(5);
+            t.row();
+
+            t.setPosition(screenWidth / 2, screenHeight / 2);
+
+            sliderMusic.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    menuMusic.setVolume(sliderMusic.getValue());
+                    musicLabel.setText(String.format("%.0f", (sliderMusic.getValue() * 100)));
+                }
+            });
+
+            btnApplyChanges.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    String resolution = (String) selectResolution.getSelected();
+                    String[] resolutionParts = resolution.split("x");
+                    if (checkFullScreen.isChecked()) {
+                        Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+                        resolution = String.valueOf(Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight());
+                    }
+                    else{
+                        Gdx.graphics.setWindowedMode(Integer.valueOf(resolutionParts[0]), Integer.valueOf(resolutionParts[1]));
+                    }
+
+                    try{
+                        out = new FileOutputStream("options.properties");
+                        prop.setProperty("resolution", resolution);
+                        prop.setProperty("fullscreen", String.valueOf(checkFullScreen.isChecked()));
+                        prop.setProperty("musicvolume", String.valueOf(sliderMusic.getValue()));
+                        prop.store(out, "");
+                        input.close();
+                    }
+                    catch(Exception e){
+                        e.printStackTrace();
+                    }
+                    menuMusic.dispose();
+                    game.setScreen(new MainMenuScreen(game));
+
+                }
+            });
+
+            btnBack.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    optionsTable.setVisible(false);
+                    gameSelectTable.setVisible(true);
+                }
+            });
+
+            addActor(t);
+        }
+    }
+
 }

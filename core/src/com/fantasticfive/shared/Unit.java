@@ -25,6 +25,7 @@ public class Unit implements Cloneable, Serializable {
     private int upgradeCost;
     private Point location = new Point(0, 0);
     private int allowedToMove;
+    private int allowedToAttack;
     private Player owner;
     private int maxHealth;
 
@@ -43,6 +44,7 @@ public class Unit implements Cloneable, Serializable {
         this.armor = armor;
         this.attackPower = attackPower;
         this.attackRange = attackRange;
+        this.allowedToAttack = attackRange;
         this.movementRange = movementRange;
         this.allowedToMove = movementRange;
         this.purchaseCost = purchaseCost;
@@ -54,10 +56,12 @@ public class Unit implements Cloneable, Serializable {
     public void attack(Unit unitToAttack) {
         unitToAttack.reduceHealth(attackPower - unitToAttack.getArmor());
         allowedToMove = 0;
+        allowedToAttack = 0;
     }
 
     public boolean attack(Building buildingToAttack) {
         allowedToMove = 0;
+        allowedToAttack = 0;
         return buildingToAttack.damageHealth(this.attackPower);
     }
 
@@ -86,6 +90,10 @@ public class Unit implements Cloneable, Serializable {
     public void move(Point destination, int distance) {
         this.location = destination;
         allowedToMove -= distance;
+
+        if(allowedToMove == 0){
+            this.allowedToAttack = 0;
+        }
     }
 
     public void upgrade() {
@@ -94,6 +102,7 @@ public class Unit implements Cloneable, Serializable {
 
     public void resetMoves() {
         this.allowedToMove = this.movementRange;
+        this.allowedToAttack = this.attackRange;
     }
 
     public int getArmor() {
@@ -134,6 +143,18 @@ public class Unit implements Cloneable, Serializable {
         return this.unitType;
     }
 
+    public Boolean getSelected() {
+        return isSelected;
+    }
+
+    public int getMovementLeft() {
+        return this.allowedToMove;
+    }
+
+    public int getAttackRangeLeft(){
+        return this.allowedToAttack;
+    }
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
@@ -147,14 +168,6 @@ public class Unit implements Cloneable, Serializable {
             LOGGER.info("Unit selected");
             isSelected = true;
         }
-    }
-
-    public Boolean getSelected() {
-        return isSelected;
-    }
-
-    public int getMovementLeft() {
-        return this.allowedToMove;
     }
 
     public void setTexture() {
@@ -174,6 +187,10 @@ public class Unit implements Cloneable, Serializable {
 
     public Texture getTexture() {
         return texture;
+    }
+
+    public void claimedLand(){
+        this.allowedToMove = 0;
     }
 
     public void setColor(){
