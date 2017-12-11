@@ -88,21 +88,38 @@ public class RemoteGameTest extends SettingsTest {
 
     @Test
     public void testClaimLand() throws RemoteException {
-        Unit unit = game.getUnitPreset(UnitType.SCOUT);
-        unit.setLocation(new Point(3,1));
-        unit.setOwner(game.getCurrentPlayer());
+        //Get the random location of the player's towncentre
+        Point location = game.getPlayers().get(0).getBuildings().get(0).getLocation();
+
+        //Place the unit 1 tile away from the town centre
+        game.buyUnit(UnitType.SCOUT, new Point(location.getX(),location.getY() + 1), game.getCurrentPlayer().getId());
+        Unit unit = game.getUnitAtLocation(new Point(location.getX(), location.getY() +1));
+        unit.move(new Point(unit.getLocation().getX(), unit.getLocation().getY() + 1), 1);
 
         game.claimLand(unit);
 
-        Hexagon hex = game.getMap().getHexAtLocation(new Point(3,1));
+        Hexagon hex = game.getMap().getHexAtLocation(new Point(location.getX(), location.getY() + 2));
         boolean claimed = hex.hasOwner();
 
         Assert.assertTrue("Hex should have been claimed",claimed);
+
+        unit.resetMoves();
+
+        unit.setLocation(new Point(location.getX() + 3, location.getY() + 3));
+        game.claimLand(unit);
+        hex = game.getMap().getHexAtLocation(new Point(location.getX() + 3, location.getY() + 3));
+
+        claimed = hex.hasOwner();
+
+        Assert.assertFalse("Hex should not have been claimed", claimed);
     }
 
     @Test
     public void testBuyBuilding() throws RemoteException {
-        game.buyBuilding(BuildingType.BARRACKS, new Point(2,1));
+        //Get the random location of the player's towncentre
+        Point location = game.getPlayers().get(0).getBuildings().get(0).getLocation();
+
+        game.buyBuilding(BuildingType.BARRACKS, new Point(location.getX(), location.getY() +1));
 
         int expectedAmountOfBuildings = 2;
         int actualAmountOfBuildings = game.getCurrentPlayer().getBuildings().size();
@@ -123,17 +140,26 @@ public class RemoteGameTest extends SettingsTest {
 
     @Test
     public void testAttackBuilding() throws RemoteException {
-        Unit unit = game.getUnitPreset(UnitType.SWORDSMAN);
+        //Get the random location of the first player's towncentre
+        Point p1Location = game.getPlayers().get(0).getBuildings().get(0).getLocation();
+
         game.addPlayer("Player 2");
-        unit.setOwner(game.getPlayers().get(0));
+
+        //Get the random location of the second player's towncentre
+        Point p2Location = game.getPlayers().get(1).getBuildings().get(0).getLocation();
+
+        game.buyUnit(UnitType.SWORDSMAN, new Point(p1Location.getX(), p1Location.getY() + 1), game.getCurrentPlayer().getId());
+        Unit unit = game.getUnitAtLocation(new Point(p1Location.getX(), p1Location.getY() + 1));
 
         game.endTurn(game.getCurrentPlayer().getId());
-        game.buyBuilding(BuildingType.BARRACKS, new Point(2,1));
+        game.buyBuilding(BuildingType.BARRACKS, new Point(p2Location.getX(), p2Location.getY() + 1));
 
-        Building b = game.getBuildingAtLocation(new Point(2,1));
-        game.endTurn(game.getCurrentPlayer().getId());
-
+        Building b = game.getBuildingAtLocation(new Point(p2Location.getX(), p2Location.getY() + 1));
         int buildingHealth = b.getHealth();
+
+        game.endTurn(game.getCurrentPlayer().getId());
+
+        unit.setLocation(new Point(b.getLocation().getX(), b.getLocation().getY() + 1));
 
         game.attackBuilding(unit, b);
 
@@ -142,9 +168,8 @@ public class RemoteGameTest extends SettingsTest {
 
     @Test
     public void testGetBuildingAtLocation() {
-        game.buyBuilding(BuildingType.BARRACKS, new Point(2,1));
-
-        Building b = game.getBuildingAtLocation(new Point(2,1));
+        Point location = game.getPlayers().get(0).getBuildings().get(0).getLocation();
+        Building b = game.getBuildingAtLocation(location);
 
         Assert.assertNotNull("Should have returned a building",b);
     }
@@ -153,11 +178,6 @@ public class RemoteGameTest extends SettingsTest {
     public void testHexEmpty() {
         boolean result = game.hexEmpty(new Point(2,1));
         Assert.assertTrue("Hex should have been empty",result);
-    }
-
-    @Test
-    public void testHexEmptyResource() {
-        Assert.assertTrue("Not yet implemented",false);
     }
 
     @Test
@@ -174,6 +194,7 @@ public class RemoteGameTest extends SettingsTest {
         game.buyUnit(UnitType.SWORDSMAN, new Point(2,1), game.getCurrentPlayer().getId());
 
         Unit u = game.getPlayers().get(0).getUnits().get(0);
+        u.toggleSelected();
 
         boolean result = u.getSelected();
 
