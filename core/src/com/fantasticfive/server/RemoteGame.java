@@ -31,7 +31,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     private Registry registry;
     private static final String bindingName = "ProjectHex";
 
-    RemoteGame(int portNumber) throws RemoteException {
+    public RemoteGame(int portNumber) throws RemoteException {
         RemoteSetup(portNumber);
         map = new Map(20, 10);
     }
