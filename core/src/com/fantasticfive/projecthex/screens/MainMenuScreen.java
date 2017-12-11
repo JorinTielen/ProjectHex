@@ -196,18 +196,17 @@ public class MainMenuScreen implements Screen {
     public void startMusic() {
         menuMusic = Gdx.audio.newMusic(new FileHandle("menuMusic.ogg"));
         menuMusic.setLooping(true);
+        menuMusic.setVolume(0);
         menuMusic.play();
         // menuMusic.setVolume(0); //Comment if you want to turn off music
     }
 
     private void drawMenuBatch() {
         menuBatch.begin();
-
-
-        menuBatch.draw(title, (screenWidth / 2) - (title.getWidth() / 2), screenHeight / 100 * 80);
+        menuBatch.draw(title, (screenWidth / 2) - (resizeImage(title.getWidth() / 2f)), screenHeight / 100 * 80, resizeImage(title.getWidth()), resizeImage(title.getHeight()));
         menuBatch.draw(titleCopyright, 10, 10, resizeImage(titleCopyright.getWidth()), resizeImage(titleCopyright.getHeight()));
         if (startScreen) {
-            menuBatch.draw(titleStart, (screenWidth / 2) - (titleStart.getWidth() / 2), screenHeight / 100 * 40);
+            menuBatch.draw(titleStart, (screenWidth / 2) - (resizeImage(titleStart.getWidth()) / 2f), screenHeight / 100 * 40, resizeImage(titleStart.getWidth()), resizeImage(titleStart.getHeight()));
         }
         menuBatch.end();
 
@@ -631,6 +630,23 @@ public class MainMenuScreen implements Screen {
             btnBack.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
+                    try {
+                        input = new FileInputStream("options.properties");
+                        prop.load(input);
+                        String propResolution = String.valueOf((int)screenWidth + "x" + (int)screenHeight);
+                        for (int i = 0; i < resolutions.length; i++) {
+                            if (resolutions[i].equals(propResolution)) {
+                                selectResolution.setSelectedIndex(i);
+                            }
+                        }
+                        checkFullScreen.setChecked(Boolean.valueOf(prop.getProperty("fullscreen")));
+                        sliderMusic.setValue(Float.valueOf(prop.getProperty("musicvolume")));
+                        menuMusic.setVolume(sliderMusic.getValue());
+                        musicLabel.setText(String.format("%.0f", (sliderMusic.getValue() * 100)));
+                        input.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     optionsTable.setVisible(false);
                     gameSelectTable.setVisible(true);
                 }
