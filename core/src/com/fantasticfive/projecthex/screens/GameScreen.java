@@ -399,6 +399,7 @@ public class GameScreen implements Screen {
             } else if (localGame.getUnitOnHex(hex).getOwner() == localGame.getSelectedUnit().getOwner()) {
                 localGame.getSelectedUnit().toggleSelected();
                 localGame.getUnitOnHex(hex).toggleSelected();
+                localGame.setWalkableHexesForUnit(localGame.getSelectedUnit());
 
                 //If clicked on a unit with a different owner than the selected unit
             } else if (localGame.getUnitOnHex(hex).getOwner() != localGame.getSelectedUnit().getOwner()) {
