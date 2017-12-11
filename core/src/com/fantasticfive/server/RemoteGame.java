@@ -150,7 +150,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, location, p);
         p.purchaseBuilding(b);
 
-        List<Hexagon> ownedLand = map.hexesInCirle(b.getLocation(), 1);
+        List<Hexagon> ownedLand = map.getHexesInRadius(b.getLocation(), 1);
         for (Hexagon hex : ownedLand) {
             if(hex.getGroundType() != GroundType.WATER){
                 p.addHexagon(hex);
@@ -204,13 +204,19 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     @Override
     public void buyUnit(UnitType unitType, Point location, int playerId) {
         if (playerId == currentPlayer.getId()) {
-            if (hexEmpty(location)) {
-                //When player has enough gold to buy unit
-                currentPlayer.purchaseUnit(unitFactory.createUnit(unitType, location, currentPlayer));
+            //When player has enough gold to buy unit
+            boolean tileEmpty = false;
+
+            for (Hexagon hex : map.getHexesInRadius(location, 1)) {
+                if (hexEmpty(hex.getLocation())) {
+                    tileEmpty = true;
+                    currentPlayer.purchaseUnit(unitFactory.createUnit(unitType, hex.getLocation(), currentPlayer));
+                    break;
+                }
             }
-            //When hex is not empty
-            else {
-                LOGGER.info("Hex not empty");
+
+            if (!tileEmpty) {
+                LOGGER.info("no tiles empty!");
             }
         }
         version++;
@@ -274,7 +280,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
 
     //Checks if claimed land has any mountain next to it, if it does it claims it.
     private void claimMountains(Point location) {
-        for (Hexagon h : map.hexesInCirle(location, 1)) {
+        for (Hexagon h : map.getHexesInRadius(location, 1)) {
             if (!h.hasOwner() && h.getIsMountain()) {
                 currentPlayer.addHexagon(h);
             }
