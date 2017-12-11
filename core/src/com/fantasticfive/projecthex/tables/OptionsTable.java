@@ -27,6 +27,7 @@ public class OptionsTable extends Table {
         t = new Table();
 
         final TextButton buttonEndTurn = new TextButton("End turn", skin);
+        t.add(buttonEndTurn).fill().size(colWidth,colHeight);
 
        buttonEndTurn.addListener(new ChangeListener() {
             @Override
@@ -36,8 +37,7 @@ public class OptionsTable extends Table {
             }
         });
 
-
-        t.setPosition(Gdx.graphics.getWidth() - 150, 40);
+        t.setPosition(Gdx.graphics.getWidth() -(colWidth / 2) - (colHeight / 2),colHeight);
 
         addActor(t);
     }
