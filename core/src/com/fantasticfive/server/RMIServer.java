@@ -5,7 +5,6 @@ import com.fantasticfive.shared.IRemoteGame;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.rmi.RemoteException;
-import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

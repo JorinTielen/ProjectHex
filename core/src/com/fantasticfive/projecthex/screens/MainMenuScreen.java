@@ -501,6 +501,9 @@ public class MainMenuScreen implements Screen {
             btnBack.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
+                    btnStartGame.setText("Loading");
+                    btnStartGame.setTouchable(Touchable.disabled);
+                    serverStarted = false;
                     createServerTable.setVisible(false);
                     gameSelectTable.setVisible(true);
                 }
