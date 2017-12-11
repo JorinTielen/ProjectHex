@@ -12,12 +12,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.fantasticfive.projecthex.LocalGame;
 import com.fantasticfive.server.RMIServer;
+import com.fantasticfive.server.ServerManager;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.Map;
 import com.fantasticfive.shared.enums.Color;
@@ -36,6 +38,10 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
 public class MainMenuScreen implements Screen {
@@ -63,6 +69,12 @@ public class MainMenuScreen implements Screen {
     Texture titleStart = new Texture("titleStart.png");
     Texture titleCopyright = new Texture("titleCopyright.png");
 
+    //stuff for creating server
+    private boolean serverStarted;
+    private Future<Boolean> future;
+    TextButton btnStartGame;
+    private int frame;
+
     private Music menuMusic;
 
     //Tables
@@ -81,6 +93,7 @@ public class MainMenuScreen implements Screen {
 
 
     public MainMenuScreen(final GameMain game) {
+        this.serverStarted = false;
         this.game = game;
 
         camera = new OrthographicCamera();
@@ -159,6 +172,18 @@ public class MainMenuScreen implements Screen {
         game.getBatch().end();
 
         drawMenuBatch();
+        if (serverStarted){
+            if (future.isDone() && btnStartGame.getTouchable() == Touchable.disabled){
+                btnStartGame.setText("Start game");
+                btnStartGame.setTouchable(Touchable.enabled);
+            }
+            else if (btnStartGame.getTouchable() == Touchable.disabled && frame % 60 == 0) {
+                btnStartGame.setText(btnStartGame.getText() + ".");
+                if (btnStartGame.getText().length() > 15){
+                    btnStartGame.setText("Loading.");
+                }
+            }
+        }
 
         if (Gdx.input.isTouched() && startScreen) {
             startScreen = false;
@@ -167,6 +192,7 @@ public class MainMenuScreen implements Screen {
 
         stage.act(delta);
         stage.draw();
+        frame++;
     }
 
     @Override
@@ -374,11 +400,14 @@ public class MainMenuScreen implements Screen {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     gameSelectTable.setVisible(false);
-                    serverThread = new Thread(() -> {
+                    ExecutorService executor = Executors.newSingleThreadExecutor();
+                    future = executor.submit(new ServerManager());
+                    serverStarted = true;
+                    /*serverThread = new Thread(() -> {
                         RMIServer server = new RMIServer();
 
                     });
-                    serverThread.start();
+                    serverThread.start();*/
                     InetAddress localhost = null;
                     try {
                         localhost = InetAddress.getLocalHost();
@@ -430,9 +459,9 @@ public class MainMenuScreen implements Screen {
 
             final TextButton btnCopyToClipboard = new TextButton("Copy to clipboard", skin);
 
-            final TextButton btnStartGame = new TextButton("Start Game", skin);
-
             final TextButton btnBack = new TextButton("Back to menu", skin);
+
+            btnStartGame = new TextButton("Start Game", skin);
 
             final TextField txtUsername = new TextField("", skin);
 
@@ -448,6 +477,9 @@ public class MainMenuScreen implements Screen {
             t.row();
 
             t.setPosition(screenWidth / 2, screenHeight / 2);
+
+            btnStartGame.setText("Loading");
+            btnStartGame.setTouchable(Touchable.disabled);
 
             btnCopyToClipboard.addListener(new ChangeListener() {
                 @Override
@@ -473,6 +505,7 @@ public class MainMenuScreen implements Screen {
                     gameSelectTable.setVisible(true);
                 }
             });
+
 
             addActor(t);
         }
