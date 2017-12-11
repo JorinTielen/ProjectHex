@@ -47,7 +47,9 @@ public class GameScreen implements Screen {
     private Texture walkableHexTexture; //Texture overlay for hexes that unit can walk to
     private Texture fogTexture; //Texture for fog of war
     private Texture fogNeighbourTexture; //Texture for fog of war neighbouring visisted land
+    private Texture menuTexture;
     private SpriteAnimation explosionAnimation;
+    public boolean inMenu;
 
     //tables
     private Table unitShopTable;
@@ -58,14 +60,18 @@ public class GameScreen implements Screen {
     private Table optionsTable;
     private Table playerWinTable;
     private Table unitScoutTable;
+    private Table gameMenuTable;
     private Building buildingToBuild;
+
+    private float screenWidth = Gdx.graphics.getWidth();
+    private float screenHeight = Gdx.graphics.getHeight();
 
     public GameScreen(final GameMain game, LocalGame localGame) {
         this.game = game;
 
         //Setup Camera
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera.setToOrtho(false, screenWidth, screenHeight);
 
         //Setup Map
 
@@ -127,6 +133,12 @@ public class GameScreen implements Screen {
             table.add(playerWinTable);
         }
 
+        createGameMenuUI();
+        if(gameMenuTable != null){
+            table.add(gameMenuTable);
+            gameMenuTable.setVisible(false);
+        }
+
         //Input processor
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(stage);
@@ -138,6 +150,8 @@ public class GameScreen implements Screen {
         walkableHexTexture = new Texture("movableHex.png");
         fogTexture = new Texture("fog.png");
         fogNeighbourTexture = new Texture("fogNeighbour.png");
+        menuTexture = new Texture("gameMenuBackground.png");
+
     }
 
     @Override
@@ -251,6 +265,10 @@ public class GameScreen implements Screen {
 
         if (localGame.lastPlayer()) {
             showPlayerWinUI();
+        }
+
+        if(inMenu){
+            batch.draw(menuTexture, camera.position.x - (screenWidth / 2f),camera.position.y - (screenHeight / 2f),screenWidth, screenHeight);
         }
 
         batch.end();
@@ -428,7 +446,7 @@ public class GameScreen implements Screen {
 
     private void showUnitShopUI(float x, float y, Building building) {
         ((UnitShopTable) unitShopTable).setBuilding(building);
-        unitShopTable.setPosition(x, Gdx.graphics.getHeight() - y);
+        unitShopTable.setPosition(x, screenHeight - y);
         unitShopTable.setVisible(true);
     }
 
@@ -440,7 +458,7 @@ public class GameScreen implements Screen {
     }
 
     private void showBuildingShopUI(float x, float y) {
-        buildingShopTable.setPosition(x, Gdx.graphics.getHeight() - y);
+        buildingShopTable.setPosition(x, screenHeight - y);
         buildingShopTable.setVisible(true);
     }
 
@@ -457,7 +475,7 @@ public class GameScreen implements Screen {
 
     private void showUnitSellUI(float x, float y, Unit unit) {
         ((UnitSellTable) unitSellTable).setUnit(unit);
-        unitSellTable.setPosition(x, Gdx.graphics.getHeight() - y);
+        unitSellTable.setPosition(x, screenHeight - y);
         unitSellTable.setVisible(true);
     }
 
@@ -467,7 +485,7 @@ public class GameScreen implements Screen {
 
     private void showUnitScoutUI(float x, float y, Unit unit) {
         ((UnitScoutTable) unitScoutTable).setUnit(unit);
-        unitScoutTable.setPosition(x, Gdx.graphics.getHeight() - y);
+        unitScoutTable.setPosition(x, screenHeight - y);
         unitScoutTable.setVisible(true);
     }
 
@@ -481,7 +499,7 @@ public class GameScreen implements Screen {
 
     private void showBuildingSellUI(float x, float y, final Building building) {
         ((BuildingSellTable) buildingSellTable).setBuilding(building);
-        buildingSellTable.setPosition(x, Gdx.graphics.getHeight() - y);
+        buildingSellTable.setPosition(x, screenHeight - y);
         buildingSellTable.setVisible(true);
     }
 
@@ -503,7 +521,7 @@ public class GameScreen implements Screen {
 
     // ====================
     //  Game UI
-    //  (Shows the next turn button and options)
+    //  (Shows the next turn button)
     // ====================
     private void createOptionsUI() {
         optionsTable = new OptionsTable(localGame, skin);
@@ -518,10 +536,14 @@ public class GameScreen implements Screen {
     }
 
     private void showPlayerWinUI() {
-        playerWinTable.setPosition(Gdx.graphics.getWidth() / 2 - playerWinTable.getWidth() / 2,
-                Gdx.graphics.getHeight() / 2 - playerWinTable.getHeight() / 2);
+        playerWinTable.setPosition(screenWidth / 2 - playerWinTable.getWidth() / 2,
+                screenHeight / 2 - playerWinTable.getHeight() / 2);
         playerWinTable.setVisible(true);
         ((PlayerWinTable)playerWinTable).setEndGameLabel(localGame);
+    }
+
+    private void createGameMenuUI(){
+        gameMenuTable = new GameMenuTable(game, localGame, this, skin);
     }
 
     private void createSkin() {
@@ -542,5 +564,20 @@ public class GameScreen implements Screen {
         labelStyle.background = skin.newDrawable("white", Color.LIGHT_GRAY);
         labelStyle.font = skin.getFont("default");
         skin.add("default", labelStyle);
+    }
+
+    public void toggleGameMenu(){
+        if(gameMenuTable.isVisible()){
+            gameMenuTable.setVisible(false);
+            inMenu = false;
+
+            optionsTable.setVisible(true);
+        }
+        else{
+            gameMenuTable.setVisible(true);
+            inMenu = true;
+
+            optionsTable.setVisible(false);
+        }
     }
 }

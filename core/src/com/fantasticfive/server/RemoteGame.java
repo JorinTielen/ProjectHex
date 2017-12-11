@@ -152,7 +152,9 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
 
         List<Hexagon> ownedLand = map.getHexesInRadius(b.getLocation(), 1);
         for (Hexagon hex : ownedLand) {
-            p.addHexagon(hex);
+            if(hex.getGroundType() != GroundType.WATER){
+                p.addHexagon(hex);
+            }
         }
 
         usedColors.add(color);

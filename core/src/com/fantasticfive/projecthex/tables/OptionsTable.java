@@ -14,6 +14,8 @@ public class OptionsTable extends Table {
     private static final Logger LOGGER = Logger.getLogger( OptionsTable.class.getName() );
 
     private Table t;
+    private int colWidth = 130;
+    private int colHeight = 40;
 
     final private LocalGame game;
     private Skin skin;
@@ -25,12 +27,9 @@ public class OptionsTable extends Table {
         t = new Table();
 
         final TextButton buttonEndTurn = new TextButton("End turn", skin);
-        t.add(buttonEndTurn).fill().size(130,40).padRight(5);
+        t.add(buttonEndTurn).fill().size(colWidth,colHeight);
 
-        final TextButton buttonLeaveGame = new TextButton("Leave game", skin);
-        t.add(buttonLeaveGame).fill().size(130,40);
-
-        buttonEndTurn.addListener(new ChangeListener() {
+       buttonEndTurn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 LOGGER.info("Ending turn");
@@ -38,15 +37,7 @@ public class OptionsTable extends Table {
             }
         });
 
-        buttonLeaveGame.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                LOGGER.info("Leaving game");
-                OptionsTable.this.game.leaveGame();
-            }
-        });
-
-        t.setPosition(Gdx.graphics.getWidth() - 150, 40);
+        t.setPosition(Gdx.graphics.getWidth() -(colWidth / 2) - (colHeight / 2),colHeight);
 
         addActor(t);
     }

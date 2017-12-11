@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.TimeUtils;
+
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeIn;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
@@ -41,10 +42,9 @@ public class BeginCreditsScreen implements Screen {
         table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
-        //   table.setDebug(true);
+        // table.setDebug(true);
         table.setVisible(true);
         table.add(logo);
-
         startTime = TimeUtils.millis();
     }
 
@@ -101,5 +101,9 @@ public class BeginCreditsScreen implements Screen {
             }
         }));
         stage.getRoot().addAction(sequenceAction);
+    }
+
+    private float resizeImage(float originalSize) {
+        return originalSize / 1080 * screenHeight;
     }
 }
