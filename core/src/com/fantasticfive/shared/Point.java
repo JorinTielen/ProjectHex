@@ -24,11 +24,7 @@ public class Point implements Serializable {
     }
 
     public boolean equals(Point other) {
-        if (this.x == other.x && this.y == other.y) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.x == other.x && this.y == other.y;
     }
 
     public int getX() {

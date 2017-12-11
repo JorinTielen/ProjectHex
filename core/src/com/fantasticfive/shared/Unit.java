@@ -79,7 +79,6 @@ public class Unit implements Cloneable, Serializable {
     }
 
     public void setWalkableHexes(List<Hexagon> hexes){
-        this.walkableHexes = new ArrayList<>();
         this.walkableHexes = hexes;
     }
 

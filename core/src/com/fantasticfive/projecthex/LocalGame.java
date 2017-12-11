@@ -287,7 +287,7 @@ public class LocalGame {
                 lastPathGenerated = pathMap;
                 return area;
             }
-            for (Hexagon h : map.hexesInCirle(current.getLocation(), 1)){
+            for (Hexagon h : map.getHexesInRadius(current.getLocation(), 1)){
                 if (!pathMap.containsKey(h) &&
                         h.getObjectType() != ObjectType.MOUNTAIN &&
                         h.getGroundType() != GroundType.WATER &&

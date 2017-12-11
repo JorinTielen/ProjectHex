@@ -259,8 +259,10 @@ public class GameScreen implements Screen {
 
         //draw area where unit can walk
         if (localGame.getSelectedUnit() != null) {
-            for (Hexagon h : localGame.getSelectedUnit().getWalkableHexes()) {
-                batch.draw(walkableHexTexture, h.getPos().x, h.getPos().y);
+            if (localGame.getSelectedUnit().getMovementLeft() > 0){
+                for (Hexagon h : localGame.getSelectedUnit().getWalkableHexes()) {
+                    batch.draw(walkableHexTexture, h.getPos().x, h.getPos().y);
+                }
             }
         }
 
@@ -394,7 +396,9 @@ public class GameScreen implements Screen {
         if (localGame.getUnitOnHex(hex) != null && localGame.getSelectedUnit() == null && localGame.getUnitOnHex(hex).getOwner() == localGame.getThisPlayer()) {
             Unit u = localGame.getUnitOnHex(hex);
             u.toggleSelected();
-            localGame.setWalkableHexesForUnit(u);
+            if (u.getMovementLeft() > 0){
+                localGame.setWalkableHexesForUnit(u);
+            }
         }
         //If not clicked on unit and unit is selected
         else if (localGame.getUnitOnHex(hex) == null && localGame.getSelectedUnit() != null) {
@@ -418,6 +422,7 @@ public class GameScreen implements Screen {
             } else if (localGame.getUnitOnHex(hex).getOwner() == localGame.getSelectedUnit().getOwner()) {
                 localGame.getSelectedUnit().toggleSelected();
                 localGame.getUnitOnHex(hex).toggleSelected();
+                localGame.setWalkableHexesForUnit(localGame.getSelectedUnit());
 
                 //If clicked on a unit with a different owner than the selected unit
             } else if (localGame.getUnitOnHex(hex).getOwner() != localGame.getSelectedUnit().getOwner()) {
