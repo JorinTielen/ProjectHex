@@ -40,7 +40,7 @@ public class Fog {
 
     public void calculateNeighbouringHexes(List<Hexagon> hexagons){
         for (Hexagon hex : hexagons){
-            for (Hexagon neighbourHex : map.hexesInCirle(hex.getLocation(), 1)){
+            for (Hexagon neighbourHex : map.getHexesInRadius(hex.getLocation(), 1)){
                 if (!isVisisted(neighbourHex) && !isNeighbour(neighbourHex)){
                     neighbouringHexes.add(neighbourHex);
                 }
@@ -49,7 +49,7 @@ public class Fog {
     }
 
     public void calculateNeighbouringHexes(Hexagon hexagon){
-        for (Hexagon neighbourHex : map.hexesInCirle(hexagon.getLocation(), 1)){
+        for (Hexagon neighbourHex : map.getHexesInRadius(hexagon.getLocation(), 1)){
             if (!isVisisted(neighbourHex) && !isNeighbour(neighbourHex)){
                 neighbouringHexes.add(neighbourHex);
             }
