@@ -303,7 +303,12 @@ public class LocalGame {
     }
 
     public int pathDistance(Unit unit, Point location){
-        if (unit.getMovementLeft() == 0){
+        Hexagon targetHex = map.getHexAtLocation(location);
+        if (unit.getMovementLeft() == 0 ||
+                targetHex.getObjectType() == ObjectType.MOUNTAIN ||
+                targetHex.getGroundType() == GroundType.WATER ||
+                getBuildingAtLocation(location) != null ||
+                getUnitAtLocation(location) != null){
             return 1;
         }
         Hexagon current = map.getHexAtLocation(location);
