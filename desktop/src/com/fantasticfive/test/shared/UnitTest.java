@@ -12,11 +12,13 @@ import static org.junit.Assert.*;
 
 public class UnitTest extends SettingsTest {
     private Unit unit;
+    private Map map;
 
     @Before
     public void initUnit() {
         unit = new Unit(UnitType.SWORDSMAN, 100, 10, 35, 1, 2, 20, 1, false, 150);
         unit.setLocation(new Point(1,1));
+        map = new Map(10,10);
     }
 
     @After
@@ -59,14 +61,14 @@ public class UnitTest extends SettingsTest {
 
     @Test
     public void testMove() {
-        //unit.move(new Point(2,2));
+        unit.move(new Point(2,2), map.distance(unit.getLocation(), new Point(2,2)));
         Point result = unit.getLocation();
         Point expected = new Point(2,2);
         assertTrue("New Point should be within movement range",result.equals(expected));
 
         unit.resetMoves();
 
-        //unit.move(new Point(6,8));
+        unit.move(new Point(6,8), map.distance(unit.getLocation(), new Point(6,8)));
         result = unit.getLocation();
         expected = new Point(1,2);
         assertFalse("New location should not be within movement range", result.equals(expected));
@@ -79,7 +81,7 @@ public class UnitTest extends SettingsTest {
 
     @Test
     public void testResetMoves() {
-        //unit.move(new Point(2, 2));
+        unit.move(new Point(2, 2), map.distance(unit.getLocation(), new Point(2,2)));
         unit.resetMoves();
         int expectedMoves = 2;
         int actualMoves = unit.getMovementLeft();
@@ -97,14 +99,5 @@ public class UnitTest extends SettingsTest {
     public void testToggleSelected() {
         unit.toggleSelected();
         assertTrue(unit.getSelected());
-    }
-
-    @Test
-    public void testCalculateDistance() {
-        Point p1 = unit.getLocation();
-        Point p2 = new Point(2,1);
-        int expectedDistance = 1;
-        //int actualDistance = unit.calculateDistance(p1,p2);
-        //assertEquals(expectedDistance, actualDistance);
     }
 }
