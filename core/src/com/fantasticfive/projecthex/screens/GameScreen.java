@@ -245,12 +245,6 @@ public class GameScreen implements Screen {
             }
         }
 
-        //draw area where unit can walk
-        if (localGame.getSelectedUnit() != null) {
-            for (Hexagon h : localGame.getSelectedUnit().getWalkableHexes()) {
-                batch.draw(walkableHexTexture, h.getPos().x, h.getPos().y);
-            }
-        }
 
         //draw fog of war
         if (localGame.getFog() != null) {
@@ -260,6 +254,13 @@ public class GameScreen implements Screen {
                 } else if (localGame.getFog().isNeighbour(h)) {
                     batch.draw(fogNeighbourTexture, h.getPos().x, h.getPos().y);
                 }
+            }
+        }
+
+        //draw area where unit can walk
+        if (localGame.getSelectedUnit() != null) {
+            for (Hexagon h : localGame.getSelectedUnit().getWalkableHexes()) {
+                batch.draw(walkableHexTexture, h.getPos().x, h.getPos().y);
             }
         }
 

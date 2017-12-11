@@ -70,6 +70,7 @@ public interface IRemoteGame extends Remote {
      */
     Unit getUnitPreset(UnitType type) throws RemoteException;
 
+    Unit getUnitAtLocation(Point location) throws RemoteException;
     /**
      * Makes the playerId buy a unit of unitType, at the location.
      * @param unitType the unitType the unit will be.
@@ -86,7 +87,7 @@ public interface IRemoteGame extends Remote {
      * @param playerId your player id.
      * @throws RemoteException
      */
-    boolean moveUnit(Unit u, Point location, int playerId) throws RemoteException;
+    boolean moveUnit(Unit u, Point location, int playerId, List<Hexagon> walkableHexes, int distance) throws RemoteException;
 
     /**
      * Makes a unit attack another.

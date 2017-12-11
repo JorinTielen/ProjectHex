@@ -46,14 +46,24 @@ public class Map implements Serializable {
 
     }
 
-    public boolean canMoveTo(Unit u, Point location) {
-        List<Hexagon> movableHexes = hexesInCirle(u.getLocation(), u.getMovementLeft());
+    public boolean canMoveTo(Unit u, Point location, List<Hexagon> movableHexes) {
         for (Hexagon hex : movableHexes) {
             if(hex.getLocation().equals(location)) {
                 return true;
             }
         }
         return false;
+    }
+
+
+    public int pathDistance(HashMap pathMap, Hexagon currentHex, Hexagon beginHex){
+        Hexagon current = currentHex;
+        int i = 0;
+        while (current != beginHex){
+            current = (Hexagon)pathMap.get(current);
+            i++;
+        }
+        return i;
     }
 
     public boolean isWithinAttackRange(Unit u, Point location) {
