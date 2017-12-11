@@ -202,4 +202,12 @@ public class Map implements Serializable {
         }
         return null;
     }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
 }
