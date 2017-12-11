@@ -276,7 +276,6 @@ public class LocalGame {
     public List<Hexagon> walkableHexes(Point location, int radius){
         List<Hexagon> area = new ArrayList<>();
         List<Hexagon> frontier = new ArrayList<>();
-        List<Hexagon> visisted = new ArrayList<>();
         HashMap pathMap = new HashMap();
         Hexagon current;
         int i = 0;
