@@ -440,6 +440,7 @@ public class GameScreen implements Screen {
         buildingShopTable.setVisible(false);
         unitSellTable.setVisible(false);
         unitShopTable.setVisible(false);
+        unitScoutTable.setVisible(false);
     }
 
     // ====================

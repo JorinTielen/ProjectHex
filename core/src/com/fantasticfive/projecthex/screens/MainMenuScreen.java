@@ -89,9 +89,6 @@ public class MainMenuScreen implements Screen {
     private boolean startScreen = true;
     private boolean cameraUp = true;
 
-    Thread serverThread;
-
-
     public MainMenuScreen(final GameMain game) {
         this.serverStarted = false;
         this.game = game;
@@ -403,11 +400,6 @@ public class MainMenuScreen implements Screen {
                     ExecutorService executor = Executors.newSingleThreadExecutor();
                     future = executor.submit(new ServerManager());
                     serverStarted = true;
-                    /*serverThread = new Thread(() -> {
-                        RMIServer server = new RMIServer();
-
-                    });
-                    serverThread.start();*/
                     InetAddress localhost = null;
                     try {
                         localhost = InetAddress.getLocalHost();
