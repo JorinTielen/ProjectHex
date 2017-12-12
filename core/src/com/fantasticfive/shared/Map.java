@@ -46,18 +46,28 @@ public class Map implements Serializable {
 
     }
 
-    public boolean canMoveTo(Unit u, Point location) {
-        List<Hexagon> movableHexes = hexesInCirle(u.getLocation(), u.getMovementLeft());
+  public boolean canMoveTo(Unit u, Point location, List<Hexagon> movableHexes) {
         for (Hexagon hex : movableHexes) {
             if(hex.getLocation().equals(location)) {
                 return true;
             }
         }
         return false;
+    }
+
+
+    public int pathDistance(HashMap pathMap, Hexagon currentHex, Hexagon beginHex){
+        Hexagon current = currentHex;
+        int i = 0;
+        while (current != beginHex){
+            current = (Hexagon)pathMap.get(current);
+            i++;
+        }
+        return i;
     }
 
     public boolean isWithinAttackRange(Unit u, Point location) {
-        List<Hexagon> movableHexes = hexesInCirle(u.getLocation(), u.getAttackRangeLeft());
+        List<Hexagon> movableHexes = getHexesInRadius(u.getLocation(), u.getAttackRangeLeft());
         for (Hexagon hex : movableHexes) {
             if(hex.getLocation().equals(location)) {
                 return true;
@@ -66,7 +76,7 @@ public class Map implements Serializable {
         return false;
     }
 
-    public List<Hexagon> hexesInCirle(Point location, int radius) {
+    public List<Hexagon> getHexesInRadius(Point location, int radius) {
         List<Hexagon> results = new ArrayList<>();
         for (Hexagon hex : hexagons) {
             int distance = distance(location, hex.getLocation());
@@ -132,7 +142,7 @@ public class Map implements Serializable {
     }
 
     public boolean bordersOwnLand(Point location, Player currentPlayer) {
-        for (Hexagon h : hexesInCirle(location, 1)){
+        for (Hexagon h : getHexesInRadius(location, 1)){
             if (h.getOwner() == currentPlayer){
                 return true;
             }
@@ -164,7 +174,7 @@ public class Map implements Serializable {
                 found = true;
             }
 
-            for (Hexagon h : hexesInCirle(current.getLocation(), 1)){
+            for (Hexagon h : getHexesInRadius(current.getLocation(), 1)){
                 if (!pathMap.containsKey(h) && h.getObjectType() != ObjectType.MOUNTAIN && h.getGroundType() != GroundType.WATER){
                     frontier.add(h);
                     pathMap.put(h, current);
@@ -191,5 +201,13 @@ public class Map implements Serializable {
             }
         }
         return null;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 }

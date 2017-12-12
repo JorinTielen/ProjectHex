@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.Map;
 import com.fantasticfive.shared.enums.BuildingType;
+import com.fantasticfive.shared.enums.GroundType;
+import com.fantasticfive.shared.enums.ObjectType;
 import com.fantasticfive.shared.enums.UnitType;
 
 import java.rmi.NotBoundException;
@@ -24,6 +26,7 @@ public class LocalGame {
     private Fog fog;
     private int version = 0;
     private IRemoteGame remoteGame;
+    private HashMap lastPathGenerated;
 
     public LocalGame(String ipAddress, String username) {
         getRemoteGame(ipAddress, username);
@@ -169,7 +172,7 @@ public class LocalGame {
 
     public void moveUnit(Unit u, Point location) {
         try {
-            if (remoteGame.moveUnit(u, location, thisPlayer.getId())){
+            if (remoteGame.moveUnit(u, location, thisPlayer.getId(), walkableHexes(u.getLocation(), u.getMovementLeft()), pathDistance(u, location))){
                 fog.unitMovement(map.getHexAtLocation(u.getLocation()), map.getHexAtLocation(location));
             }
         } catch (RemoteException e) {
@@ -257,14 +260,63 @@ public class LocalGame {
         }
     }
 
-    public void setWalkableHexesForUnit(Unit unit) {
-        List<Hexagon> walkableHexes = new ArrayList<>();
-        for (Hexagon hex : map.getHexagons()) {
-            if (map.canMoveTo(unit, hex.getLocation()) && hexEmpty(hex.getLocation())) {
-                walkableHexes.add(hex);
-            }
+    public Unit getUnitAtLocation(Point location){
+        try {
+            return remoteGame.getUnitAtLocation(location);
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL, e.getMessage());
+            return null;
         }
-        unit.setWalkableHexes(walkableHexes);
+    }
+
+    public void setWalkableHexesForUnit(Unit unit) {
+        unit.setWalkableHexes(walkableHexes(unit.getLocation(), unit.getMovementLeft()));
+    }
+
+    public List<Hexagon> walkableHexes(Point location, int radius){
+        List<Hexagon> area = new ArrayList<>();
+        List<Hexagon> frontier = new ArrayList<>();
+        HashMap pathMap = new HashMap();
+        Hexagon current;
+        int i = 0;
+        frontier.add(map.getHexAtLocation(location));
+        while (true){
+            current = frontier.get(i);
+            if (map.pathDistance(pathMap, current, map.getHexAtLocation(location)) == radius){
+                lastPathGenerated = pathMap;
+                return area;
+            }
+            for (Hexagon h : map.getHexesInRadius(current.getLocation(), 1)){
+                if (!pathMap.containsKey(h) &&
+                        h.getObjectType() != ObjectType.MOUNTAIN &&
+                        h.getGroundType() != GroundType.WATER &&
+                        getBuildingAtLocation(h.getLocation()) == null &&
+                        getUnitAtLocation(h.getLocation()) == null){
+                    frontier.add(h);
+                    pathMap.put(h, current);
+                    area.add(h);
+                }
+            }
+            i++;
+        }
+    }
+
+    public int pathDistance(Unit unit, Point location){
+        Hexagon targetHex = map.getHexAtLocation(location);
+        if (unit.getMovementLeft() == 0 ||
+                targetHex.getObjectType() == ObjectType.MOUNTAIN ||
+                targetHex.getGroundType() == GroundType.WATER ||
+                getBuildingAtLocation(location) != null ||
+                getUnitAtLocation(location) != null){
+            return 1;
+        }
+        Hexagon current = map.getHexAtLocation(location);
+        int i = 0;
+        while (current.getLocation().getX() != unit.getLocation().getX() || current.getLocation().getY() != unit.getLocation().getY()){
+            current = (Hexagon)lastPathGenerated.get(current);
+            i++;
+        }
+        return i;
     }
 
     public void destroyBuilding(Building building){
