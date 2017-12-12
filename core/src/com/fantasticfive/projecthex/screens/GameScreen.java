@@ -337,6 +337,7 @@ public class GameScreen implements Screen {
                         }
                         buildingToBuild = null;
                     }
+                    return;
                 }
             }
         }

@@ -176,7 +176,7 @@ public class MainMenuScreen implements Screen {
             }
             else if (btnStartGame.getTouchable() == Touchable.disabled && frame % 60 == 0) {
                 btnStartGame.setText(btnStartGame.getText() + ".");
-                if (btnStartGame.getText().length() > 15){
+                if (btnStartGame.getText().length() > 10){
                     btnStartGame.setText("Loading.");
                 }
             }
