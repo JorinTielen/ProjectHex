@@ -44,7 +44,7 @@ public class MainMenuScreen implements Screen {
     //ui
     public Skin skin;
     private Stage stage;
-    private Table table;
+    public Table table;
     private SpriteBatch menuBatch = new SpriteBatch();
 
     Texture title = new Texture("title.png");
@@ -64,6 +64,7 @@ public class MainMenuScreen implements Screen {
     public CreateServerTable createServerTable;
     public JoinServerTable joinServerTable;
     public OptionsTable optionsTable;
+    public LobbyTable lobbyTable;
 
     private Random random = new Random();
     private float screenWidth = Gdx.graphics.getWidth();
@@ -154,13 +155,13 @@ public class MainMenuScreen implements Screen {
 
         drawMenuBatch();
         if (serverStarted) {
-            if (future.isDone() && createServerTable.btnStartGame.getTouchable() == Touchable.disabled) {
-                createServerTable.btnStartGame.setText("Start game");
-                createServerTable.btnStartGame.setTouchable(Touchable.enabled);
-            } else if (createServerTable.btnStartGame.getTouchable() == Touchable.disabled && frame % 60 == 0) {
-                createServerTable.btnStartGame.setText(createServerTable.btnStartGame.getText() + ".");
-                if (createServerTable.btnStartGame.getText().length() > 10) {
-                    createServerTable.btnStartGame.setText("Loading.");
+            if (future.isDone() && createServerTable.btnCreateLobby.getTouchable() == Touchable.disabled) {
+                createServerTable.btnCreateLobby.setText("Create lobby");
+                createServerTable.btnCreateLobby.setTouchable(Touchable.enabled);
+            } else if (createServerTable.btnCreateLobby.getTouchable() == Touchable.disabled && frame % 60 == 0) {
+                createServerTable.btnCreateLobby.setText(createServerTable.btnCreateLobby.getText() + ".");
+                if (createServerTable.btnCreateLobby.getText().length() > 10) {
+                    createServerTable.btnCreateLobby.setText("Loading.");
                 }
             }
         }
@@ -168,7 +169,6 @@ public class MainMenuScreen implements Screen {
         if (Gdx.input.isTouched() && startScreen) {
             startScreen = false;
             loginTable.setVisible(true);
-            //mainMenuTable.setVisible(true); //TODO: Change this to login screen
         }
 
         stage.act(delta);
@@ -226,7 +226,7 @@ public class MainMenuScreen implements Screen {
         joinServerTable = new JoinServerTable(this);
         optionsTable = new OptionsTable(this, game);
 
-        if (loginTable != null) {
+         if (loginTable != null) {
             table.addActor(loginTable);
             loginTable.setVisible(false);
         }

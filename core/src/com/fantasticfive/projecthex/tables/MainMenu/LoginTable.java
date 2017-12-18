@@ -140,6 +140,7 @@ public class LoginTable extends Table {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    menuScreen.username = txtUsername.getText();
                     LoginTable.this.setVisible(false);
                     menuScreen.mainMenuTable.setVisible(true);
                 }

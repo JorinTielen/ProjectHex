@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -12,6 +13,7 @@ import com.fantasticfive.projecthex.screens.MainMenuScreen;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.util.ArrayList;
 
 public class CreateServerTable extends Table {
     private Table t;
@@ -22,29 +24,42 @@ public class CreateServerTable extends Table {
 
     private String ipAddress;
     private Label ipLabel;
-    public TextButton btnStartGame;
+    public TextButton btnCreateLobby;
+
+    private int minPlayers = 2;
+    private int maxPlayers = 6;
 
     public CreateServerTable(MainMenuScreen menuScreen) {
         t = new Table();
 
         final TextButton btnCopyToClipboard = new TextButton("Copy to clipboard", menuScreen.skin);
 
-        final TextButton btnBack = new TextButton("Back to menu", menuScreen.skin);
+        final SelectBox selectNumberOfPlayers = new SelectBox(menuScreen.skin);
+        String[] playersAmount = new String[maxPlayers - minPlayers + 1];
+        for (int i = 0; i < (maxPlayers - minPlayers) + 1; i++) {
+            playersAmount[i] = String.valueOf(i + minPlayers);
+        }
+        selectNumberOfPlayers.setItems(playersAmount);
 
-        btnStartGame = new TextButton("Start Game", menuScreen.skin);
+        btnCreateLobby = new TextButton("Create lobby", menuScreen.skin);
+
+        final TextButton btnBack = new TextButton("Back to menu", menuScreen.skin);
 
         t.add(ipLabel = new Label("Server ip address: ", menuScreen.skin));
         t.add(btnCopyToClipboard).width(collumnWidth / 2).height(collumnHeight / 2).pad(5);
         t.row();
-        t.add(btnStartGame).fill().height(collumnHeight).colspan(2).pad(5);
+        t.add(new Label("Max players: ", menuScreen.skin));
+        t.add(selectNumberOfPlayers).pad(5);
+        t.row();
+        t.add(btnCreateLobby).fill().height(collumnHeight).colspan(2).pad(5);
         t.row();
         t.add(btnBack).height(collumnHeight).width(collumnWidth / 2).colspan(2).pad(5);
         t.row();
 
         t.setPosition(screenWidth / 2, screenHeight / 2);
 
-        btnStartGame.setText("Loading");
-        btnStartGame.setTouchable(Touchable.disabled);
+        btnCreateLobby.setText("Loading");
+        btnCreateLobby.setTouchable(Touchable.disabled);
 
         btnCopyToClipboard.addListener(new ChangeListener() {
             @Override
@@ -56,18 +71,24 @@ public class CreateServerTable extends Table {
             }
         });
 
-        btnStartGame.addListener(new ChangeListener() {
+        btnCreateLobby.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 menuScreen.connectToServer(ipAddress, menuScreen.username);
+
+                menuScreen.lobbyTable = new LobbyTable(menuScreen, minPlayers, Integer.valueOf((String) selectNumberOfPlayers.getSelected()));
+                menuScreen.table.addActor(menuScreen.lobbyTable);
+                menuScreen.lobbyTable.setVisible(true);
+                CreateServerTable.this.setVisible(false);
+                //TODO: Code to join lobby
             }
         });
 
         btnBack.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                btnStartGame.setText("Loading");
-                btnStartGame.setTouchable(Touchable.disabled);
+                btnCreateLobby.setText("Loading");
+                btnCreateLobby.setTouchable(Touchable.disabled);
                 menuScreen.serverStarted = false;
                 CreateServerTable.this.setVisible(false);
                 menuScreen.mainMenuTable.setVisible(true);
