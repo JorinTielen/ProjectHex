@@ -159,6 +159,9 @@ public class GameScreen implements Screen {
         fogNeighbourTexture = new Texture("fogNeighbour.png");
         menuTexture = new Texture("gameMenuBackground.png");
 
+        Hexagon startHex = map.getHexAtLocation(localGame.getThisPlayer().getBuildings().get(0).getLocation());
+        camera.position.set(startHex.getPos().x, startHex.getPos().y, 0);
+
     }
 
     @Override
@@ -226,14 +229,16 @@ public class GameScreen implements Screen {
                 batch.setColor(Color.GREEN);
                 batch.draw(blankTexture, h.getPos().x + 35, h.getPos().y + 100, (int) ((double) 50 * ((double) u.getHealth() / (double) u.getMaxHealth())), 5);
                 batch.setColor(Color.WHITE);
-                if(unitHPLossTable.isVisible()) {
-                    unitHPLossTable.setY(unitHPLossTable.getY() + 1);
-                    unitHPLossTableUp++;
-                    if(unitHPLossTableUp == 25) {
-                        unitHPLossTableUp = 0;
-                        unitHPLossTable.setVisible(false);
-                    }
-                }
+            }
+        }
+
+        //draw how many HP a unit loses when it is attacked
+        if(unitHPLossTable.isVisible()) {
+            unitHPLossTable.setY(unitHPLossTable.getY() + 0.25f);
+            unitHPLossTableUp++;
+            if(unitHPLossTableUp == 25) {
+                unitHPLossTableUp = 0;
+                unitHPLossTable.setVisible(false);
             }
         }
 
@@ -514,9 +519,8 @@ public class GameScreen implements Screen {
     }
 
     private void showUnitHPLossUI(int hp, float x, float y) {
-        Vector3 tmp = new Vector3(x, y, 0);
-        camera.unproject(tmp);
-        unitHPLossTable.setPosition(tmp.x + 35, tmp.y + 100);
+        camera.update();
+        unitHPLossTable.setPosition(x, screenHeight - y + 100);
         ((UnitHPLossTable) unitHPLossTable).setHP(hp);
         unitHPLossTable.setVisible(true);
     }
