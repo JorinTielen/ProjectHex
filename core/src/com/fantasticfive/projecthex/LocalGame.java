@@ -87,14 +87,6 @@ public class LocalGame {
         }
     }
 
-    public void updateFromLocal() {
-        try {
-            remoteGame.updateFromLocal(players);
-        } catch (RemoteException e) {
-            LOGGER.log(Level.ALL, e.getMessage());
-        }
-    }
-
     public boolean isMyTurn() {
         try {
             return thisPlayer.getId() == remoteGame.getCurrentPlayer().getId();
@@ -404,6 +396,4 @@ public class LocalGame {
         }
         return false;
     }
-
-
 }

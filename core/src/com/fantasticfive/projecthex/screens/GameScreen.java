@@ -194,6 +194,7 @@ public class GameScreen implements Screen {
                     b.setImage();
                     LOGGER.info("no image");
                 }
+
                 Hexagon h = map.getHexAtLocation(b.getLocation());
                 batch.draw(b.getImage(), h.getPos().x, h.getPos().y);
                 batch.setColor(Color.RED);
@@ -213,7 +214,10 @@ public class GameScreen implements Screen {
                 }
             }
             for (Unit u : p.getUnits()) {
-                u.setTexture();
+                if (u.getTexture() == null) {
+                    u.setTexture();
+                }
+
                 Hexagon h = map.getHexAtLocation(u.getLocation());
                 batch.draw(u.getTexture(), h.getPos().x, h.getPos().y);
                 batch.setColor(Color.RED);
