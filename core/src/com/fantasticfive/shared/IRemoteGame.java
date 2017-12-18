@@ -9,7 +9,6 @@ import java.util.List;
 
 public interface IRemoteGame extends Remote {
     //RMI
-
     /**
      * Gets the version number.
      * @return the current version number of the game, increases when players do stuff.
@@ -99,7 +98,7 @@ public interface IRemoteGame extends Remote {
     /**
      * Makes a unit attack another.
      * @param u the unit you want to sell.
-     * @throws RemoteException
+     * @throws RemoteException when RMI breaks.
      */
     void sellUnit(Unit u) throws RemoteException;
     /**

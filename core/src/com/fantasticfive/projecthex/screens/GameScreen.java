@@ -197,6 +197,7 @@ public class GameScreen implements Screen {
                 Hexagon h = map.getHexAtLocation(b.getLocation());
                 batch.draw(b.getImage(), h.getPos().x, h.getPos().y);
                 batch.setColor(Color.RED);
+
                 //draw health bar
                 batch.draw(blankTexture, h.getPos().x + 35, h.getPos().y + 100, 50, 5);
                 batch.setColor(Color.GREEN);
@@ -212,6 +213,7 @@ public class GameScreen implements Screen {
                 }
             }
             for (Unit u : p.getUnits()) {
+                u.setTexture();
                 Hexagon h = map.getHexAtLocation(u.getLocation());
                 batch.draw(u.getTexture(), h.getPos().x, h.getPos().y);
                 batch.setColor(Color.RED);
@@ -411,6 +413,7 @@ public class GameScreen implements Screen {
                 //Move unit to hex if free
             } else {
                 localGame.moveUnit(u, hex.getLocation());
+                localGame.setWalkableHexesForUnit(localGame.getSelectedUnit());
             }
 
             //If clicked on unit and unit is selected
