@@ -82,7 +82,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         currentPlayer = players.get(0);
 
         try {
-            publisher.inform("Players", players, players);
+            publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -108,7 +108,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         }
 
         try {
-            publisher.inform("Players", players, players);
+            publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -132,7 +132,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         }
 
         try {
-            publisher.inform("Players", players, players);
+            publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -202,7 +202,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         startGame();
 
         try {
-            publisher.inform("Players", players, players);
+            publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -229,7 +229,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         }
 
         try {
-            publisher.inform("Players", players, players);
+            publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -272,7 +272,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         }
 
         try {
-            publisher.inform("Players", players, players);
+            publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -292,7 +292,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
                 realUnit.move(location, distance);
 
                 try {
-                    publisher.inform("Players", players, players);
+                    publisher.inform("Players", null, players);
                     version++;
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -303,7 +303,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         }
 
         try {
-            publisher.inform("Players", players, players);
+            publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -321,7 +321,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         }
 
         try {
-            publisher.inform("Players", players, players);
+            publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -336,7 +336,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
                     p.sellUnit(unit);
 
                     try {
-                        publisher.inform("Players", players, players);
+                        publisher.inform("Players", null, players);
                         version++;
                     } catch (RemoteException e) {
                         e.printStackTrace();
@@ -362,7 +362,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         }
 
         try {
-            publisher.inform("Players", players, players);
+            publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -378,7 +378,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         }
 
         try {
-            publisher.inform("Players", players, players);
+            publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -403,7 +403,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         }
 
         try {
-            publisher.inform("Players", players, players);
+            publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -429,7 +429,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         }
 
         try {
-            publisher.inform("Players", players, players);
+            publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -454,7 +454,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         }
 
         try {
-            publisher.inform("Players", players, players);
+            publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -480,7 +480,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         }
 
         try {
-            publisher.inform("Players", players, players);
+            publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
             e.printStackTrace();
