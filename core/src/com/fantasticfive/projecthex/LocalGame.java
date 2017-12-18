@@ -1,5 +1,6 @@
 package com.fantasticfive.projecthex;
 
+import com.badlogic.gdx.Gdx;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.Map;
 import com.fantasticfive.shared.enums.BuildingType;
@@ -22,10 +23,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class LocalGame {
-    private static LocalGame instance;
-    public static LocalGame GetInstance() {
-        return instance;
-    }
 
     private static final Logger LOGGER = Logger.getLogger(LocalGame.class.getName());
 
@@ -38,37 +35,38 @@ public class LocalGame {
 
     private HashMap lastPathGenerated;
 
-    private FontysListener fontysListener = new FontysListener();
+    private FontysListener fontysListener;
 
-    void UpdateFromRemotePush(List<Player> remotePlayers) {
-        this.players = remotePlayers;
+    public void UpdateFromRemotePush(List<Player> remotePlayers) {
+        Gdx.app.postRunnable(() -> {
+            players = remotePlayers;
 
-        for (Player p : players) {
-            if (this.thisPlayer.getId() == p.getId()) {
-                this.thisPlayer = p;
-            }
-            for (Hexagon h : map.getHexagons()) {
-                for (Hexagon h2 : p.getOwnedHexagons()) {
-                    if (h.getLocation().equals(h2.getLocation())) {
-                        h.setOwner(p);
-                    }
+            for (Player p : players) {
+                if (thisPlayer.getId() == p.getId()) {
+                    thisPlayer = p;
                 }
-                h.setColorTexture();
-            }
+                for (Hexagon h : map.getHexagons()) {
+                    for (Hexagon h2 : p.getOwnedHexagons()) {
+                        if (h.getLocation().equals(h2.getLocation())) {
+                            h.setOwner(p);
+                        }
+                    }
+                    h.setColorTexture();
+                }
 
-            for (Building b : p.getBuildings()) {
-                b.setImage();
+                for (Building b : p.getBuildings()) {
+                    b.setImage();
+                }
+                for (Unit u : p.getUnits()) {
+                    u.setTexture();
+                }
             }
-            for (Unit u : p.getUnits()) {
-                u.setTexture();
-            }
-        }
+        });
     }
 
     public LocalGame(String ipAddress, String username) {
         getRemoteGame(ipAddress, username);
         fog = new Fog(thisPlayer, thisPlayer.getOwnedHexagons(), this.map);
-        instance = this;
     }
 
     private void join(String username) {
@@ -364,6 +362,7 @@ public class LocalGame {
         //Try to subscribe
         if (remotePublisher != null) {
             try {
+                fontysListener = new FontysListener(this);
                 remotePublisher.subscribeRemoteListener(fontysListener, "Players");
             } catch (RemoteException e) {
                 LOGGER.severe("Client: subscribing to players went wrong");

@@ -31,6 +31,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
 
     private Registry registry;
     private static final String bindingName = "ProjectHex";
+
     private RemotePublisher publisher;
     private static final String publisherBindingName = "Publisher";
 
