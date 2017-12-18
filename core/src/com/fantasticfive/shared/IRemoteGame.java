@@ -95,7 +95,7 @@ public interface IRemoteGame extends Remote {
      * @param defender the unit defending
      * @throws RemoteException
      */
-    void attackUnit(Unit attacker, Unit defender) throws RemoteException;
+    int attackUnit(Unit attacker, Unit defender) throws RemoteException;
     /**
      * Makes a unit attack another.
      * @param u the unit you want to sell.
