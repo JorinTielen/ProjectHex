@@ -1,7 +1,6 @@
 package com.fantasticfive.projecthex.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
@@ -10,16 +9,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.fantasticfive.projecthex.LocalGame;
-import com.fantasticfive.server.RMIServer;
-import com.fantasticfive.server.ServerManager;
+import com.fantasticfive.projecthex.tables.MainMenu.*;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.Map;
 import com.fantasticfive.shared.enums.Color;
@@ -27,20 +21,8 @@ import com.fantasticfive.shared.enums.UnitType;
 import com.fantasticfive.shared.Point;
 import com.fantasticfive.shared.enums.*;
 
-import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
@@ -60,7 +42,7 @@ public class MainMenuScreen implements Screen {
     private List<Player> players = new ArrayList<>();
 
     //ui
-    private Skin skin;
+    public Skin skin;
     private Stage stage;
     private Table table;
     private SpriteBatch menuBatch = new SpriteBatch();
@@ -70,24 +52,26 @@ public class MainMenuScreen implements Screen {
     Texture titleCopyright = new Texture("titleCopyright.png");
 
     //stuff for creating server
-    private boolean serverStarted;
-    private Future<Boolean> future;
-    TextButton btnStartGame;
+    public boolean serverStarted;
+    public Future<Boolean> future;
     private int frame;
 
-    private Music menuMusic;
+    public Music menuMusic;
 
     //Tables
-    private GameSelectTable gameSelectTable;
-    private CreateServerTable createServerTable;
-    private JoinServerTable joinServerTable;
-    private OptionsTable optionsTable;
+    public LoginTable loginTable;
+    public MainMenuTable mainMenuTable;
+    public CreateServerTable createServerTable;
+    public JoinServerTable joinServerTable;
+    public OptionsTable optionsTable;
 
     private Random random = new Random();
     private float screenWidth = Gdx.graphics.getWidth();
     private float screenHeight = Gdx.graphics.getHeight();
     private boolean startScreen = true;
     private boolean cameraUp = true;
+
+    public String username;
 
     public MainMenuScreen(final GameMain game) {
         this.serverStarted = false;
@@ -169,22 +153,22 @@ public class MainMenuScreen implements Screen {
         game.getBatch().end();
 
         drawMenuBatch();
-        if (serverStarted){
-            if (future.isDone() && btnStartGame.getTouchable() == Touchable.disabled){
-                btnStartGame.setText("Start game");
-                btnStartGame.setTouchable(Touchable.enabled);
-            }
-            else if (btnStartGame.getTouchable() == Touchable.disabled && frame % 60 == 0) {
-                btnStartGame.setText(btnStartGame.getText() + ".");
-                if (btnStartGame.getText().length() > 10){
-                    btnStartGame.setText("Loading.");
+        if (serverStarted) {
+            if (future.isDone() && createServerTable.btnStartGame.getTouchable() == Touchable.disabled) {
+                createServerTable.btnStartGame.setText("Start game");
+                createServerTable.btnStartGame.setTouchable(Touchable.enabled);
+            } else if (createServerTable.btnStartGame.getTouchable() == Touchable.disabled && frame % 60 == 0) {
+                createServerTable.btnStartGame.setText(createServerTable.btnStartGame.getText() + ".");
+                if (createServerTable.btnStartGame.getText().length() > 10) {
+                    createServerTable.btnStartGame.setText("Loading.");
                 }
             }
         }
 
         if (Gdx.input.isTouched() && startScreen) {
             startScreen = false;
-            gameSelectTable.setVisible(true);
+            loginTable.setVisible(true);
+            //mainMenuTable.setVisible(true); //TODO: Change this to login screen
         }
 
         stage.act(delta);
@@ -236,14 +220,20 @@ public class MainMenuScreen implements Screen {
     }
 
     private void createUIElements() {
-        gameSelectTable = new GameSelectTable();
-        createServerTable = new CreateServerTable();
-        joinServerTable = new JoinServerTable();
-        optionsTable = new OptionsTable();
+        loginTable = new LoginTable(this);
+        mainMenuTable = new MainMenuTable(this);
+        createServerTable = new CreateServerTable(this);
+        joinServerTable = new JoinServerTable(this);
+        optionsTable = new OptionsTable(this, game);
 
-        if (gameSelectTable != null) {
-            table.addActor(gameSelectTable);
-            gameSelectTable.setVisible(false);
+        if (loginTable != null) {
+            table.addActor(loginTable);
+            loginTable.setVisible(false);
+        }
+
+        if (mainMenuTable != null) {
+            table.addActor(mainMenuTable);
+            mainMenuTable.setVisible(false);
         }
 
         if (createServerTable != null) {
@@ -356,7 +346,7 @@ public class MainMenuScreen implements Screen {
         }
     }
 
-    private void connectToServer(String ipAdress, String username) {
+    public void connectToServer(String ipAdress, String username) {
         localGame = new LocalGame(ipAdress, username);
         game.setScreen(new GameScreen(game, localGame));
         dispose();
@@ -365,323 +355,4 @@ public class MainMenuScreen implements Screen {
     private float resizeImage(float originalSize) {
         return originalSize / 1080 * screenHeight;
     }
-
-    private class GameSelectTable extends Table {
-        private Table t;
-        private float collumnWidth = screenWidth / 100 * 25;
-        private float collumnHeight = screenHeight / 100 * 6;
-
-        public GameSelectTable() {
-            t = new Table();
-
-            final TextButton btnCreateServer = new TextButton("Create Server", skin);
-
-            final TextButton btnJoinServer = new TextButton("Join Server", skin);
-
-            final TextButton btnOptions = new TextButton("Options", skin);
-
-            final TextButton btnExitGame = new TextButton("Exit", skin);
-
-            t.add(btnCreateServer).width(collumnWidth).height(collumnHeight).pad(5);
-            t.row();
-            t.add(btnJoinServer).width(collumnWidth).height(collumnHeight).pad(5);
-            t.row();
-            t.add(btnOptions).width(collumnWidth).height(collumnHeight).pad(5);
-            t.row();
-            t.add(btnExitGame).width(collumnWidth).height(collumnHeight).pad(5);
-            t.row();
-
-            t.setPosition(screenWidth / 2, screenHeight / 2);
-
-            btnCreateServer.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    gameSelectTable.setVisible(false);
-                    ExecutorService executor = Executors.newSingleThreadExecutor();
-                    future = executor.submit(new ServerManager());
-                    serverStarted = true;
-                    InetAddress localhost = null;
-                    try {
-                        localhost = InetAddress.getLocalHost();
-                    } catch (UnknownHostException e) {
-                        e.printStackTrace();
-                    }
-                    createServerTable.setIpAddress(localhost.getHostAddress()); //TODO: can be better because can't see when loading is done now
-                    createServerTable.setVisible(true);
-                }
-            });
-
-            btnJoinServer.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    gameSelectTable.setVisible(false);
-                    joinServerTable.setVisible(true);
-                }
-            });
-
-            btnOptions.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    gameSelectTable.setVisible(false);
-                    optionsTable.setVisible(true);
-                }
-            });
-
-            btnExitGame.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    Gdx.app.exit();
-                }
-            });
-
-            addActor(t);
-        }
-    }
-
-    private class CreateServerTable extends Table {
-        private Table t;
-        private float collumnWidth = screenWidth / 100 * 25;
-        private float collumnHeight = screenHeight / 100 * 6;
-
-        private String ipAddress;
-        private Label ipLabel;
-
-        public CreateServerTable() {
-            t = new Table();
-
-            final TextButton btnCopyToClipboard = new TextButton("Copy to clipboard", skin);
-
-            final TextButton btnBack = new TextButton("Back to menu", skin);
-
-            btnStartGame = new TextButton("Start Game", skin);
-
-            final TextField txtUsername = new TextField("", skin);
-
-            t.add(ipLabel = new Label("Server ip address: ", skin));
-            t.add(btnCopyToClipboard).width(collumnWidth / 2).height(collumnHeight / 2).pad(5);
-            t.row();
-            t.add(new Label("Username: ", skin));
-            t.add(txtUsername).width(collumnWidth).height(collumnHeight).pad(5);
-            t.row();
-            t.add(btnStartGame).fill().height(collumnHeight).colspan(2).pad(5);
-            t.row();
-            t.add(btnBack).height(collumnHeight).width(collumnWidth / 2).colspan(2).pad(5);
-            t.row();
-
-            t.setPosition(screenWidth / 2, screenHeight / 2);
-
-            btnStartGame.setText("Loading");
-            btnStartGame.setTouchable(Touchable.disabled);
-
-            btnCopyToClipboard.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    //https://stackoverflow.com/questions/6710350/copying-text-to-the-clipboard-using-java
-                    StringSelection stringSelection = new StringSelection(ipAddress);
-                    Clipboard clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard();
-                    clpbrd.setContents(stringSelection, null);
-                }
-            });
-
-            btnStartGame.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    connectToServer(ipAddress, txtUsername.getText());
-                }
-            });
-
-            btnBack.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    btnStartGame.setText("Loading");
-                    btnStartGame.setTouchable(Touchable.disabled);
-                    serverStarted = false;
-                    createServerTable.setVisible(false);
-                    gameSelectTable.setVisible(true);
-                }
-            });
-
-
-            addActor(t);
-        }
-
-        public void setIpAddress(String ipAddress) {
-            this.ipAddress = ipAddress;
-            ipLabel.setText("Server ip address: " + ipAddress);
-        }
-    }
-
-    private class JoinServerTable extends Table {
-        private Table t;
-        private float collumnWidth = screenWidth / 100 * 25;
-        private float collumnHeight = screenHeight / 100 * 6;
-
-        public JoinServerTable() {
-            t = new Table();
-
-            final TextField txtIP = new TextField("", skin);
-
-            final TextField txtUsername = new TextField("", skin);
-
-            final TextButton btnConnect = new TextButton("Connect to server", skin);
-
-            final TextButton btnBack = new TextButton("Back to menu", skin);
-
-            t.add(new Label("Server IP: ", skin));
-            t.add(txtIP).width(collumnWidth).height(collumnHeight).pad(5);
-            t.row();
-            t.add(new Label("Username: ", skin));
-            t.add(txtUsername).width(collumnWidth).height(collumnHeight).pad(5);
-            t.row();
-            t.add(btnConnect).fill().height(collumnHeight).colspan(2).pad(5);
-            t.row();
-            t.add(btnBack).height(collumnHeight).width(collumnWidth / 2).colspan(2).pad(5);
-            t.row();
-
-            t.setPosition(screenWidth / 2, screenHeight / 2);
-
-            btnConnect.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    connectToServer(txtIP.getText(), txtUsername.getText());
-                }
-            });
-
-            btnBack.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    joinServerTable.setVisible(false);
-                    gameSelectTable.setVisible(true);
-                }
-            });
-
-            addActor(t);
-        }
-    }
-
-    private class OptionsTable extends Table {
-        private Table t;
-        private float collumnWidth = screenWidth / 100 * 25;
-        private float collumnHeight = screenHeight / 100 * 6;
-
-        private Properties prop = new Properties();
-        private InputStream input;
-        private OutputStream out;
-
-        public OptionsTable() {
-            t = new Table();
-
-            final SelectBox selectResolution = new SelectBox(skin);
-            String[] resolutions = new String[]{"1920x1080", "1600x900", "1280x720"};
-            selectResolution.setItems(resolutions);
-
-            final CheckBox checkFullScreen = new CheckBox("Fullscreen", skin);
-
-            final Slider sliderMusic = new Slider(0, 1, 0.01f, false, skin);
-            sliderMusic.setValue(menuMusic.getVolume());
-            Label musicLabel = new Label(Float.toString(sliderMusic.getValue() * 100), skin);
-
-            final TextButton btnApplyChanges = new TextButton("Apply changes", skin);
-
-            final TextButton btnBack = new TextButton("Back to menu", skin);
-
-            try {
-                input = new FileInputStream("options.properties");
-                prop.load(input);
-                String propResolution = String.valueOf((int)screenWidth + "x" + (int)screenHeight);
-                for (int i = 0; i < resolutions.length; i++) {
-                    if (resolutions[i].equals(propResolution)) {
-                         selectResolution.setSelectedIndex(i);
-                    }
-                }
-                checkFullScreen.setChecked(Boolean.valueOf(prop.getProperty("fullscreen")));
-                sliderMusic.setValue(Float.valueOf(prop.getProperty("musicvolume")));
-                menuMusic.setVolume(sliderMusic.getValue());
-                musicLabel.setText(String.format("%.0f", (sliderMusic.getValue() * 100)));
-                input.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            t.add(new Label("Resolution: ", skin));
-            t.add(selectResolution);
-            t.add(checkFullScreen);
-            t.row();
-            t.add(new Label("Music: ", skin));
-            t.add(sliderMusic).width(collumnWidth).height(collumnHeight).pad(5);
-            t.add(musicLabel);
-            t.row();
-            t.add(btnApplyChanges).height(collumnHeight).width(collumnWidth / 2).pad(5);
-            t.add(btnBack).height(collumnHeight).width(collumnWidth / 2).pad(5);
-            t.row();
-
-            t.setPosition(screenWidth / 2, screenHeight / 2);
-
-            sliderMusic.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    menuMusic.setVolume(sliderMusic.getValue());
-                    musicLabel.setText(String.format("%.0f", (sliderMusic.getValue() * 100)));
-                }
-            });
-
-            btnApplyChanges.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    String resolution = (String) selectResolution.getSelected();
-                    String[] resolutionParts = resolution.split("x");
-                    if (checkFullScreen.isChecked()) {
-                        Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-                        resolution = String.valueOf(Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight());
-                    }
-                    else{
-                        Gdx.graphics.setWindowedMode(Integer.valueOf(resolutionParts[0]), Integer.valueOf(resolutionParts[1]));
-                    }
-
-                    try{
-                        out = new FileOutputStream("options.properties");
-                        prop.setProperty("resolution", resolution);
-                        prop.setProperty("fullscreen", String.valueOf(checkFullScreen.isChecked()));
-                        prop.setProperty("musicvolume", String.valueOf(sliderMusic.getValue()));
-                        prop.store(out, "");
-                        input.close();
-                    }
-                    catch(Exception e){
-                        e.printStackTrace();
-                    }
-                    menuMusic.dispose();
-                    game.setScreen(new MainMenuScreen(game));
-
-                }
-            });
-
-            btnBack.addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    try {
-                        input = new FileInputStream("options.properties");
-                        prop.load(input);
-                        String propResolution = String.valueOf((int)screenWidth + "x" + (int)screenHeight);
-                        for (int i = 0; i < resolutions.length; i++) {
-                            if (resolutions[i].equals(propResolution)) {
-                                selectResolution.setSelectedIndex(i);
-                            }
-                        }
-                        checkFullScreen.setChecked(Boolean.valueOf(prop.getProperty("fullscreen")));
-                        sliderMusic.setValue(Float.valueOf(prop.getProperty("musicvolume")));
-                        menuMusic.setVolume(sliderMusic.getValue());
-                        musicLabel.setText(String.format("%.0f", (sliderMusic.getValue() * 100)));
-                        input.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    optionsTable.setVisible(false);
-                    gameSelectTable.setVisible(true);
-                }
-            });
-
-            addActor(t);
-        }
-    }
-
 }

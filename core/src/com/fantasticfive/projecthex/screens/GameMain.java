@@ -13,8 +13,8 @@ public class GameMain extends Game {
         batch = new SpriteBatch();
         font = new BitmapFont();
 
-       // this.setScreen(new MainMenuScreen(this)); //Start game without logo intro
-        this.setScreen(new BeginCreditsScreen(this)); //Start game with logo intro
+        this.setScreen(new MainMenuScreen(this)); //Start game without logo intro
+       // this.setScreen(new BeginCreditsScreen(this)); //Start game with logo intro
     }
 
     public void render() {
