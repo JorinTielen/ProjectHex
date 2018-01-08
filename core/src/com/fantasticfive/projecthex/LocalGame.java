@@ -183,11 +183,12 @@ public class LocalGame {
         return unit;
     }
 
-    public void attackUnit(Unit attacker, Unit defender) {
+    public int attackUnit(Unit attacker, Unit defender) {
         try {
-            remoteGame.attackUnit(attacker, defender);
+            return remoteGame.attackUnit(attacker, defender);
         } catch (RemoteException e) {
             LOGGER.log(Level.ALL, e.getMessage());
+            return 0;
         }
     }
 

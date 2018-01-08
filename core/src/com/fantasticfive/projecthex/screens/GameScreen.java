@@ -60,8 +60,10 @@ public class GameScreen implements Screen {
     private Table optionsTable;
     private Table playerWinTable;
     private Table unitScoutTable;
+    private Table unitHPLossTable;
     private Table gameMenuTable;
     private Building buildingToBuild;
+    private int unitHPLossTableUp = 0;
 
     private float screenWidth = Gdx.graphics.getWidth();
     private float screenHeight = Gdx.graphics.getHeight();
@@ -118,6 +120,11 @@ public class GameScreen implements Screen {
             table.addActor(unitScoutTable);
         }
 
+        createUnitHPLossUI();
+        if (unitHPLossTable != null) {
+            table.addActor(unitHPLossTable);
+        }
+
         createBuildingSellUI();
         if (buildingSellTable != null) {
             table.addActor(buildingSellTable);
@@ -151,6 +158,9 @@ public class GameScreen implements Screen {
         fogTexture = new Texture("fog.png");
         fogNeighbourTexture = new Texture("fogNeighbour.png");
         menuTexture = new Texture("gameMenuBackground.png");
+
+        Hexagon startHex = map.getHexAtLocation(localGame.getThisPlayer().getBuildings().get(0).getLocation());
+        camera.position.set(startHex.getPos().x, startHex.getPos().y, 0);
 
     }
 
@@ -225,6 +235,16 @@ public class GameScreen implements Screen {
                 batch.setColor(Color.GREEN);
                 batch.draw(blankTexture, h.getPos().x + 35, h.getPos().y + 100, (int) ((double) 50 * ((double) u.getHealth() / (double) u.getMaxHealth())), 5);
                 batch.setColor(Color.WHITE);
+            }
+        }
+
+        //draw how many HP a unit loses when it is attacked
+        if(unitHPLossTable.isVisible()) {
+            unitHPLossTable.setY(unitHPLossTable.getY() + 0.25f);
+            unitHPLossTableUp++;
+            if(unitHPLossTableUp == 25) {
+                unitHPLossTableUp = 0;
+                unitHPLossTable.setVisible(false);
             }
         }
 
@@ -330,7 +350,7 @@ public class GameScreen implements Screen {
                     //When clicked on unit or unit is selected
                     if (localGame.getUnitOnHex(hex) != null || localGame.getSelectedUnit() != null) {
                         buildingToBuild = null;
-                        unitClick(hex);
+                        unitClick(hex, x, y);
                     }
                     //Create building on hex
                     else if (buildingToBuild != null) {
@@ -398,7 +418,7 @@ public class GameScreen implements Screen {
         }
     }
 
-    private void unitClick(Hexagon hex) {
+    private void unitClick(Hexagon hex, float x, float y) {
         //If clicked on unit and no unit is selected
         if (localGame.getUnitOnHex(hex) != null && localGame.getSelectedUnit() == null && localGame.getUnitOnHex(hex).getOwner() == localGame.getThisPlayer()) {
             Unit u = localGame.getUnitOnHex(hex);
@@ -437,8 +457,8 @@ public class GameScreen implements Screen {
                 //Attack the other unit
                 Unit u = localGame.getSelectedUnit();
                 Unit enemy = localGame.getUnitOnHex(hex);
-
-                localGame.attackUnit(u, enemy);
+                int hp = localGame.attackUnit(u, enemy);
+                showUnitHPLossUI(hp, x, y);
             }
         }
     }
@@ -501,6 +521,17 @@ public class GameScreen implements Screen {
         ((UnitScoutTable) unitScoutTable).setUnit(unit);
         unitScoutTable.setPosition(x, screenHeight - y);
         unitScoutTable.setVisible(true);
+    }
+
+    private void createUnitHPLossUI() {
+        unitHPLossTable = new UnitHPLossTable(skin);
+    }
+
+    private void showUnitHPLossUI(int hp, float x, float y) {
+        camera.update();
+        unitHPLossTable.setPosition(x, screenHeight - y + 100);
+        ((UnitHPLossTable) unitHPLossTable).setHP(hp);
+        unitHPLossTable.setVisible(true);
     }
 
 
