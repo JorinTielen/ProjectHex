@@ -64,6 +64,7 @@ public class MainMenuScreen implements Screen {
     private Stage stage;
     private Table table;
     private SpriteBatch menuBatch = new SpriteBatch();
+    private SpriteBatch backgroundBatch = new SpriteBatch();
 
     Texture title = new Texture("title.png");
     Texture titleStart = new Texture("titleStart.png");
@@ -145,17 +146,17 @@ public class MainMenuScreen implements Screen {
             camera.translate(new Vector2(-xMovement, -yMovement));
         }
         camera.update();
-        game.getBatch().setProjectionMatrix(camera.combined);
+        backgroundBatch.setProjectionMatrix(camera.combined);
 
 
         //draw all the sprites
-        game.getBatch().begin();
+        backgroundBatch.begin();
 
         //draw all hexes from the map
         for (Hexagon hex : map.getHexagons()) {
-            game.getBatch().draw(hex.getGroundImage(), hex.getPos().x, hex.getPos().y);
+            backgroundBatch.draw(hex.getGroundImage(), hex.getPos().x, hex.getPos().y);
             if (hex.getObjectImage() != null) {
-                game.getBatch().draw(hex.getObjectImage(), hex.getPos().x, hex.getPos().y);
+                backgroundBatch.draw(hex.getObjectImage(), hex.getPos().x, hex.getPos().y);
             }
         }
 
@@ -163,10 +164,10 @@ public class MainMenuScreen implements Screen {
         for (Player p : players) {
             for (Unit u : p.getUnits()) {
                 Hexagon h = map.getHexAtLocation(u.getLocation());
-                game.getBatch().draw(u.getTexture(), h.getPos().x, h.getPos().y);
+                backgroundBatch.draw(u.getTexture(), h.getPos().x, h.getPos().y);
             }
         }
-        game.getBatch().end();
+        backgroundBatch.end();
 
         drawMenuBatch();
         if (serverStarted){
@@ -212,7 +213,7 @@ public class MainMenuScreen implements Screen {
     @Override
     public void dispose() {
         menuBatch.dispose();
-        game.batch.dispose();
+        backgroundBatch.dispose();
         if (menuMusic != null) menuMusic.dispose();
     }
 

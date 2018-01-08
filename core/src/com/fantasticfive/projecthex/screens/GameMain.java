@@ -6,12 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class GameMain extends Game {
 
-    public SpriteBatch batch;
-    public BitmapFont font;
-
     public void create() {
-        batch = new SpriteBatch();
-        font = new BitmapFont();
 
        // this.setScreen(new MainMenuScreen(this)); //Start game without logo intro
         this.setScreen(new BeginCreditsScreen(this)); //Start game with logo intro
@@ -22,14 +17,5 @@ public class GameMain extends Game {
     }
 
     public void dispose() {
-        font.dispose();
-    }
-
-    public SpriteBatch getBatch() {
-        return batch;
-    }
-
-    public BitmapFont getFont() {
-        return font;
     }
 }
