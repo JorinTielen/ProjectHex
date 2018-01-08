@@ -184,8 +184,8 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
                     distance = townCenter_distance;
                 }
             }
-        } while (distance < 4 || !hexEmpty(location) || location.getY() == 0 || location.getY() == map.getHeight()
-                || location.getX() == 0 || location.getX() == map.getWidth());
+        } while (distance < 4 || !hexEmpty(location) || location.getY() == 0 || location.getY() == map.getHeight() - 1
+                || location.getX() == 0 || location.getX() == map.getWidth() - 1);
         Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, location, p);
         p.purchaseBuilding(b);
 

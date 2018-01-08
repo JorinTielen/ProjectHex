@@ -50,6 +50,7 @@ public class GameScreen implements Screen {
     private Texture menuTexture;
     private SpriteAnimation explosionAnimation;
     public boolean inMenu;
+    private boolean uiClearedAfterEndTurn;
 
     //tables
     private Table unitShopTable;
@@ -93,6 +94,8 @@ public class GameScreen implements Screen {
         table.setDebug(true);
 
         createSkin();
+
+        uiClearedAfterEndTurn = false;
 
         //Create UI
         createPlayerUI();
@@ -298,6 +301,15 @@ public class GameScreen implements Screen {
 
         if(inMenu){
             batch.draw(menuTexture, camera.position.x - (screenWidth / 2f),camera.position.y - (screenHeight / 2f),screenWidth, screenHeight);
+        }
+
+        if(localGame.isMyTurn()) {
+            if(uiClearedAfterEndTurn) {
+                uiClearedAfterEndTurn = false;
+            }
+        } else {
+            clearUI();
+            uiClearedAfterEndTurn = true;
         }
 
         batch.end();
