@@ -331,6 +331,8 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+
+        return 0;
     }
 
     @Override
