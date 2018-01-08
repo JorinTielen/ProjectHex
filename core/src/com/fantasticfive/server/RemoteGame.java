@@ -404,13 +404,12 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     }
 
     public void buyBuilding(BuildingType buildingType, Point location) {
-            if (buildingType == BuildingType.RESOURCE && hexEmptyResource(location)) {
-                currentPlayer.purchaseBuildingOnMountain(buildingFactory.createBuilding(buildingType, location, currentPlayer));
-                currentPlayer.getBuildingAtLocation(location).setResourceOnMountain(true);
-            }
-            else if (hexEmpty(location)) {
-                currentPlayer.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, currentPlayer));
-            }
+        if (buildingType == BuildingType.RESOURCE && hexEmptyResource(location)) {
+            currentPlayer.purchaseBuildingOnMountain(buildingFactory.createBuilding(buildingType, location, currentPlayer));
+            currentPlayer.getBuildingAtLocation(location).setResourceOnMountain(true);
+        }
+        else if (hexEmpty(location)) {
+            currentPlayer.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, currentPlayer));
         }
 
         try {
