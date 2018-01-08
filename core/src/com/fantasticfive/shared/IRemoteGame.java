@@ -25,6 +25,8 @@ public interface IRemoteGame extends Remote {
      * @throws RemoteException when RMI breaks.
      */
     void startGame() throws RemoteException;
+
+    boolean getStarted() throws RemoteException;
     /**
      * Ends the turn of the given playerId, and starts someone else's turn.
      * @throws RemoteException when RMI breaks.

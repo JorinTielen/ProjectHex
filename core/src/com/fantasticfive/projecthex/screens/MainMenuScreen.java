@@ -45,6 +45,7 @@ public class MainMenuScreen implements Screen {
     public Skin skin;
     private Stage stage;
     public Table table;
+    private SpriteBatch backgroundBatch = new SpriteBatch();
     private SpriteBatch menuBatch = new SpriteBatch();
 
     Texture title = new Texture("title.png");
@@ -130,17 +131,17 @@ public class MainMenuScreen implements Screen {
             camera.translate(new Vector2(-xMovement, -yMovement));
         }
         camera.update();
-        game.getBatch().setProjectionMatrix(camera.combined);
+        backgroundBatch.setProjectionMatrix(camera.combined);
 
 
         //draw all the sprites
-        game.getBatch().begin();
+        backgroundBatch.begin();
 
         //draw all hexes from the map
         for (Hexagon hex : map.getHexagons()) {
-            game.getBatch().draw(hex.getGroundImage(), hex.getPos().x, hex.getPos().y);
+            backgroundBatch.draw(hex.getGroundImage(), hex.getPos().x, hex.getPos().y);
             if (hex.getObjectImage() != null) {
-                game.getBatch().draw(hex.getObjectImage(), hex.getPos().x, hex.getPos().y);
+                backgroundBatch.draw(hex.getObjectImage(), hex.getPos().x, hex.getPos().y);
             }
         }
 
@@ -148,10 +149,10 @@ public class MainMenuScreen implements Screen {
         for (Player p : players) {
             for (Unit u : p.getUnits()) {
                 Hexagon h = map.getHexAtLocation(u.getLocation());
-                game.getBatch().draw(u.getTexture(), h.getPos().x, h.getPos().y);
+                backgroundBatch.draw(u.getTexture(), h.getPos().x, h.getPos().y);
             }
         }
-        game.getBatch().end();
+        backgroundBatch.end();
 
         drawMenuBatch();
         if (serverStarted) {
@@ -191,13 +192,14 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void hide() {
+
     }
 
     @Override
     public void dispose() {
-        menuBatch.dispose();
-        game.batch.dispose();
-        if (menuMusic != null) menuMusic.dispose();
+        //menuBatch.dispose();
+        //backgroundBatch.dispose();
+        //if (menuMusic != null) menuMusic.dispose();
     }
 
     public void startMusic() {
@@ -205,7 +207,7 @@ public class MainMenuScreen implements Screen {
         menuMusic.setLooping(true);
         menuMusic.setVolume(0);
         menuMusic.play();
-        // menuMusic.setVolume(0); //Comment if you want to turn off music
+        menuMusic.setVolume(0); //Comment if you want to turn off music
     }
 
     private void drawMenuBatch() {
@@ -347,12 +349,19 @@ public class MainMenuScreen implements Screen {
 
     public void connectToServer(String ipAdress, String username) {
         localGame = new LocalGame(ipAdress, username);
-        //game.setScreen(new GameScreen(game, localGame));
-        //dispose();
     }
 
     public void ready(String username) {
         localGame.ready(username);
+    }
+
+    public boolean getStarted() {
+        return localGame.getStarted();
+    }
+
+    public void join() {
+        game.setScreen(new GameScreen(game, localGame));
+        dispose();
     }
 
     private float resizeImage(float originalSize) {

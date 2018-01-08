@@ -94,12 +94,7 @@ public class BeginCreditsScreen implements Screen {
         stage.getRoot().getColor().a = 1;
         SequenceAction sequenceAction = new SequenceAction();
         sequenceAction.addAction(fadeOut(0.5f));
-        sequenceAction.addAction(run(new Runnable() {
-            @Override
-            public void run() {
-                game.setScreen(new MainMenuScreen(game));
-            }
-        }));
+        sequenceAction.addAction(run(() -> game.setScreen(new MainMenuScreen(game))));
         stage.getRoot().addAction(sequenceAction);
     }
 

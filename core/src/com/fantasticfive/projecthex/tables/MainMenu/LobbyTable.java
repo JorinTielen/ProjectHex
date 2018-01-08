@@ -10,8 +10,7 @@ import com.fantasticfive.projecthex.Database;
 import com.fantasticfive.projecthex.screens.MainMenuScreen;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
 
 public class LobbyTable extends Table {
@@ -46,7 +45,18 @@ public class LobbyTable extends Table {
         btnReady.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-
+                menuScreen.ready(menuScreen.username);
+                Timer timer = new Timer();
+                timer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        Gdx.app.postRunnable(() -> {
+                            if (menuScreen.getStarted()) {
+                                menuScreen.join();
+                            }
+                        });
+                    }
+                }, 0, 250);
             }
         });
 

@@ -20,6 +20,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     private int version = 0;
 
     private int readyPlayers = 0;
+    private boolean started = false;
     private List<Player> players = new ArrayList<>();
     private Player currentPlayer;
     private Map map;
@@ -93,6 +94,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     public void startGame() {
         Collections.shuffle(players);
         currentPlayer = players.get(0);
+        started = true;
 
         try {
             publisher.inform("Players", null, players);
@@ -100,6 +102,10 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean getStarted() {
+        return started;
     }
 
     @Override
