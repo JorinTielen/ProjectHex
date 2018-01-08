@@ -74,7 +74,7 @@ public class CreateServerTable extends Table {
         btnCreateLobby.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                menuScreen.connectToServer(ipAddress, menuScreen.username);
+              //  menuScreen.connectToServer(ipAddress, menuScreen.username);
 
                 menuScreen.lobbyTable = new LobbyTable(menuScreen, minPlayers, Integer.valueOf((String) selectNumberOfPlayers.getSelected()));
                 menuScreen.table.addActor(menuScreen.lobbyTable);
@@ -91,7 +91,6 @@ public class CreateServerTable extends Table {
                 btnCreateLobby.setTouchable(Touchable.disabled);
                 menuScreen.serverStarted = false;
                 CreateServerTable.this.setVisible(false);
-                menuScreen.mainMenuTable.setVisible(true);
             }
         });
 
