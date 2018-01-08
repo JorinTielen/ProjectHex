@@ -97,7 +97,9 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
                 if (currentPlayer.getTurnsWithoutGold() == 3){
                     leaveGame(currentPlayer.getId());
                 }
-                currentPlayer.endTurn();
+                else{
+                    currentPlayer.endTurn();
+                }
                 int i = players.indexOf(currentPlayer);
 
                 //If current player is not the last in the list
@@ -404,11 +406,11 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     }
 
     public void buyBuilding(BuildingType buildingType, Point location) {
-        if (buildingType == BuildingType.RESOURCE && hexEmptyResource(location)) {
+        if (buildingType == BuildingType.RESOURCE && hexEmptyResource(location) && currentPlayerOwnsLand(location)) {
             currentPlayer.purchaseBuildingOnMountain(buildingFactory.createBuilding(buildingType, location, currentPlayer));
             currentPlayer.getBuildingAtLocation(location).setResourceOnMountain(true);
         }
-        else if (hexEmpty(location)) {
+        else if (hexEmpty(location) && currentPlayerOwnsLand(location)) {
             currentPlayer.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, currentPlayer));
         }
 
@@ -502,10 +504,6 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
 
     @Override
     public boolean hexEmpty(Point location) {
-        //Check if currentPlayer owns land
-        if(map.getHexAtLocation(location).getOwner() != currentPlayer){
-            return false;
-        }
 
         //Check if unit is on hex
         for (Player player : players) {
@@ -524,10 +522,6 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     }
 
     private boolean hexEmptyResource(Point location) {
-        //Check if currentPlayer owns land
-        if(map.getHexAtLocation(location).getOwner() != currentPlayer){
-            return false;
-        }
 
         //Check if unit is on hex
         for (Player player : players) {
@@ -543,6 +537,14 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         return (hex.getObjectType() == ObjectType.MOUNTAIN
                 && getBuildingAtLocation(location) == null
                 && hex.getGroundType() != GroundType.WATER);
+    }
+
+    private boolean currentPlayerOwnsLand(Point location){
+        //Check if currentPlayer owns land
+        if(map.getHexAtLocation(location).getOwner() != currentPlayer){
+            return false;
+        }
+        return true;
     }
 
     public boolean lastPlayer() {
