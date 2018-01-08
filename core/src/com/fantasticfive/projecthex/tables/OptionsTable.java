@@ -47,11 +47,19 @@ public class OptionsTable extends Table {
        buttonEndTurn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                LOGGER.info("Ending turn");
-                OptionsTable.this.game.endTurn();
-                if (game.isMyTurn()){
+                if(game.isMyTurn()){
+                    LOGGER.info("Ending turn");
+                    OptionsTable.this.game.endTurn();
                     setTimeLabel(7200);
+                    if (endTurnButtonBig == true){
+                        Cell endTurnCell = t.getCell(buttonEndTurn);
+                        endTurnCell.width(endTurnCell.getMinWidth() - 32);
+                        endTurnCell.height(endTurnCell.getMinHeight() - 10);
+                        buttonEndTurn.getLabel().setFontScale(1F);
+                        endTurnButtonBig = false;
+                    }
                 }
+
             }
         });
 
@@ -69,10 +77,18 @@ public class OptionsTable extends Table {
     public void animateEndTurnButton(int frame){
         if (frame == 1){
             setTimeLabel(frame);
+            endTurnButtonBig = false;
+        }
+        if (frame == 7200){
+            Cell endTurnCell = t.getCell(buttonEndTurn);
+            endTurnCell.width(endTurnCell.getMinWidth() - 32);
+            endTurnCell.height(endTurnCell.getMinHeight() - 10);
+            buttonEndTurn.getLabel().setFontScale(1F);
+            endTurnButtonBig = false;
         }
         boolean growButton = false;
         Cell endTurnCell = t.getCell(buttonEndTurn);
-        if (secondsLeftInTurn != 0 && frame != 0){
+        if (frame != 0){
             if (frame % 60 == 0) {
                 secondsLeftInTurn = 120 - (frame / 60);
                 setTimeLabel(frame);
@@ -90,7 +106,6 @@ public class OptionsTable extends Table {
                 growButton = true;
             }
             if (!endTurnButtonBig && growButton){
-                System.out.println(endTurnCell.getMinWidth() + " - " + frame);
                 endTurnCell.width(endTurnCell.getMinWidth() + 32);
                 endTurnCell.height(endTurnCell.getMinHeight() + 10);
                 buttonEndTurn.getLabel().setFontScale(1.2F);
@@ -98,7 +113,6 @@ public class OptionsTable extends Table {
                 frameButtonGrew = frame;
             }
             if (frame >= frameButtonGrew + 15 && endTurnButtonBig){
-                System.out.println(endTurnCell.getMinWidth() + " - " + frame);
                 endTurnCell.width(endTurnCell.getMinWidth() - 32);
                 endTurnCell.height(endTurnCell.getMinHeight() - 10);
                 buttonEndTurn.getLabel().setFontScale(1F);
@@ -111,7 +125,7 @@ public class OptionsTable extends Table {
 
     private void setTimeLabel(int frame){
         int seconds = secondsLeftInTurn;
-        if (frame == 1){
+        if (frame >= 1 && frame < 5){
             this.timeLeftLabel.setText("2:00");
         }
         else if (frame == 7200){
@@ -123,6 +137,9 @@ public class OptionsTable extends Table {
                 timeLeftLabel.setColor(Color.RED);
             }
             StringBuilder stringBuilder = new StringBuilder();
+            if (secondsLeftInTurn > 15){
+                timeLeftLabel.setColor(Color.WHITE);
+            }
             if (secondsLeftInTurn - 59 > 0){
                 stringBuilder.append("1:");
                 seconds = seconds - 60;
