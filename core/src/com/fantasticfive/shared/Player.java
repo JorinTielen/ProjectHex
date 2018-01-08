@@ -101,7 +101,6 @@ public class Player implements Serializable {
     public boolean purchaseBuildingOnMountain(Building building){
         if (this.gold - ((Resource) building).getPurchaseCost() >= 0) {
             this.removeGold(((Resource) building).getPurchaseCost());
-            building.setMineOnMountain();
             this.buildings.add(building);
             LOGGER.info("Resource on mountain built");
             return true;

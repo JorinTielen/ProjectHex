@@ -150,14 +150,6 @@ public class Map implements Serializable {
         return false;
     }
 
-    //Check if buildings can be placed on given location
-    public boolean isHexBuildable(Point location, Player player) {
-        Hexagon hex = getHexAtLocation(location);
-
-        return (hex.getOwner() == player &&
-                hex.getGroundType() != GroundType.WATER &&
-                hex.getObjectType() != ObjectType.MOUNTAIN);
-    }
 
     public List<Hexagon> getPath(Hexagon startHex, Hexagon destination){
         //TODO Maak gebruik van accessible boolean in Hexagon om te bepalen of je er op kan lopen.

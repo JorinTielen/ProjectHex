@@ -20,12 +20,14 @@ public abstract class Building implements Cloneable, Serializable {
     protected Player owner;
     private int maxHealth;
     private boolean destroyed;
+    protected boolean resourceOnMountain;
 
     public Building(int health, GroundType[] buildableOn) {
         this.health = health;
         this.buildableOn = buildableOn;
         this.maxHealth = health;
         this.destroyed = false;
+        this.resourceOnMountain = false;
     }
 
     public void setLocation(Point location) {
@@ -53,6 +55,8 @@ public abstract class Building implements Cloneable, Serializable {
     public void destroy(){
         this.destroyed = true;
     }
+
+    public void setResourceOnMountain(boolean resourceOnMountain) { this.resourceOnMountain = resourceOnMountain; }
 
     public void setImage() {
         //Needs to be empty, is overwritten in inheritance classes
