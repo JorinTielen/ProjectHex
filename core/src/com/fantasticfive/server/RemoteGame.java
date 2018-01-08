@@ -16,6 +16,8 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     private static final Logger LOGGER = Logger.getLogger(RemoteGame.class.getName());
 
     private int version = 0;
+
+    private int readyPlayers = 0;
     private List<Player> players = new ArrayList<>();
     private Player currentPlayer;
     private Map map;
@@ -62,6 +64,14 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     @Override
     public int getVersion() {
         return version;
+    }
+
+    public void ready(String username) {
+        readyPlayers += 1;
+
+        if (readyPlayers >= players.size()) {
+            startGame();
+        }
     }
 
     @Override
@@ -162,7 +172,6 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         usedIds.add(id);
 
         players.add(p);
-        startGame();
         version++;
         return p;
     }

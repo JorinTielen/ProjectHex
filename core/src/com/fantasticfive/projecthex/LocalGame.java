@@ -49,6 +49,14 @@ public class LocalGame {
         fog = new Fog(thisPlayer, thisPlayer.getOwnedHexagons(), this.map);
     }
 
+    public void ready(String username) {
+        try {
+            remoteGame.ready(username);
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL, e.getMessage());
+        }
+    }
+
     private void join(String username) {
         try {
             this.thisPlayer = remoteGame.addPlayer(username);
@@ -380,7 +388,7 @@ public class LocalGame {
         if (remoteGame != null) {
             try {
                 join(username);
-                players = remoteGame.getPlayers();
+                //players = remoteGame.getPlayers();
                 map = remoteGame.getMap();
                 map.setTextures();
             } catch (RemoteException e) {

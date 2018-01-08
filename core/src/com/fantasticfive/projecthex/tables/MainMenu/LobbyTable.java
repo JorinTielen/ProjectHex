@@ -54,7 +54,9 @@ public class LobbyTable extends Table {
         btnReady.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                //TODO: tell remote lobby that this player is ready
+
+
+
             }
         });
 

@@ -74,13 +74,12 @@ public class CreateServerTable extends Table {
         btnCreateLobby.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-              //  menuScreen.connectToServer(ipAddress, menuScreen.username);
-
                 menuScreen.lobbyTable = new LobbyTable(menuScreen, minPlayers, Integer.valueOf((String) selectNumberOfPlayers.getSelected()));
                 menuScreen.table.addActor(menuScreen.lobbyTable);
                 menuScreen.lobbyTable.setVisible(true);
                 CreateServerTable.this.setVisible(false);
-                //TODO: Code to join lobby
+
+                menuScreen.connectToServer(ipAddress, menuScreen.username);
             }
         });
 

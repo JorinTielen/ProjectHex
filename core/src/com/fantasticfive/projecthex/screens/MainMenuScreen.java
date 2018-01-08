@@ -348,8 +348,12 @@ public class MainMenuScreen implements Screen {
 
     public void connectToServer(String ipAdress, String username) {
         localGame = new LocalGame(ipAdress, username);
-        game.setScreen(new GameScreen(game, localGame));
-        dispose();
+        //game.setScreen(new GameScreen(game, localGame));
+        //dispose();
+    }
+
+    public void ready(String username) {
+        localGame.ready(username);
     }
 
     private float resizeImage(float originalSize) {
