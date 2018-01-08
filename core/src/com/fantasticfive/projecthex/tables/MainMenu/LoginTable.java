@@ -118,6 +118,8 @@ public class LoginTable extends Table {
             public void changed(ChangeEvent event, Actor actor) {
                 if (database.checkUsername(txtUsername.getText())) {
                     lblMessage.setText("Username already exists");
+                } else if (!checkUsernameValid(txtUsername.getText())) {
+                    lblMessage.setText("Username must be between 5 and 15 characters long.");
                 } else if (!checkPasswordValid(txtPassword.getText())) {
                     lblMessage.setText("Password must be between 6 and 15 characters long,\nand must contain at least one lower case letter,\none upper case letter and one digit.");
                 } else if (!database.registerAccount(txtUsername.getText(), generatePasswordHash(txtPassword.getText()))) {
@@ -187,5 +189,10 @@ public class LoginTable extends Table {
     private boolean checkPasswordValid(String password) {
         String regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,15}$";
         return password.matches(regexp);
+    }
+
+    private boolean checkUsernameValid(String username) {
+        String regexp = "^(?=.*[a-z]).{5,15}$";
+        return username.matches(regexp);
     }
 }
