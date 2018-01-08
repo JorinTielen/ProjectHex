@@ -216,7 +216,6 @@ public class MainMenuScreen implements Screen {
             menuBatch.draw(titleStart, (screenWidth / 2) - (resizeImage(titleStart.getWidth()) / 2f), screenHeight / 100 * 40, resizeImage(titleStart.getWidth()), resizeImage(titleStart.getHeight()));
         }
         menuBatch.end();
-
     }
 
     private void createUIElements() {

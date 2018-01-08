@@ -1,6 +1,7 @@
 package com.fantasticfive.projecthex.tables.MainMenu;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -24,8 +25,8 @@ public class LobbyTable extends Table {
     private MainMenuScreen menuScreen;
 
     private boolean owner;
-    private HashMap<Label, Label> users = new HashMap<>();
     private Label labelPlayers;
+    private List<Label> users = new ArrayList<>();
 
     public LobbyTable(MainMenuScreen menuScreen, int minPlayers, int maxPlayers) {
         t = new Table();
@@ -38,7 +39,7 @@ public class LobbyTable extends Table {
 
         final TextButton btnBack = new TextButton("Back to main menu", menuScreen.skin);
 
-        labelPlayers = new Label("0/6 players joined", menuScreen.skin);
+        //  labelPlayers = new Label("0/6 players joined", menuScreen.skin);
 
         t.add(btnBack);
         t.add(labelPlayers).width(collumnWidth).height(collumnHeight).pad(5);
@@ -46,7 +47,6 @@ public class LobbyTable extends Table {
         t.add(btnReady).width(collumnWidth).height(collumnHeight).pad(5).colspan(2);
         t.row();
         t.add(new Label("Username", menuScreen.skin)).width(collumnWidth).height(collumnHeight).pad(5);
-        t.add(new Label("Ready?", menuScreen.skin)).width(collumnWidth).height(collumnHeight).pad(5);
         t.row();
 
         t.setPosition(screenWidth / 2, screenHeight / 2);
@@ -73,18 +73,27 @@ public class LobbyTable extends Table {
         playerJoin(menuScreen.username);
         playerJoin("Sven");
         playerJoin("Jorin");
+        playerReady("Jorin", true);
     }
 
     public void playerJoin(String username) {
         Label labelUser = new Label(username, menuScreen.skin);
-        Label labelReady = new Label("no", menuScreen.skin);
+        labelUser.setColor(Color.RED);
 
         t.row();
         t.add(labelUser).width(collumnWidth).pad(5);
-        t.add(labelReady).width(collumnWidth).pad(5);
         t.row();
 
-        users.put(labelUser, labelReady);
+        users.add(labelUser);
+    }
+
+    public void playerReady(String username, Boolean ready) {
+        for (Label l : users) {
+            if (l.getText().toString().equals(username)) {
+                if (ready) l.setColor(Color.GREEN);
+                else l.setColor(Color.RED);
+            }
+        }
     }
 
     public void update() {
