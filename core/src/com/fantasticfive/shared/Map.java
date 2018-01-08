@@ -93,9 +93,32 @@ public class Map implements Serializable {
     }
 
     private void Generate() {
-        //old seed: 1234
+        List<Integer> seeds = new ArrayList<>();
+        seeds.add(-2096365904);
+        seeds.add(-1982397011);
+        seeds.add(-1766646759);
+        seeds.add(-1742594191);
+        seeds.add(-1102120703);
+        seeds.add(-970991336);
+        seeds.add(-862200254);
+        seeds.add(-777100558);
+        seeds.add(-516396776);
+        seeds.add(-217823742);
+        seeds.add(110098218);
+        seeds.add(347414893);
+        seeds.add(406130710);
+        seeds.add(940360477);
+        seeds.add(1081319097);
+        seeds.add(1138543949);
+        seeds.add(1290340836);
+        seeds.add(1504742640);
+        seeds.add(1551778228);
+        seeds.add(1842268213);
+        seeds.add(1994802313);
+        seeds.add(2004522193);
+
         Random r = new Random();
-        int seed = r.nextInt();
+        int seed = seeds.get(r.nextInt(seeds.size()));
         Noise.setSeed(seed); //This value is used to calculate the map
         System.out.println(seed);
         float scale = 0.10f; //To determine the density
