@@ -163,8 +163,10 @@ public class LocalGame {
 
     public void buyUnit(UnitType type, Point location) {
         try {
-            getFog().unitCreated(map.getHexAtLocation(location));
-            remoteGame.buyUnit(type, location, thisPlayer.getId());
+            Hexagon unitLocation = remoteGame.buyUnit(type, location, thisPlayer.getId());
+            if (unitLocation != null){
+                getFog().unitCreated(unitLocation);
+            }
         } catch (RemoteException e) {
             LOGGER.log(Level.ALL, e.getMessage());
         }

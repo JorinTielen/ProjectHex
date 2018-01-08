@@ -203,7 +203,8 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     }
 
     @Override
-    public void buyUnit(UnitType unitType, Point location, int playerId) {
+    public Hexagon buyUnit(UnitType unitType, Point location, int playerId) {
+        Hexagon hexagon = null;
         if (playerId == currentPlayer.getId()) {
             //When player has enough gold to buy unit
             boolean tileEmpty = false;
@@ -211,6 +212,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             for (Hexagon hex : map.getHexesInRadius(location, 1)) {
                 if (hexEmpty(hex.getLocation())) {
                     tileEmpty = true;
+                    hexagon = hex;
                     currentPlayer.purchaseUnit(unitFactory.createUnit(unitType, hex.getLocation(), currentPlayer));
                     break;
                 }
@@ -221,6 +223,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             }
         }
         version++;
+        return hexagon;
     }
 
 
