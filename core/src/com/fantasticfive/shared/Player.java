@@ -197,6 +197,9 @@ public class Player implements Serializable {
         if (gold < 0){
             addTurnWithoutGold();
         }
+        else{
+            turnsWithoutGold = 0;
+        }
     }
 
     public void updateResources() {
