@@ -94,7 +94,10 @@ public class Map implements Serializable {
 
     private void Generate() {
         //old seed: 1234
-        Noise.setSeed(365); //This value is used to calculate the map
+        Random r = new Random();
+        int seed = r.nextInt();
+        Noise.setSeed(seed); //This value is used to calculate the map
+        System.out.println(seed);
         float scale = 0.10f; //To determine the density
         float[][] noiseValues = Noise.Calc2DNoise(height, width, scale);
 

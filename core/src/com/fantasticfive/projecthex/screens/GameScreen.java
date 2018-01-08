@@ -256,9 +256,9 @@ public class GameScreen implements Screen {
         if (localGame.getFog() != null) {
             for (Hexagon h : map.getHexagons()) {
                 if (!localGame.getFog().isVisisted(h) && !localGame.getFog().isNeighbour(h)) {
-                    batch.draw(fogTexture, h.getPos().x, h.getPos().y);
+                    //batch.draw(fogTexture, h.getPos().x, h.getPos().y);
                 } else if (localGame.getFog().isNeighbour(h)) {
-                    batch.draw(fogNeighbourTexture, h.getPos().x, h.getPos().y);
+                    //batch.draw(fogNeighbourTexture, h.getPos().x, h.getPos().y);
                 }
             }
         }
