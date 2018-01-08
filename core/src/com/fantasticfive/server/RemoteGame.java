@@ -268,8 +268,8 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             for (Hexagon hex : map.getHexesInRadius(location, 1)) {
                 if (hexEmpty(hex.getLocation())) {
                     tileEmpty = true;
-                    hexagon = hex;
                     currentPlayer.purchaseUnit(unitFactory.createUnit(unitType, hex.getLocation(), currentPlayer));
+                    hexagon = hex;
                     break;
                 }
             }
