@@ -60,6 +60,8 @@ public class CreateServerTable extends Table {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 menuScreen.connectToServer(ipAddress, menuScreen.username);
+                CreateServerTable.this.setVisible(false);
+                menuScreen.lobbyTable.setVisible(true);
             }
         });
 

@@ -9,6 +9,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
@@ -17,6 +18,9 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     private static final Logger LOGGER = Logger.getLogger(RemoteGame.class.getName());
 
     private int version = 0;
+
+    private int readyPlayers = 0;
+    private boolean started = false;
     private List<Player> players = new ArrayList<>();
     private Player currentPlayer;
     private Map map;
@@ -78,9 +82,19 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         return version;
     }
 
+    public void ready(String username) {
+        readyPlayers += 1;
+
+        if (readyPlayers >= players.size()) {
+            startGame();
+        }
+    }
+
     @Override
     public void startGame() {
+        Collections.shuffle(players);
         currentPlayer = players.get(0);
+        started = true;
 
         try {
             publisher.inform("Players", null, players);
@@ -88,6 +102,10 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean getStarted() {
+        return started;
     }
 
     @Override
@@ -184,8 +202,8 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
                     distance = townCenter_distance;
                 }
             }
-        } while (distance < 4 || !hexEmpty(location) || location.getY() == 0 || location.getY() == map.getHeight() - 1
-                || location.getX() == 0 || location.getX() == map.getWidth() - 1);
+        } while (distance < 4 || !hexEmpty(location) || location.getY() == 0 || location.getY() == map.getHeight()
+                || location.getX() == 0 || location.getX() == map.getWidth());
         Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, location, p);
         p.purchaseBuilding(b);
 

@@ -16,7 +16,11 @@ public interface IRemoteGame extends Remote {
      */
     int getVersion() throws RemoteException;
 
+    void ready(String username) throws RemoteException;
+
     //GAME
+
+    boolean getStarted() throws RemoteException;
 
     /**
      * Starts the game.

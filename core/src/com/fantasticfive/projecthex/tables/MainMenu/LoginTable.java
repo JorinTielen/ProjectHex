@@ -40,7 +40,7 @@ public class LoginTable extends Table {
         txtPassword.setPasswordMode(true);
         txtPassword.setPasswordCharacter('*');
 
-        final CheckBox checkRemeberMe = new CheckBox("Remember me", menuScreen.skin);
+        final CheckBox checkRemberMe = new CheckBox("Remember me", menuScreen.skin);
 
         final TextButton btnLogin = new TextButton("Login", menuScreen.skin);
 
@@ -54,7 +54,7 @@ public class LoginTable extends Table {
             if (Boolean.valueOf(prop.getProperty("remember"))) {
                 txtUsername.setText(prop.getProperty("username"));
                 txtPassword.setText(prop.getProperty("password"));
-                checkRemeberMe.setChecked(true);
+                checkRemberMe.setChecked(true);
             }
             input.close();
 
@@ -71,7 +71,7 @@ public class LoginTable extends Table {
         t.add();
         t.add(lblMessage).width(collumnWidth);
         t.row();
-        t.add(checkRemeberMe).height(collumnHeight).width(collumnWidth).pad(5);
+        t.add(checkRemberMe).height(collumnHeight).width(collumnWidth).pad(5);
         t.add(btnLogin).height(collumnHeight).width(collumnWidth).pad(5);
         t.row();
         t.add(new Label("Don't have an account yet?", menuScreen.skin));
@@ -90,7 +90,7 @@ public class LoginTable extends Table {
                 } else {
                     try {
                         out = new FileOutputStream("login.properties");
-                        if (checkRemeberMe.isChecked()) {
+                        if (checkRemberMe.isChecked()) {
                             prop.setProperty("username", txtUsername.getText());
                             prop.setProperty("password", txtPassword.getText());
                             prop.setProperty("remember", "true");
@@ -125,7 +125,7 @@ public class LoginTable extends Table {
                 } else {
                     try {
                         out = new FileOutputStream("login.properties");
-                        if (checkRemeberMe.isChecked()) {
+                        if (checkRemberMe.isChecked()) {
                             prop.setProperty("username", txtUsername.getText());
                             prop.setProperty("password", txtPassword.getText());
                             prop.setProperty("remember", "true");
