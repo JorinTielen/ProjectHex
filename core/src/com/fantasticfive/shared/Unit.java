@@ -72,7 +72,7 @@ public class Unit implements Cloneable, Serializable {
     public void reduceHealth(int hp) {
         health -= hp;
         LOGGER.info("Health has been reduced with " + hp + " to " + health);
-        if (health < 0) {
+        if (health <= 0) {
             owner.removeUnit(this);
             LOGGER.info("Unit has died");
         }

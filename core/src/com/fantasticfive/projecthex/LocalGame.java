@@ -7,7 +7,13 @@ import com.fantasticfive.shared.enums.BuildingType;
 import com.fantasticfive.shared.enums.GroundType;
 import com.fantasticfive.shared.enums.ObjectType;
 import com.fantasticfive.shared.enums.UnitType;
+import fontyspublisher.IPropertyListener;
+import fontyspublisher.IRemotePropertyListener;
+import fontyspublisher.IRemotePublisherForListener;
+import fontyspublisher.RemotePublisher;
 
+import java.beans.PropertyChangeEvent;
+import java.io.Serializable;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -20,32 +26,46 @@ public class LocalGame {
 
     private static final Logger LOGGER = Logger.getLogger(LocalGame.class.getName());
 
+    private IRemoteGame remoteGame;
+
     private List<Player> players = new ArrayList<>();
     private Player thisPlayer;
     private Map map;
     private Fog fog;
-    private int version = 0;
-    private IRemoteGame remoteGame;
+
     private HashMap lastPathGenerated;
+
+    private FontysListener fontysListener;
+
+    public void UpdateFromRemotePush(List<Player> remotePlayers) {
+        Gdx.app.postRunnable(() -> {
+            players = remotePlayers;
+
+            for (Player p : players) {
+                if (thisPlayer.getId() == p.getId()) {
+                    thisPlayer = p;
+                }
+                for (Hexagon h : map.getHexagons()) {
+                    for (Hexagon h2 : p.getOwnedHexagons()) {
+                        if (h.getLocation().equals(h2.getLocation())) {
+                            h.setOwner(p);
+                        }
+                    }
+                    h.setColorTexture();
+                }
+
+                for (Building b : p.getBuildings()) {
+                    b.setImage();
+                }
+                for (Unit u : p.getUnits()) {
+                    u.setTexture();
+                }
+            }
+        });
+    }
 
     public LocalGame(String ipAddress, String username) {
         getRemoteGame(ipAddress, username);
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    int remoteVersion = remoteGame.getVersion();
-                    if (remoteVersion != version) {
-                        Gdx.app.postRunnable(() ->
-                                UpdateFromRemote(remoteVersion)
-                        );
-                    }
-                } catch (RemoteException e) {
-                    LOGGER.log(Level.ALL, e.getMessage());
-                }
-            }
-        }, 0, 250);
         fog = new Fog(thisPlayer, thisPlayer.getOwnedHexagons(), this.map);
     }
 
@@ -68,45 +88,6 @@ public class LocalGame {
     public void leaveGame() {
         try {
             remoteGame.leaveGame(thisPlayer.getId());
-        } catch (RemoteException e) {
-            LOGGER.log(Level.ALL, e.getMessage());
-        }
-    }
-
-    private void UpdateFromRemote(int remoteVersion) {
-        try {
-            players = remoteGame.getPlayers();
-        } catch (RemoteException e) {
-            LOGGER.log(Level.ALL, e.getMessage());
-        }
-
-        for (Player p : players) {
-            if (this.thisPlayer.getId() == p.getId()) {
-                this.thisPlayer = p;
-            }
-            for (Hexagon h : map.getHexagons()) {
-                for (Hexagon h2 : p.getOwnedHexagons()) {
-                    if (h.getLocation().equals(h2.getLocation())) {
-                        h.setOwner(p);
-                    }
-                }
-                h.setColorTexture();
-            }
-            for (Building b : p.getBuildings()) {
-                b.setImage();
-            }
-            for (Unit u : p.getUnits()) {
-                u.setTexture();
-            }
-        }
-
-        version = remoteVersion;
-        LOGGER.info("Updated from Remote");
-    }
-
-    public void updateFromLocal() {
-        try {
-            remoteGame.updateFromLocal(players);
         } catch (RemoteException e) {
             LOGGER.log(Level.ALL, e.getMessage());
         }
@@ -210,11 +191,12 @@ public class LocalGame {
         return unit;
     }
 
-    public void attackUnit(Unit attacker, Unit defender) {
+    public int attackUnit(Unit attacker, Unit defender) {
         try {
-            remoteGame.attackUnit(attacker, defender);
+            return remoteGame.attackUnit(attacker, defender);
         } catch (RemoteException e) {
             LOGGER.log(Level.ALL, e.getMessage());
+            return 0;
         }
     }
 
@@ -370,9 +352,11 @@ public class LocalGame {
         }
 
         //Bind using registry
+        IRemotePublisherForListener remotePublisher = null;
         if (registry != null) {
             try {
                 remoteGame = (IRemoteGame) registry.lookup("ProjectHex");
+                remotePublisher = (IRemotePublisherForListener) registry.lookup("Publisher");
             } catch (RemoteException e) {
                 LOGGER.info("Client: RemoteException on IRemoteGame");
                 LOGGER.info("Client: RemoteException: " + e.getMessage());
@@ -381,6 +365,17 @@ public class LocalGame {
                 LOGGER.info("Client: Cannot bind IRemoteGame");
                 LOGGER.info("Client: NotBoundException: " + e.getMessage());
                 remoteGame = null;
+            }
+        }
+
+        //Try to subscribe
+        if (remotePublisher != null) {
+            try {
+                fontysListener = new FontysListener(this);
+                remotePublisher.subscribeRemoteListener(fontysListener, "Players");
+            } catch (RemoteException e) {
+                LOGGER.severe("Client: subscribing to players went wrong");
+                LOGGER.severe("Client: RemoteException: " + e.getMessage());
             }
         }
 
@@ -403,7 +398,7 @@ public class LocalGame {
 
     public boolean lastPlayer() {
         try {
-            return remoteGame.lastPlayer() && remoteGame.getVersion()!=1;
+            return remoteGame.lastPlayer() && remoteGame.getVersion() != 1;
         } catch (RemoteException e) {
             LOGGER.log(Level.ALL,e.getMessage());
         }

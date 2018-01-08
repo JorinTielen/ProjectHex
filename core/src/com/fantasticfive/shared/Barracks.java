@@ -7,7 +7,7 @@ import com.fantasticfive.shared.enums.UnitType;
 /**
  * The barracks class. Extends the com.fantasticfive.shared.Building class. Used in the game to purchase units.
  */
-public class Barracks extends Building{
+public class Barracks extends Building {
     private UnitType[] creatableUnits;
     private int purchaseCost;
 
