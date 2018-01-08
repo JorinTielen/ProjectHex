@@ -74,6 +74,9 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     public void endTurn(int playerId) {
         if (players.size() != 0) {
             if (currentPlayer.getId() == playerId) {
+                if (currentPlayer.getTurnsWithoutGold() == 3){
+                    leaveGame(currentPlayer.getId());
+                }
                 currentPlayer.endTurn();
                 int i = players.indexOf(currentPlayer);
 

@@ -19,6 +19,7 @@ public class Player implements Serializable {
     private int gold;
     private String username;
     private int id;
+    private int turnsWithoutGold;
 
     public Player(String username, Color color, int id) {
         this.color = color;
@@ -30,6 +31,7 @@ public class Player implements Serializable {
         this.gold = 100;
 
         this.id = id;
+        this.turnsWithoutGold = 0;
     }
 
     public int getId() {
@@ -59,6 +61,10 @@ public class Player implements Serializable {
     public void removeGold(int gold) {
         this.gold -= gold;
     }
+
+    public int getTurnsWithoutGold() { return this.turnsWithoutGold; }
+
+    public void addTurnWithoutGold() { this.turnsWithoutGold += 1; }
 
     public void purchaseBuilding(Building building) {
         //Removes gold and adds resource
@@ -187,6 +193,10 @@ public class Player implements Serializable {
 
         //Changes gold amount with gold per turn
         this.addGold(getGoldPerTurn());
+
+        if (gold < 0){
+            addTurnWithoutGold();
+        }
     }
 
     public void updateResources() {
