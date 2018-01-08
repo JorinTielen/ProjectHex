@@ -94,6 +94,9 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     public void endTurn(int playerId) {
         if (players.size() != 0) {
             if (currentPlayer.getId() == playerId) {
+                if (currentPlayer.getTurnsWithoutGold() == 3){
+                    leaveGame(currentPlayer.getId());
+                }
                 currentPlayer.endTurn();
                 int i = players.indexOf(currentPlayer);
 
@@ -254,7 +257,8 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     }
 
     @Override
-    public void buyUnit(UnitType unitType, Point location, int playerId) {
+    public Hexagon buyUnit(UnitType unitType, Point location, int playerId) {
+        Hexagon hexagon = null;
         if (playerId == currentPlayer.getId()) {
             //When player has enough gold to buy unit
             boolean tileEmpty = false;
@@ -262,6 +266,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             for (Hexagon hex : map.getHexesInRadius(location, 1)) {
                 if (hexEmpty(hex.getLocation())) {
                     tileEmpty = true;
+                    hexagon = hex;
                     currentPlayer.purchaseUnit(unitFactory.createUnit(unitType, hex.getLocation(), currentPlayer));
                     break;
                 }
@@ -278,6 +283,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+        return hexagon;
     }
 
 
@@ -398,13 +404,11 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     }
 
     public void buyBuilding(BuildingType buildingType, Point location) {
-        if (map.isHexBuildable(location, currentPlayer)) {
             if (buildingType == BuildingType.RESOURCE && hexEmptyResource(location)) {
-                if (currentPlayer.purchaseBuildingOnMountain(buildingFactory.createBuilding(buildingType, location, currentPlayer))) {
-                    map.getHexAtLocation(location).removeObjectType();
-                    map.getHexAtLocation(location).removeObject();
-                }
-            } else if (hexEmpty(location)) {
+                currentPlayer.purchaseBuildingOnMountain(buildingFactory.createBuilding(buildingType, location, currentPlayer));
+                currentPlayer.getBuildingAtLocation(location).setResourceOnMountain(true);
+            }
+            else if (hexEmpty(location)) {
                 currentPlayer.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, currentPlayer));
             }
         }
@@ -428,9 +432,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
                 cost = ((Fortification) buildingFactory.getBuildingPreset(BuildingType.FORTIFICATION)).getPurchaseCost();
             } else if (building instanceof Resource) {
                 cost = ((Resource) buildingFactory.getBuildingPreset(BuildingType.RESOURCE)).getPurchaseCost();
-            }
-            if (map.getHexAtLocation(location).getIsMountain()) {
-                map.getHexAtLocation(location).setMountain();
+                building.setResourceOnMountain(false);
             }
             currentPlayer.sellBuilding(building, cost);
         }
@@ -501,6 +503,11 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
 
     @Override
     public boolean hexEmpty(Point location) {
+        //Check if currentPlayer owns land
+        if(map.getHexAtLocation(location).getOwner() != currentPlayer){
+            return false;
+        }
+
         //Check if unit is on hex
         for (Player player : players) {
             for (Unit unit : player.getUnits()) {
@@ -518,6 +525,11 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     }
 
     private boolean hexEmptyResource(Point location) {
+        //Check if currentPlayer owns land
+        if(map.getHexAtLocation(location).getOwner() != currentPlayer){
+            return false;
+        }
+
         //Check if unit is on hex
         for (Player player : players) {
             for (Unit unit : player.getUnits()) {

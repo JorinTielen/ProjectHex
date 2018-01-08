@@ -52,6 +52,9 @@ public class GameScreen implements Screen {
     public boolean inMenu;
     private boolean uiClearedAfterEndTurn;
 
+    //endTurnAnimation
+    private int frameCounter;
+
     //tables
     private Table unitShopTable;
     private Table playerTable;
@@ -313,6 +316,23 @@ public class GameScreen implements Screen {
         }
 
         batch.end();
+
+        //Animate endTurn button if it is your turn
+        if (localGame.isMyTurn()){
+            frameCounter++;
+            if (frameCounter >= 7200){
+                ((OptionsTable)optionsTable).animateEndTurnButton(frameCounter);
+                localGame.endTurn();
+                frameCounter = 0;
+            }
+            if (frameCounter != 0){
+                ((OptionsTable)optionsTable).animateEndTurnButton(frameCounter);
+            }
+        }
+        else {
+            frameCounter = 0;
+        }
+
 
         //update UI information
         updatePlayerUI();

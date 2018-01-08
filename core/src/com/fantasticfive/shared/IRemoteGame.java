@@ -77,7 +77,7 @@ public interface IRemoteGame extends Remote {
      * @param playerId your player id.
      * @throws RemoteException
      */
-    void buyUnit(UnitType unitType, Point location, int playerId) throws RemoteException;
+    Hexagon buyUnit(UnitType unitType, Point location, int playerId) throws RemoteException;
 
     /**
      * Makes a unit move to another location.

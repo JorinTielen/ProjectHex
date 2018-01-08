@@ -144,8 +144,10 @@ public class LocalGame {
 
     public void buyUnit(UnitType type, Point location) {
         try {
-            getFog().unitCreated(map.getHexAtLocation(location));
-            remoteGame.buyUnit(type, location, thisPlayer.getId());
+            Hexagon unitLocation = remoteGame.buyUnit(type, location, thisPlayer.getId());
+            if (unitLocation != null){
+                getFog().unitCreated(unitLocation);
+            }
         } catch (RemoteException e) {
             LOGGER.log(Level.ALL, e.getMessage());
         }
@@ -220,6 +222,11 @@ public class LocalGame {
     public void buyBuilding(BuildingType type, Point location) {
         try {
             remoteGame.buyBuilding(type, location);
+            if (getBuildingAtLocation(location) != null && type == BuildingType.RESOURCE){
+                map.getHexAtLocation(location).removeObjectType();
+                map.getHexAtLocation(location).removeObject();
+                getBuildingAtLocation(location).setMineOnMountain();
+            }
         } catch (RemoteException e) {
             LOGGER.log(Level.ALL, e.getMessage());
         }
@@ -228,6 +235,9 @@ public class LocalGame {
     public void sellBuilding(Point location) {
         try {
             remoteGame.sellBuilding(location);
+            if (map.getHexAtLocation(location).getIsMountain()) {
+                map.getHexAtLocation(location).setMountain();
+            }
         } catch (RemoteException e) {
             LOGGER.log(Level.ALL, e.getMessage());
         }

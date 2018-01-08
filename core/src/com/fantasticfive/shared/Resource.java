@@ -26,7 +26,12 @@ public class Resource extends Building {
 
     @Override
     public void setImage() {
-        this.image = new Texture("mine.png");
+        if (resourceOnMountain){
+            this.image = new Texture("mineMountain.png");
+        }
+        else{
+            this.image = new Texture("mine.png");
+        }
         if(owner != null) {
             setColor();
         }
