@@ -35,19 +35,19 @@ public class Database {
 
             Class.forName("com.mysql.jdbc.Driver");
             conn = DriverManager.getConnection(url, username, password);
-            LOGGER.info("Connection to database SUCCEED");
+            LOGGER.info("Server: Connection to database SUCCEED");
         } catch (ClassNotFoundException ex) {
             LOGGER.info(ex.getMessage());
-            LOGGER.info("Connection to database FAILED");
+            LOGGER.info("Server: Connection to database FAILED");
         } catch (FileNotFoundException e) {
             LOGGER.info(e.getMessage());
-            LOGGER.info("Couldn't find properties file for database");
+            LOGGER.info("Server: Couldn't find properties file for database");
         } catch (IOException e) {
             LOGGER.info(e.getMessage());
-            LOGGER.info("Error with loading properties file for database");
+            LOGGER.info("Server: Error with loading properties file for database");
         } catch (SQLException e) {
             LOGGER.info(e.getMessage());
-            LOGGER.info("Error with driver library");
+            LOGGER.info("Server: Error with driver library");
         }
     }
 
@@ -57,7 +57,7 @@ public class Database {
                 conn.close();
             }
         } catch (SQLException ex) {
-            LOGGER.info(ex.getMessage());
+            LOGGER.info("Server: " + ex.getMessage());
         } finally {
             conn = null;
         }
