@@ -37,40 +37,28 @@ public class LocalGame {
 
     private FontysListener fontysListener;
 
-    private boolean gameStarted = false;
-
     public void UpdateFromRemotePush(List<Player> remotePlayers) {
         Gdx.app.postRunnable(() -> {
-            if (!gameStarted) {
-                try {
-                    if (remoteGame.getStarted()) {
-                        gameStarted = true;
-                    }
-                } catch (RemoteException e) {
-                    e.printStackTrace();
+            players = remotePlayers;
+
+            for (Player p : players) {
+                if (thisPlayer.getId() == p.getId()) {
+                    thisPlayer = p;
                 }
-            } else {
-                players = remotePlayers;
-
-                for (Player p : players) {
-                    if (thisPlayer.getId() == p.getId()) {
-                        thisPlayer = p;
-                    }
-                    for (Hexagon h : map.getHexagons()) {
-                        for (Hexagon h2 : p.getOwnedHexagons()) {
-                            if (h.getLocation().equals(h2.getLocation())) {
-                                h.setOwner(p);
-                            }
+                for (Hexagon h : map.getHexagons()) {
+                    for (Hexagon h2 : p.getOwnedHexagons()) {
+                        if (h.getLocation().equals(h2.getLocation())) {
+                            h.setOwner(p);
                         }
-                        h.setColorTexture();
                     }
+                    h.setColorTexture();
+                }
 
-                    for (Building b : p.getBuildings()) {
-                        b.setImage();
-                    }
-                    for (Unit u : p.getUnits()) {
-                        u.setTexture();
-                    }
+                for (Building b : p.getBuildings()) {
+                    b.setImage();
+                }
+                for (Unit u : p.getUnits()) {
+                    u.setTexture();
                 }
             }
         });
@@ -79,18 +67,6 @@ public class LocalGame {
     public LocalGame(String ipAddress, String username) {
         getRemoteGame(ipAddress, username);
         fog = new Fog(thisPlayer, thisPlayer.getOwnedHexagons(), this.map);
-    }
-
-    public void ready(String username) {
-        try {
-            remoteGame.ready(username);
-        } catch (RemoteException e) {
-            LOGGER.log(Level.ALL, e.getMessage());
-        }
-    }
-
-    public boolean getStarted() {
-        return gameStarted;
     }
 
     private void join(String username) {
@@ -399,7 +375,7 @@ public class LocalGame {
         if (remoteGame != null) {
             try {
                 join(username);
-                //players = remoteGame.getPlayers();
+                players = remoteGame.getPlayers();
                 map = remoteGame.getMap();
                 map.setTextures();
             } catch (RemoteException e) {

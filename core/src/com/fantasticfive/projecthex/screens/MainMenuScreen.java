@@ -65,7 +65,6 @@ public class MainMenuScreen implements Screen {
     public CreateServerTable createServerTable;
     public JoinServerTable joinServerTable;
     public OptionsTable optionsTable;
-    public LobbyTable lobbyTable;
 
     private Random random = new Random();
     private float screenWidth = Gdx.graphics.getWidth();
@@ -170,6 +169,7 @@ public class MainMenuScreen implements Screen {
         if (Gdx.input.isTouched() && startScreen) {
             startScreen = false;
             loginTable.setVisible(true);
+            //mainMenuTable.setVisible(true); //TODO: Change this to login screen
         }
 
         stage.act(delta);
@@ -226,7 +226,6 @@ public class MainMenuScreen implements Screen {
         createServerTable = new CreateServerTable(this);
         joinServerTable = new JoinServerTable(this);
         optionsTable = new OptionsTable(this, game);
-        lobbyTable = new LobbyTable(this);
 
         if (loginTable != null) {
             table.addActor(loginTable);
@@ -251,11 +250,6 @@ public class MainMenuScreen implements Screen {
         if (optionsTable != null) {
             table.addActor(optionsTable);
             optionsTable.setVisible(false);
-        }
-
-        if (lobbyTable != null) {
-            table.addActor(lobbyTable);
-            lobbyTable.setVisible(false);
         }
     }
 
@@ -355,17 +349,6 @@ public class MainMenuScreen implements Screen {
 
     public void connectToServer(String ipAdress, String username) {
         localGame = new LocalGame(ipAdress, username);
-    }
-
-    public void ready(String username) {
-        localGame.ready(username);
-    }
-
-    public boolean getStarted() {
-        return localGame.getStarted();
-    }
-
-    public void join() {
         game.setScreen(new GameScreen(game, localGame));
         dispose();
     }

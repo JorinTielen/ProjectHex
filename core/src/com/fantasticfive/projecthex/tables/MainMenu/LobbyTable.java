@@ -1,19 +1,11 @@
-package com.fantasticfive.projecthex.tables.MainMenu;
+/*package com.fantasticfive.projecthex.tables.MainMenu;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.fantasticfive.projecthex.Database;
 import com.fantasticfive.projecthex.screens.MainMenuScreen;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class LobbyTable extends Table {
     private Table t;
@@ -23,82 +15,116 @@ public class LobbyTable extends Table {
     private float collumnHeight = screenHeight / 100 * 6;
 
     private Database database = new Database();
-    private MainMenuScreen menuScreen;
 
-    private List<Label> users = new ArrayList<>();
+    private boolean owner;
 
-    public LobbyTable(MainMenuScreen menuScreen) {
+    public LobbyTable(MainMenuScreen menuScreen, boolean owner) {
         t = new Table();
-        this.menuScreen = menuScreen;
+        this.owner = owner;
 
         final TextButton btnReady = new TextButton("Ready?", menuScreen.skin);
 
         final TextButton btnBack = new TextButton("Back to main menu", menuScreen.skin);
 
-        t.add(btnBack).pad(5);
+
+        t.add(new Label("Username: ", menuScreen.skin));
+        t.add(txtUsername).height(collumnHeight).width(collumnWidth).pad(5);
         t.row();
-        t.add(btnReady).width(collumnWidth).height(collumnHeight).pad(5);
+        t.add(new Label("Password: ", menuScreen.skin));
+        t.add(txtPassword).height(collumnHeight).width(collumnWidth).pad(5);
         t.row();
-        t.add(new Label("Players", menuScreen.skin)).pad(5);
+        t.add();
+        t.add(lblMessage).width(collumnWidth);
+        t.row();
+        t.add(checkRemeberMe).height(collumnHeight).width(collumnWidth).pad(5);
+        t.add(btnLogin).height(collumnHeight).width(collumnWidth).pad(5);
+        t.row();
+        t.add(new Label("Don't have an account yet?", menuScreen.skin));
+        t.add(btnRegister).height(collumnHeight).width(collumnWidth).pad(5);
         t.row();
 
         t.setPosition(screenWidth / 2, screenHeight / 2);
 
-        btnReady.addListener(new ChangeListener() {
+        btnLogin.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                menuScreen.ready(menuScreen.username);
-                Timer timer = new Timer();
-                timer.scheduleAtFixedRate(new TimerTask() {
-                    @Override
-                    public void run() {
-                        Gdx.app.postRunnable(() -> {
-                            if (menuScreen.getStarted()) {
-                                menuScreen.join();
-                            }
-                        });
+                if (!database.checkUsername(txtUsername.getText())) {
+                    lblMessage.setText("Username doesn't exist");
+                } else if (!database.checkLogin(txtUsername.getText(), generatePasswordHash(txtPassword.getText()))) {
+                    lblMessage.setText("Login failed. Username and/or password incorrect");
+                } else {
+                    try {
+                        out = new FileOutputStream("login.properties");
+                        if (checkRemeberMe.isChecked()) {
+                            prop.setProperty("username", txtUsername.getText());
+                            prop.setProperty("password", txtPassword.getText());
+                            prop.setProperty("remember", "true");
+                        } else {
+                            prop.setProperty("username", "");
+                            prop.setProperty("password", "");
+                            prop.setProperty("remember", "false");
+                        }
+
+                        prop.store(out, "");
+                        input.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                }, 0, 250);
+
+                    menuScreen.username = txtUsername.getText();
+                    LoginTable.this.setVisible(false);
+                    menuScreen.mainMenuTable.setVisible(true);
+                }
             }
         });
 
-        btnBack.addListener(new ChangeListener() {
+        btnRegister.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                menuScreen.mainMenuTable.setVisible(true);
-                LobbyTable.this.setVisible(false);
+                if (database.checkUsername(txtUsername.getText())) {
+                    lblMessage.setText("Username already exists");
+                } else if (!checkPasswordValid(txtPassword.getText())) {
+                    lblMessage.setText("Password must be between 6 and 15 characters long,\nand must contain at least one lower case letter,\none upper case letter and one digit.");
+                } else if (!database.registerAccount(txtUsername.getText(), generatePasswordHash(txtPassword.getText()))) {
+                    lblMessage.setText("Failed to register. Check if both fields are filled");
+                } else {
+                    try {
+                        out = new FileOutputStream("login.properties");
+                        if (checkRemeberMe.isChecked()) {
+                            prop.setProperty("username", txtUsername.getText());
+                            prop.setProperty("password", txtPassword.getText());
+                            prop.setProperty("remember", "true");
+                        } else {
+                            prop.setProperty("username", "");
+                            prop.setProperty("password", "");
+                            prop.setProperty("remember", "false");
+                        }
+
+                        prop.store(out, "");
+                        input.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    LoginTable.this.setVisible(false);
+                    menuScreen.mainMenuTable.setVisible(true);
+                }
+            }
+        });
+
+        txtUsername.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                lblMessage.setText("");
+            }
+        });
+
+        txtPassword.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                lblMessage.setText("");
             }
         });
 
         addActor(t);
-
-        playerJoin(menuScreen.username);
-        playerJoin("Sven");
-        playerJoin("Jorin");
-        playerReady("Jorin", true);
     }
-
-    public void playerJoin(String username) {
-        Label labelUser = new Label(username, menuScreen.skin);
-        labelUser.setColor(Color.RED);
-
-        t.row();
-        t.add(labelUser).pad(5);
-        t.row();
-
-        users.add(labelUser);
-    }
-
-    public void playerReady(String username, Boolean ready) {
-        for (Label l : users) {
-            if (l.getText().toString().equals(username)) {
-                if (ready) l.setColor(Color.GREEN);
-                else l.setColor(Color.RED);
-            }
-        }
-    }
-
-    public void update() {
-
-    }
-}
+}*/
