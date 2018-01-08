@@ -33,6 +33,9 @@ public class LocalGame {
     private Map map;
     private Fog fog;
 
+    private boolean isMyTurn = false;
+    private boolean lastPlayer = false;
+
     private HashMap lastPathGenerated;
 
     private FontysListener fontysListener;
@@ -60,6 +63,18 @@ public class LocalGame {
                 for (Unit u : p.getUnits()) {
                     u.setTexture();
                 }
+
+                try {
+                    isMyTurn = thisPlayer.getId() == remoteGame.getCurrentPlayer().getId();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    lastPlayer = remoteGame.lastPlayer() && remoteGame.getVersion() != 1;
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -86,12 +101,7 @@ public class LocalGame {
     }
 
     public boolean isMyTurn() {
-        try {
-            return thisPlayer.getId() == remoteGame.getCurrentPlayer().getId();
-        } catch (RemoteException e) {
-            LOGGER.log(Level.ALL, e.getMessage());
-            return false;
-        }
+        return isMyTurn;
     }
 
     public void endTurn() {
@@ -409,11 +419,6 @@ public class LocalGame {
     }
 
     public boolean lastPlayer() {
-        try {
-            return remoteGame.lastPlayer() && remoteGame.getVersion() != 1;
-        } catch (RemoteException e) {
-            LOGGER.log(Level.ALL,e.getMessage());
-        }
-        return false;
+        return lastPlayer;
     }
 }
