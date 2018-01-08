@@ -26,20 +26,10 @@ public class CreateServerTable extends Table {
     private Label ipLabel;
     public TextButton btnCreateLobby;
 
-    private int minPlayers = 2;
-    private int maxPlayers = 6;
-
     public CreateServerTable(MainMenuScreen menuScreen) {
         t = new Table();
 
         final TextButton btnCopyToClipboard = new TextButton("Copy to clipboard", menuScreen.skin);
-
-        final SelectBox selectNumberOfPlayers = new SelectBox(menuScreen.skin);
-        String[] playersAmount = new String[maxPlayers - minPlayers + 1];
-        for (int i = 0; i < (maxPlayers - minPlayers) + 1; i++) {
-            playersAmount[i] = String.valueOf(i + minPlayers);
-        }
-        selectNumberOfPlayers.setItems(playersAmount);
 
         btnCreateLobby = new TextButton("Create lobby", menuScreen.skin);
 
@@ -47,9 +37,6 @@ public class CreateServerTable extends Table {
 
         t.add(ipLabel = new Label("Server ip address: ", menuScreen.skin));
         t.add(btnCopyToClipboard).width(collumnWidth / 2).height(collumnHeight / 2).pad(5);
-        t.row();
-        t.add(new Label("Max players: ", menuScreen.skin));
-        t.add(selectNumberOfPlayers).pad(5);
         t.row();
         t.add(btnCreateLobby).fill().height(collumnHeight).colspan(2).pad(5);
         t.row();
@@ -74,7 +61,7 @@ public class CreateServerTable extends Table {
         btnCreateLobby.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                menuScreen.lobbyTable = new LobbyTable(menuScreen, minPlayers, Integer.valueOf((String) selectNumberOfPlayers.getSelected()));
+                menuScreen.lobbyTable = new LobbyTable(menuScreen);
                 menuScreen.table.addActor(menuScreen.lobbyTable);
                 menuScreen.lobbyTable.setVisible(true);
                 CreateServerTable.this.setVisible(false);
@@ -92,7 +79,6 @@ public class CreateServerTable extends Table {
                 CreateServerTable.this.setVisible(false);
             }
         });
-
 
         addActor(t);
     }

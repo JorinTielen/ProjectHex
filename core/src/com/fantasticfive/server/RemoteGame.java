@@ -9,6 +9,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
@@ -90,6 +91,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
 
     @Override
     public void startGame() {
+        Collections.shuffle(players);
         currentPlayer = players.get(0);
 
         try {

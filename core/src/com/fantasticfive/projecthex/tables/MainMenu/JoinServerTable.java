@@ -39,6 +39,9 @@ public class JoinServerTable extends Table {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                  menuScreen.connectToServer(txtIP.getText(), menuScreen.username);
+                 menuScreen.lobbyTable = new LobbyTable(menuScreen);
+                 JoinServerTable.this.setVisible(false);
+                 menuScreen.lobbyTable.setVisible(true);
             }
         });
 

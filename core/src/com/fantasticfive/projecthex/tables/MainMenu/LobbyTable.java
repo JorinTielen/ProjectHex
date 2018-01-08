@@ -28,18 +28,13 @@ public class LobbyTable extends Table {
     private Label labelPlayers;
     private List<Label> users = new ArrayList<>();
 
-    public LobbyTable(MainMenuScreen menuScreen, int minPlayers, int maxPlayers) {
+    public LobbyTable(MainMenuScreen menuScreen) {
         t = new Table();
         this.menuScreen = menuScreen;
-        if (maxPlayers != 0) {
-            owner = true;
-        }
 
         final TextButton btnReady = new TextButton("Ready?", menuScreen.skin);
 
         final TextButton btnBack = new TextButton("Back to main menu", menuScreen.skin);
-
-        //  labelPlayers = new Label("0/6 players joined", menuScreen.skin);
 
         t.add(btnBack);
         t.add(labelPlayers).width(collumnWidth).height(collumnHeight).pad(5);
@@ -54,8 +49,6 @@ public class LobbyTable extends Table {
         btnReady.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-
-
 
             }
         });
