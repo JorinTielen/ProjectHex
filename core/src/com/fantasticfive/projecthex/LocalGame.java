@@ -272,8 +272,14 @@ public class LocalGame {
         Hexagon current;
         int i = 0;
         frontier.add(map.getHexAtLocation(location));
-        while (true){
-            current = frontier.get(i);
+        while (true) {
+            try {
+                current = frontier.get(i);
+            } catch (IndexOutOfBoundsException e) {
+                LOGGER.severe("Pathfinding wrong");
+                return area;
+            }
+
             if (map.pathDistance(pathMap, current, map.getHexAtLocation(location)) == radius){
                 lastPathGenerated = pathMap;
                 return area;
@@ -304,9 +310,13 @@ public class LocalGame {
         }
         Hexagon current = map.getHexAtLocation(location);
         int i = 0;
-        while (current.getLocation().getX() != unit.getLocation().getX() || current.getLocation().getY() != unit.getLocation().getY()){
-            current = (Hexagon)lastPathGenerated.get(current);
-            i++;
+        while (current.getLocation().x != unit.getLocation().x || current.getLocation().y != unit.getLocation().y){
+            if (lastPathGenerated.containsKey(current)) {
+                current = (Hexagon)lastPathGenerated.get(current);
+                i++;
+            } else {
+                return 99;
+            }
         }
         return i;
     }
