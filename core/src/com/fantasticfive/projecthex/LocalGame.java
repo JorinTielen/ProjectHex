@@ -44,6 +44,8 @@ public class LocalGame {
         Gdx.app.postRunnable(() -> {
             players = remotePlayers;
 
+            clearAllTextures();
+
             for (Player p : players) {
                 if (thisPlayer.getId() == p.getId()) {
                     thisPlayer = p;
@@ -77,6 +79,26 @@ public class LocalGame {
                 }
             }
         });
+    }
+
+    private void clearAllTextures() {
+        for (Player p : players) {
+            for (Unit u : p.getUnits()) {
+                if (u != null) {
+                    if (u.getTexture() != null) {
+                        u.getTexture().dispose();
+                    }
+                }
+            }
+
+            for (Building b : p.getBuildings()) {
+                if (b != null) {
+                    if (b.getImage() != null) {
+                        b.getImage().dispose();
+                    }
+                }
+            }
+        }
     }
 
     public LocalGame(String ipAddress, String username) {
