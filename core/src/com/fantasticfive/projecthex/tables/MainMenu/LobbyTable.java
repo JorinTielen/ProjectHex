@@ -24,8 +24,6 @@ public class LobbyTable extends Table {
     private Database database = new Database();
     private MainMenuScreen menuScreen;
 
-    private boolean owner;
-    private Label labelPlayers;
     private List<Label> users = new ArrayList<>();
 
     public LobbyTable(MainMenuScreen menuScreen) {
@@ -36,12 +34,11 @@ public class LobbyTable extends Table {
 
         final TextButton btnBack = new TextButton("Back to main menu", menuScreen.skin);
 
-        t.add(btnBack);
-        t.add(labelPlayers).width(collumnWidth).height(collumnHeight).pad(5);
+        t.add(btnBack).pad(5);
         t.row();
-        t.add(btnReady).width(collumnWidth).height(collumnHeight).pad(5).colspan(2);
+        t.add(btnReady).width(collumnWidth).height(collumnHeight).pad(5);
         t.row();
-        t.add(new Label("Username", menuScreen.skin)).width(collumnWidth).height(collumnHeight).pad(5);
+        t.add(new Label("Players", menuScreen.skin)).pad(5);
         t.row();
 
         t.setPosition(screenWidth / 2, screenHeight / 2);
@@ -74,7 +71,7 @@ public class LobbyTable extends Table {
         labelUser.setColor(Color.RED);
 
         t.row();
-        t.add(labelUser).width(collumnWidth).pad(5);
+        t.add(labelUser).pad(5);
         t.row();
 
         users.add(labelUser);
