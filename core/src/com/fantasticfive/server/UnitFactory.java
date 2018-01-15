@@ -11,7 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class UnitFactory {
-    private static final Logger LOGGER = Logger.getLogger( UnitFactory.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger(UnitFactory.class.getName());
 
     private List<Unit> unitPresets;
 
@@ -41,7 +41,7 @@ public class UnitFactory {
         } catch (CloneNotSupportedException e) {
             LOGGER.log(Level.ALL, e.getMessage());
         }
-            if (unit != null) {
+        if (unit != null) {
             unit.setOwner(owner);
             unit.setLocation(location);
 

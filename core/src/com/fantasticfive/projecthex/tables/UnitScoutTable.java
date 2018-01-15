@@ -12,7 +12,7 @@ import com.fantasticfive.shared.Unit;
 import java.util.logging.Logger;
 
 public class UnitScoutTable extends Table {
-    private static final Logger LOGGER = Logger.getLogger( UnitScoutTable.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger(UnitScoutTable.class.getName());
 
     private Table t;
     private Label l;

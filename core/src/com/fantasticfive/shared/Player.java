@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class Player implements Serializable {
-    private static final Logger LOGGER = Logger.getLogger( Player.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger(Player.class.getName());
 
     private List<Building> buildings;
     private List<Unit> units;
@@ -62,9 +62,13 @@ public class Player implements Serializable {
         this.gold -= gold;
     }
 
-    public int getTurnsWithoutGold() { return this.turnsWithoutGold; }
+    public int getTurnsWithoutGold() {
+        return this.turnsWithoutGold;
+    }
 
-    public void addTurnWithoutGold() { this.turnsWithoutGold += 1; }
+    public void addTurnWithoutGold() {
+        this.turnsWithoutGold += 1;
+    }
 
     public void purchaseBuilding(Building building) {
         //Removes gold and adds resource
@@ -104,7 +108,7 @@ public class Player implements Serializable {
         }
     }
 
-    public boolean purchaseBuildingOnMountain(Building building){
+    public boolean purchaseBuildingOnMountain(Building building) {
         if (this.gold - ((Resource) building).getPurchaseCost() >= 0) {
             this.removeGold(((Resource) building).getPurchaseCost());
             this.buildings.add(building);
@@ -129,7 +133,7 @@ public class Player implements Serializable {
         }
     }
 
-    public void destroyBuilding(Building building){
+    public void destroyBuilding(Building building) {
         building.destroy();
     }
 
@@ -194,10 +198,9 @@ public class Player implements Serializable {
         //Changes gold amount with gold per turn
         this.addGold(getGoldPerTurn());
 
-        if (gold < 0){
+        if (gold < 0) {
             addTurnWithoutGold();
-        }
-        else{
+        } else {
             turnsWithoutGold = 0;
         }
     }

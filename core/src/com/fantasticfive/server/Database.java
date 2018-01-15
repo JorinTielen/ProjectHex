@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  * ProjectHex Created by Sven de Vries on 13-11-2017
  */
 public class Database {
-    private static final Logger LOGGER = Logger.getLogger( Database.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger(Database.class.getName());
 
     private Connection conn;
 

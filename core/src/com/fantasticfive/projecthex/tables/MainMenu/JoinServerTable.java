@@ -38,7 +38,7 @@ public class JoinServerTable extends Table {
         btnConnect.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                 menuScreen.connectToServer(txtIP.getText(), menuScreen.username);
+                menuScreen.connectToServer(txtIP.getText(), menuScreen.username);
             }
         });
 

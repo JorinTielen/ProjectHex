@@ -43,8 +43,8 @@ public class Point implements Serializable {
         this.y = y;
     }
 
-    public Point value(){
-        return new Point(x,y);
+    public Point value() {
+        return new Point(x, y);
     }
 
 }

@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RMIServer {
-    private static final Logger LOGGER = Logger.getLogger( RMIServer.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger(RMIServer.class.getName());
     private static final int portNumber = 1099;
     private boolean serverStarted;
 
@@ -40,7 +40,7 @@ public class RMIServer {
         }
     }
 
-    public boolean getServerStarted(){
+    public boolean getServerStarted() {
         return this.serverStarted;
     }
 }

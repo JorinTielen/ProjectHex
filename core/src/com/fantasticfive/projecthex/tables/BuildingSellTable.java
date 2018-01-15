@@ -12,7 +12,7 @@ import com.fantasticfive.shared.Building;
 import java.util.logging.Logger;
 
 public class BuildingSellTable extends Table {
-    private static final Logger LOGGER = Logger.getLogger( BuildingSellTable.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger(BuildingSellTable.class.getName());
 
     private Table t;
     private Label l;

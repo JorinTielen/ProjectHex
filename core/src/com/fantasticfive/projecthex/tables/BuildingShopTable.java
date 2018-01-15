@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 
 public class BuildingShopTable extends Table {
 
-    private static final Logger LOGGER = Logger.getLogger( BuildingSellTable.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger(BuildingSellTable.class.getName());
 
     private Table t;
 

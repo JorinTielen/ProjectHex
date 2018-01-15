@@ -15,7 +15,7 @@ public class Fog {
     private List<Hexagon> neighbouringHexes;
     private Map map;
 
-    public Fog(Player player, List<Hexagon> visitedHexes, Map map){
+    public Fog(Player player, List<Hexagon> visitedHexes, Map map) {
         this.visitedHexes = visitedHexes;
         this.map = map;
         neighbouringHexes = new ArrayList<>();
@@ -38,72 +38,72 @@ public class Fog {
         return neighbouringHexes;
     }
 
-    public void calculateNeighbouringHexes(List<Hexagon> hexagons){
-        for (Hexagon hex : hexagons){
-            for (Hexagon neighbourHex : map.getHexesInRadius(hex.getLocation(), 1)){
-                if (!isVisisted(neighbourHex) && !isNeighbour(neighbourHex)){
+    public void calculateNeighbouringHexes(List<Hexagon> hexagons) {
+        for (Hexagon hex : hexagons) {
+            for (Hexagon neighbourHex : map.getHexesInRadius(hex.getLocation(), 1)) {
+                if (!isVisisted(neighbourHex) && !isNeighbour(neighbourHex)) {
                     neighbouringHexes.add(neighbourHex);
                 }
             }
         }
     }
 
-    public void calculateNeighbouringHexes(Hexagon hexagon){
-        for (Hexagon neighbourHex : map.getHexesInRadius(hexagon.getLocation(), 1)){
-            if (!isVisisted(neighbourHex) && !isNeighbour(neighbourHex)){
+    public void calculateNeighbouringHexes(Hexagon hexagon) {
+        for (Hexagon neighbourHex : map.getHexesInRadius(hexagon.getLocation(), 1)) {
+            if (!isVisisted(neighbourHex) && !isNeighbour(neighbourHex)) {
                 neighbouringHexes.add(neighbourHex);
             }
         }
     }
 
-    public void unitMovement(Hexagon oldHex, Hexagon newHex){
+    public void unitMovement(Hexagon oldHex, Hexagon newHex) {
         //Define path, add all hexes along this path to visitedHexes.
-        for (Hexagon hex : map.getPath(oldHex, newHex)){
-            if (!isVisisted(hex)){
+        for (Hexagon hex : map.getPath(oldHex, newHex)) {
+            if (!isVisisted(hex)) {
                 visitedHexes.add(hex);
                 calculateNeighbouringHexes(hex);
-                if (isNeighbour(hex)){
+                if (isNeighbour(hex)) {
                     removeNeighbour(hex);
                 }
             }
         }
     }
 
-    public void removeNeighbour(Hexagon hex){
+    public void removeNeighbour(Hexagon hex) {
         Hexagon removeThisHex = hex;
-        for (Hexagon h : neighbouringHexes){
-            if (h.getLocation().getX() == hex.getLocation().getX() && h.getLocation().getY() == hex.getLocation().getY()){
+        for (Hexagon h : neighbouringHexes) {
+            if (h.getLocation().getX() == hex.getLocation().getX() && h.getLocation().getY() == hex.getLocation().getY()) {
                 removeThisHex = h;
             }
         }
         neighbouringHexes.remove(removeThisHex);
     }
 
-    public boolean isVisisted(Hexagon hexagon){
-        for (Hexagon visistedHexagon : visitedHexes){
-            if (visistedHexagon.getLocation().getX() == hexagon.getLocation().getX() && visistedHexagon.getLocation().getY() == hexagon.getLocation().getY()){
+    public boolean isVisisted(Hexagon hexagon) {
+        for (Hexagon visistedHexagon : visitedHexes) {
+            if (visistedHexagon.getLocation().getX() == hexagon.getLocation().getX() && visistedHexagon.getLocation().getY() == hexagon.getLocation().getY()) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean isNeighbour(Hexagon hexagon){
-        for (Hexagon neighbourHexagon : neighbouringHexes){
-            if (neighbourHexagon.getLocation().getX() == hexagon.getLocation().getX() && neighbourHexagon.getLocation().getY() == hexagon.getLocation().getY()){
+    public boolean isNeighbour(Hexagon hexagon) {
+        for (Hexagon neighbourHexagon : neighbouringHexes) {
+            if (neighbourHexagon.getLocation().getX() == hexagon.getLocation().getX() && neighbourHexagon.getLocation().getY() == hexagon.getLocation().getY()) {
                 return true;
             }
         }
         return false;
     }
 
-    public void unitCreated(Hexagon newHex){
+    public void unitCreated(Hexagon newHex) {
         visitedHexes.add(newHex);
         calculateNeighbouringHexes(newHex);
-        if (isNeighbour(newHex)){
+        if (isNeighbour(newHex)) {
             Hexagon removeThisHex = newHex;
-            for (Hexagon h : neighbouringHexes){
-                if (h.getLocation().getX() == newHex.getLocation().getX() && h.getLocation().getY() == newHex.getLocation().getY()){
+            for (Hexagon h : neighbouringHexes) {
+                if (h.getLocation().getX() == newHex.getLocation().getX() && h.getLocation().getY() == newHex.getLocation().getY()) {
                     removeThisHex = h;
                 }
             }

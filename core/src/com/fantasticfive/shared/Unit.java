@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class Unit implements Cloneable, Serializable {
-    private static final Logger LOGGER = Logger.getLogger( Unit.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger(Unit.class.getName());
 
     private transient Texture texture;
     private UnitType unitType;
@@ -64,6 +64,8 @@ public class Unit implements Cloneable, Serializable {
 
     public boolean attack(Building buildingToAttack) {
         if (allowedToAttack != 0) {
+            allowedToMove = 0;
+            allowedToAttack = 0;
             return buildingToAttack.damageHealth(this.attackPower);
         }
 
@@ -85,11 +87,11 @@ public class Unit implements Cloneable, Serializable {
         }
     }
 
-    public void setWalkableHexes(List<Hexagon> hexes){
+    public void setWalkableHexes(List<Hexagon> hexes) {
         this.walkableHexes = hexes;
     }
 
-    public List<Hexagon> getWalkableHexes(){
+    public List<Hexagon> getWalkableHexes() {
         return this.walkableHexes;
     }
 
@@ -97,7 +99,7 @@ public class Unit implements Cloneable, Serializable {
         this.location = destination;
         allowedToMove -= distance;
 
-        if(allowedToMove == 0){
+        if (allowedToMove == 0) {
             this.allowedToAttack = 0;
         }
     }
@@ -143,7 +145,9 @@ public class Unit implements Cloneable, Serializable {
         return this.health;
     }
 
-    public int getMaxHealth() {return this.maxHealth;}
+    public int getMaxHealth() {
+        return this.maxHealth;
+    }
 
     public UnitType getUnitType() {
         return this.unitType;
@@ -157,7 +161,7 @@ public class Unit implements Cloneable, Serializable {
         return this.allowedToMove;
     }
 
-    public int getAttackRangeLeft(){
+    public int getAttackRangeLeft() {
         return this.allowedToAttack;
     }
 
@@ -195,40 +199,49 @@ public class Unit implements Cloneable, Serializable {
         return texture;
     }
 
-    public void claimedLand(){
+    public void claimedLand() {
         this.allowedToMove = 0;
     }
 
-    public void setColor(){
+    public void setColor() {
         texture.getTextureData().prepare();
         Pixmap pixmap = texture.getTextureData().consumePixmap();
         com.badlogic.gdx.graphics.Color newColor;
-        switch(owner.getColor()){
-            case RED: newColor = com.badlogic.gdx.graphics.Color.RED;
+        switch (owner.getColor()) {
+            case RED:
+                newColor = com.badlogic.gdx.graphics.Color.RED;
                 break;
-            case BLUE: newColor = com.badlogic.gdx.graphics.Color.BLUE;
+            case BLUE:
+                newColor = com.badlogic.gdx.graphics.Color.BLUE;
                 break;
-            case PURPLE: newColor = com.badlogic.gdx.graphics.Color.PURPLE;
+            case PURPLE:
+                newColor = com.badlogic.gdx.graphics.Color.PURPLE;
                 break;
-            case ORANGE: newColor = com.badlogic.gdx.graphics.Color.ORANGE;
+            case ORANGE:
+                newColor = com.badlogic.gdx.graphics.Color.ORANGE;
                 break;
-            case YELLOW: newColor = com.badlogic.gdx.graphics.Color.YELLOW;
+            case YELLOW:
+                newColor = com.badlogic.gdx.graphics.Color.YELLOW;
                 break;
-            case GREEN: newColor = com.badlogic.gdx.graphics.Color.GREEN;
+            case GREEN:
+                newColor = com.badlogic.gdx.graphics.Color.GREEN;
                 break;
-            case BROWN: newColor = com.badlogic.gdx.graphics.Color.BROWN;
+            case BROWN:
+                newColor = com.badlogic.gdx.graphics.Color.BROWN;
                 break;
-            case PINK: newColor = com.badlogic.gdx.graphics.Color.PINK;
+            case PINK:
+                newColor = com.badlogic.gdx.graphics.Color.PINK;
                 break;
-            default: newColor = com.badlogic.gdx.graphics.Color.WHITE;
+            default:
+                newColor = com.badlogic.gdx.graphics.Color.WHITE;
                 break;
         }
         pixmap.setColor(newColor);
         com.badlogic.gdx.graphics.Color whiteColor = com.badlogic.gdx.graphics.Color.WHITE;
-        for (int y = 0; y < pixmap.getHeight(); y++){
-            for (int x = 0; x < pixmap.getWidth(); x++){
+        for (int y = 0; y < pixmap.getHeight(); y++) {
+            for (int x = 0; x < pixmap.getWidth(); x++) {
                 com.badlogic.gdx.graphics.Color pixelColor = new com.badlogic.gdx.graphics.Color(pixmap.getPixel(x, y));
-                if (pixelColor.equals(whiteColor)){
+                if (pixelColor.equals(whiteColor)) {
                     pixmap.fillRectangle(x, y, 1, 1);
                 }
             }

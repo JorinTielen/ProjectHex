@@ -18,6 +18,7 @@ public class Barracks extends Building {
 
     /**
      * Set the units barracks can produce
+     *
      * @param creatableUnits List of units barracks can produce
      */
     public void setCreatableUnits(UnitType[] creatableUnits) {
@@ -26,13 +27,16 @@ public class Barracks extends Building {
 
     /**
      * Get a list of units barracks can produce
+     *
      * @return List of units barracks can produce
      */
-    public UnitType[] getCreatableUnits(){
+    public UnitType[] getCreatableUnits() {
         return creatableUnits;
     }
 
-    public int getPurchaseCost() { return purchaseCost; }
+    public int getPurchaseCost() {
+        return purchaseCost;
+    }
 
     @Override
     public void setOwner(Player owner) {
@@ -42,7 +46,7 @@ public class Barracks extends Building {
     @Override
     public void setImage() {
         this.image = new Texture("barracks.png");
-        if(owner != null) {
+        if (owner != null) {
             setColor();
         }
     }
