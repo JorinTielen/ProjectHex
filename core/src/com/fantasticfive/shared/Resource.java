@@ -13,7 +13,9 @@ public class Resource extends Building {
         this.productionPerTurn = productionPerTurn;
     }
 
-    public int getPurchaseCost() { return purchaseCost; }
+    public int getPurchaseCost() {
+        return purchaseCost;
+    }
 
     public int getProductionPerTurn() {
         return this.productionPerTurn;
@@ -26,8 +28,12 @@ public class Resource extends Building {
 
     @Override
     public void setImage() {
-        this.image = new Texture("mine.png");
-        if(owner != null) {
+        if (resourceOnMountain) {
+            this.image = new Texture("mineMountain.png");
+        } else {
+            this.image = new Texture("mine.png");
+        }
+        if (owner != null) {
             setColor();
         }
     }

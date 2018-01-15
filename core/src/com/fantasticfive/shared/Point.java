@@ -3,9 +3,9 @@ package com.fantasticfive.shared;
 import java.io.Serializable;
 
 public class Point implements Serializable {
-    public int x;
-    public int y;
-    public int z;
+    public int x; //NOSONAR Hoeven niet final te zijn
+    public int y; //NOSONAR
+    public int z; //NOSONAR
 
     // X = r | row
     // Y = q | column
@@ -23,7 +23,7 @@ public class Point implements Serializable {
         this.z = -(y + x);
     }
 
-    public boolean equals(Point other) {
+    public boolean sameAs(Point other) {
         return this.x == other.x && this.y == other.y;
     }
 
@@ -43,8 +43,8 @@ public class Point implements Serializable {
         this.y = y;
     }
 
-    public Point value(){
-        return new Point(x,y);
+    public Point value() {
+        return new Point(x, y);
     }
 
 }

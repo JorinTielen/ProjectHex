@@ -36,7 +36,7 @@ public class Hexagon implements Serializable {
         this.location = location;
         this.radius = radius;
 
-        if (objectType == ObjectType.MOUNTAIN){
+        if (objectType == ObjectType.MOUNTAIN) {
             this.isMountain = true;
         }
     }
@@ -115,7 +115,7 @@ public class Hexagon implements Serializable {
     }
 
     public void setColorTexture() {
-        if(owner != null){
+        if (owner != null) {
             this.colorCoding = new Texture("terrainColor.png");
             setColor();
         }
@@ -123,7 +123,7 @@ public class Hexagon implements Serializable {
 
     //returns the real x,y position of this hex
     public Vector2 getPos() {
-        double height = radius * 2;
+        double height = radius * 2; //NOSONAR
         double width = height;
 
         double vert = height * 0.75f;
@@ -147,7 +147,7 @@ public class Hexagon implements Serializable {
         return this.isMountain;
     }
 
-    public void setMountain(){
+    public void setMountain() {
         this.objectType = ObjectType.MOUNTAIN;
         this.objectImage = new Texture("rockBig.png");
     }
@@ -184,36 +184,45 @@ public class Hexagon implements Serializable {
         return groundType;
     }
 
-    public void setColor(){
+    public void setColor() {
         colorCoding.getTextureData().prepare();
         Pixmap pixmap = colorCoding.getTextureData().consumePixmap();
         com.badlogic.gdx.graphics.Color newColor;
-        switch(owner.getColor()){
-            case RED: newColor = com.badlogic.gdx.graphics.Color.RED;
+        switch (owner.getColor()) {
+            case RED:
+                newColor = com.badlogic.gdx.graphics.Color.RED;
                 break;
-            case BLUE: newColor = com.badlogic.gdx.graphics.Color.BLUE;
+            case BLUE:
+                newColor = com.badlogic.gdx.graphics.Color.BLUE;
                 break;
-            case PURPLE: newColor = com.badlogic.gdx.graphics.Color.PURPLE;
+            case PURPLE:
+                newColor = com.badlogic.gdx.graphics.Color.PURPLE;
                 break;
-            case ORANGE: newColor = com.badlogic.gdx.graphics.Color.ORANGE;
+            case ORANGE:
+                newColor = com.badlogic.gdx.graphics.Color.ORANGE;
                 break;
-            case YELLOW: newColor = com.badlogic.gdx.graphics.Color.YELLOW;
+            case YELLOW:
+                newColor = com.badlogic.gdx.graphics.Color.YELLOW;
                 break;
-            case GREEN: newColor = com.badlogic.gdx.graphics.Color.GREEN;
+            case GREEN:
+                newColor = com.badlogic.gdx.graphics.Color.GREEN;
                 break;
-            case BROWN: newColor = com.badlogic.gdx.graphics.Color.BROWN;
+            case BROWN:
+                newColor = com.badlogic.gdx.graphics.Color.BROWN;
                 break;
-            case PINK: newColor = com.badlogic.gdx.graphics.Color.PINK;
+            case PINK:
+                newColor = com.badlogic.gdx.graphics.Color.PINK;
                 break;
-            default: newColor = com.badlogic.gdx.graphics.Color.WHITE;
+            default:
+                newColor = com.badlogic.gdx.graphics.Color.WHITE;
                 break;
         }
         pixmap.setColor(newColor);
         com.badlogic.gdx.graphics.Color whiteColor = com.badlogic.gdx.graphics.Color.WHITE;
-        for (int y = 0; y < pixmap.getHeight(); y++){
-            for (int x = 0; x < pixmap.getWidth(); x++){
+        for (int y = 0; y < pixmap.getHeight(); y++) {
+            for (int x = 0; x < pixmap.getWidth(); x++) {
                 com.badlogic.gdx.graphics.Color pixelColor = new com.badlogic.gdx.graphics.Color(pixmap.getPixel(x, y));
-                if (pixelColor.equals(whiteColor)){
+                if (pixelColor.equals(whiteColor)) {
                     pixmap.fillRectangle(x, y, 1, 1);
                 }
             }

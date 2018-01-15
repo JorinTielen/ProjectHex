@@ -46,9 +46,9 @@ public class Map implements Serializable {
 
     }
 
-  public boolean canMoveTo(Unit u, Point location, List<Hexagon> movableHexes) {
+    public boolean canMoveTo(Unit u, Point location, List<Hexagon> movableHexes) {
         for (Hexagon hex : movableHexes) {
-            if(hex.getLocation().equals(location)) {
+            if (hex.getLocation().sameAs(location)) {
                 return true;
             }
         }
@@ -56,11 +56,11 @@ public class Map implements Serializable {
     }
 
 
-    public int pathDistance(HashMap pathMap, Hexagon currentHex, Hexagon beginHex){
+    public int pathDistance(HashMap pathMap, Hexagon currentHex, Hexagon beginHex) {
         Hexagon current = currentHex;
         int i = 0;
-        while (current != beginHex){
-            current = (Hexagon)pathMap.get(current);
+        while (current != beginHex) {
+            current = (Hexagon) pathMap.get(current);
             i++;
         }
         return i;
@@ -69,7 +69,7 @@ public class Map implements Serializable {
     public boolean isWithinAttackRange(Unit u, Point location) {
         List<Hexagon> movableHexes = getHexesInRadius(u.getLocation(), u.getAttackRangeLeft());
         for (Hexagon hex : movableHexes) {
-            if(hex.getLocation().equals(location)) {
+            if (hex.getLocation().sameAs(location)) {
                 return true;
             }
         }
@@ -93,8 +93,34 @@ public class Map implements Serializable {
     }
 
     private void Generate() {
-        //old seed: 1234
-        Noise.setSeed(365); //This value is used to calculate the map
+        List<Integer> seeds = new ArrayList<>();
+        seeds.add(-2096365904);
+        seeds.add(-1982397011);
+        seeds.add(-1766646759);
+        seeds.add(-1742594191);
+        seeds.add(-1102120703);
+        seeds.add(-970991336);
+        seeds.add(-862200254);
+        seeds.add(-777100558);
+        seeds.add(-516396776);
+        seeds.add(-217823742);
+        seeds.add(110098218);
+        seeds.add(347414893);
+        seeds.add(406130710);
+        seeds.add(940360477);
+        seeds.add(1081319097);
+        seeds.add(1138543949);
+        seeds.add(1290340836);
+        seeds.add(1504742640);
+        seeds.add(1551778228);
+        seeds.add(1842268213);
+        seeds.add(1994802313);
+        seeds.add(2004522193);
+
+        Random r = new Random();
+        int seed = seeds.get(r.nextInt(seeds.size()));
+        Noise.setSeed(seed); //This value is used to calculate the map
+        System.out.println(seed);
         float scale = 0.10f; //To determine the density
         float[][] noiseValues = Noise.Calc2DNoise(height, width, scale);
 
@@ -142,24 +168,16 @@ public class Map implements Serializable {
     }
 
     public boolean bordersOwnLand(Point location, Player currentPlayer) {
-        for (Hexagon h : getHexesInRadius(location, 1)){
-            if (h.getOwner() == currentPlayer){
+        for (Hexagon h : getHexesInRadius(location, 1)) {
+            if (h.getOwner() == currentPlayer) {
                 return true;
             }
         }
         return false;
     }
 
-    //Check if buildings can be placed on given location
-    public boolean isHexBuildable(Point location, Player player) {
-        Hexagon hex = getHexAtLocation(location);
 
-        return (hex.getOwner() == player &&
-                hex.getGroundType() != GroundType.WATER &&
-                hex.getObjectType() != ObjectType.MOUNTAIN);
-    }
-
-    public List<Hexagon> getPath(Hexagon startHex, Hexagon destination){
+    public List<Hexagon> getPath(Hexagon startHex, Hexagon destination) {
         //TODO Maak gebruik van accessible boolean in Hexagon om te bepalen of je er op kan lopen.
         List<Hexagon> path = new ArrayList<>();
         List<Hexagon> frontier = new ArrayList<>();
@@ -168,14 +186,14 @@ public class Map implements Serializable {
         Hexagon current;
         int i = 0;
         frontier.add(startHex);
-        while (!found){
+        while (!found) {
             current = frontier.get(i);
-            if (current == destination){
+            if (current == destination) {
                 found = true;
             }
 
-            for (Hexagon h : getHexesInRadius(current.getLocation(), 1)){
-                if (!pathMap.containsKey(h) && h.getObjectType() != ObjectType.MOUNTAIN && h.getGroundType() != GroundType.WATER){
+            for (Hexagon h : getHexesInRadius(current.getLocation(), 1)) {
+                if (!pathMap.containsKey(h) && h.getObjectType() != ObjectType.MOUNTAIN && h.getGroundType() != GroundType.WATER) {
                     frontier.add(h);
                     pathMap.put(h, current);
                 }
@@ -185,8 +203,8 @@ public class Map implements Serializable {
 
         path.add(destination);
         current = destination;
-        while (current != startHex){
-            current = (Hexagon)pathMap.get(current);
+        while (current != startHex) {
+            current = (Hexagon) pathMap.get(current);
             path.add(current);
         }
         Collections.reverse(path);

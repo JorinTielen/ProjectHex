@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class Player implements Serializable {
-    private static final Logger LOGGER = Logger.getLogger( Player.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger(Player.class.getName());
 
     private List<Building> buildings;
     private List<Unit> units;
@@ -19,6 +19,7 @@ public class Player implements Serializable {
     private int gold;
     private String username;
     private int id;
+    private int turnsWithoutGold;
 
     public Player(String username, Color color, int id) {
         this.color = color;
@@ -30,6 +31,7 @@ public class Player implements Serializable {
         this.gold = 100;
 
         this.id = id;
+        this.turnsWithoutGold = 0;
     }
 
     public int getId() {
@@ -58,6 +60,14 @@ public class Player implements Serializable {
 
     public void removeGold(int gold) {
         this.gold -= gold;
+    }
+
+    public int getTurnsWithoutGold() {
+        return this.turnsWithoutGold;
+    }
+
+    public void addTurnWithoutGold() {
+        this.turnsWithoutGold += 1;
     }
 
     public void purchaseBuilding(Building building) {
@@ -98,10 +108,9 @@ public class Player implements Serializable {
         }
     }
 
-    public boolean purchaseBuildingOnMountain(Building building){
+    public boolean purchaseBuildingOnMountain(Building building) {
         if (this.gold - ((Resource) building).getPurchaseCost() >= 0) {
             this.removeGold(((Resource) building).getPurchaseCost());
-            building.setMineOnMountain();
             this.buildings.add(building);
             LOGGER.info("Resource on mountain built");
             return true;
@@ -124,7 +133,7 @@ public class Player implements Serializable {
         }
     }
 
-    public void destroyBuilding(Building building){
+    public void destroyBuilding(Building building) {
         building.destroy();
     }
 
@@ -134,7 +143,7 @@ public class Player implements Serializable {
 
     public Building getBuildingAtLocation(Point location) {
         for (Building building : buildings) {
-            if (building.getLocation().equals(location)) {
+            if (building.getLocation().sameAs(location)) {
                 return building;
             }
         }
@@ -188,6 +197,12 @@ public class Player implements Serializable {
 
         //Changes gold amount with gold per turn
         this.addGold(getGoldPerTurn());
+
+        if (gold < 0) {
+            addTurnWithoutGold();
+        } else {
+            turnsWithoutGold = 0;
+        }
     }
 
     public void updateResources() {
@@ -195,7 +210,7 @@ public class Player implements Serializable {
     }
 
     public int getGoldPerTurn() {
-        int gpt = 0;
+        int gpt = 2;
         for (Unit u : units) {
             gpt -= u.getCostPerTurn();
         }

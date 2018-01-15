@@ -13,5 +13,7 @@ public enum Color {
     BROWN,
     PINK;
 
-    public static Color getRandomColor(){ return values()[(int)(Math.random() * values().length)];}
+    public static Color getRandomColor() {
+        return values()[(int) (Math.random() * values().length)];
+    }
 }

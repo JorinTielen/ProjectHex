@@ -7,6 +7,7 @@ import com.fantasticfive.shared.enums.BuildingType;
 import com.fantasticfive.shared.enums.GroundType;
 import com.fantasticfive.shared.enums.ObjectType;
 import com.fantasticfive.shared.enums.UnitType;
+import fontyspublisher.IRemotePublisherForListener;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -20,32 +21,84 @@ public class LocalGame {
 
     private static final Logger LOGGER = Logger.getLogger(LocalGame.class.getName());
 
+    private IRemoteGame remoteGame;
+
     private List<Player> players = new ArrayList<>();
     private Player thisPlayer;
     private Map map;
     private Fog fog;
-    private int version = 0;
-    private IRemoteGame remoteGame;
+
+    private boolean isMyTurn = false;
+    private boolean lastPlayer = false;
+
     private HashMap lastPathGenerated;
 
-    public LocalGame(String ipAddress, String username) {
-        getRemoteGame(ipAddress, username);
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    int remoteVersion = remoteGame.getVersion();
-                    if (remoteVersion != version) {
-                        Gdx.app.postRunnable(() ->
-                                UpdateFromRemote(remoteVersion)
-                        );
+    private FontysListener fontysListener;
+
+    public void UpdateFromRemotePush(List<Player> remotePlayers) {
+        Gdx.app.postRunnable(() -> {
+            players = remotePlayers;
+
+            clearAllTextures();
+
+            for (Player p : players) {
+                if (thisPlayer.getId() == p.getId()) {
+                    thisPlayer = p;
+                }
+                for (Hexagon h : map.getHexagons()) {
+                    for (Hexagon h2 : p.getOwnedHexagons()) {
+                        if (h.getLocation().sameAs(h2.getLocation())) {
+                            h.setOwner(p);
+                        }
                     }
+                    h.setColorTexture();
+                }
+
+                for (Building b : p.getBuildings()) {
+                    b.setImage();
+                }
+                for (Unit u : p.getUnits()) {
+                    u.setTexture();
+                }
+
+                try {
+                    isMyTurn = thisPlayer.getId() == remoteGame.getCurrentPlayer().getId();
+                } catch (RemoteException e) {
+                    LOGGER.log(Level.ALL, e.getMessage());
+                    ;
+                }
+
+                try {
+                    lastPlayer = remoteGame.lastPlayer() && remoteGame.getVersion() != 1;
                 } catch (RemoteException e) {
                     LOGGER.log(Level.ALL, e.getMessage());
                 }
             }
-        }, 0, 250);
+        });
+    }
+
+    private void clearAllTextures() {
+        for (Player p : players) {
+            for (Unit u : p.getUnits()) {
+                if (u != null) {
+                    if (u.getTexture() != null) {
+                        u.getTexture().dispose();
+                    }
+                }
+            }
+
+            for (Building b : p.getBuildings()) {
+                if (b != null) {
+                    if (b.getImage() != null) {
+                        b.getImage().dispose();
+                    }
+                }
+            }
+        }
+    }
+
+    public LocalGame(String ipAddress, String username) {
+        getRemoteGame(ipAddress, username);
         fog = new Fog(thisPlayer, thisPlayer.getOwnedHexagons(), this.map);
     }
 
@@ -65,52 +118,8 @@ public class LocalGame {
         }
     }
 
-    private void UpdateFromRemote(int remoteVersion) {
-        try {
-            players = remoteGame.getPlayers();
-        } catch (RemoteException e) {
-            LOGGER.log(Level.ALL, e.getMessage());
-        }
-
-        for (Player p : players) {
-            if (this.thisPlayer.getId() == p.getId()) {
-                this.thisPlayer = p;
-            }
-            for (Hexagon h : map.getHexagons()) {
-                for (Hexagon h2 : p.getOwnedHexagons()) {
-                    if (h.getLocation().equals(h2.getLocation())) {
-                        h.setOwner(p);
-                    }
-                }
-                h.setColorTexture();
-            }
-            for (Building b : p.getBuildings()) {
-                b.setImage();
-            }
-            for (Unit u : p.getUnits()) {
-                u.setTexture();
-            }
-        }
-
-        version = remoteVersion;
-        LOGGER.info("Updated from Remote");
-    }
-
-    public void updateFromLocal() {
-        try {
-            remoteGame.updateFromLocal(players);
-        } catch (RemoteException e) {
-            LOGGER.log(Level.ALL, e.getMessage());
-        }
-    }
-
     public boolean isMyTurn() {
-        try {
-            return thisPlayer.getId() == remoteGame.getCurrentPlayer().getId();
-        } catch (RemoteException e) {
-            LOGGER.log(Level.ALL, e.getMessage());
-            return false;
-        }
+        return isMyTurn;
     }
 
     public void endTurn() {
@@ -125,7 +134,7 @@ public class LocalGame {
         return thisPlayer;
     }
 
-    public Player getCurrentPlayer(){
+    public Player getCurrentPlayer() {
         try {
             return remoteGame.getCurrentPlayer();
         } catch (RemoteException e) {
@@ -142,7 +151,9 @@ public class LocalGame {
         return map;
     }
 
-    public Fog getFog() { return this.fog; }
+    public Fog getFog() {
+        return this.fog;
+    }
 
     public void claimLand(Unit unit) {
         try {
@@ -163,8 +174,10 @@ public class LocalGame {
 
     public void buyUnit(UnitType type, Point location) {
         try {
-            getFog().unitCreated(map.getHexAtLocation(location));
-            remoteGame.buyUnit(type, location, thisPlayer.getId());
+            Hexagon unitLocation = remoteGame.buyUnit(type, location, thisPlayer.getId());
+            if (unitLocation != null) {
+                getFog().unitCreated(unitLocation);
+            }
         } catch (RemoteException e) {
             LOGGER.log(Level.ALL, e.getMessage());
         }
@@ -172,7 +185,7 @@ public class LocalGame {
 
     public void moveUnit(Unit u, Point location) {
         try {
-            if (remoteGame.moveUnit(u, location, thisPlayer.getId(), walkableHexes(u.getLocation(), u.getMovementLeft()), pathDistance(u, location))){
+            if (remoteGame.moveUnit(u, location, thisPlayer.getId(), walkableHexes(u.getLocation(), u.getMovementLeft()), pathDistance(u, location))) {
                 fog.unitMovement(map.getHexAtLocation(u.getLocation()), map.getHexAtLocation(location));
             }
         } catch (RemoteException e) {
@@ -202,11 +215,12 @@ public class LocalGame {
         return unit;
     }
 
-    public void attackUnit(Unit attacker, Unit defender) {
+    public int attackUnit(Unit attacker, Unit defender) {
         try {
-            remoteGame.attackUnit(attacker, defender);
+            return remoteGame.attackUnit(attacker, defender);
         } catch (RemoteException e) {
             LOGGER.log(Level.ALL, e.getMessage());
+            return 0;
         }
     }
 
@@ -214,7 +228,8 @@ public class LocalGame {
         try {
             remoteGame.sellUnit(u);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
+            ;
         }
     }
 
@@ -238,6 +253,11 @@ public class LocalGame {
     public void buyBuilding(BuildingType type, Point location) {
         try {
             remoteGame.buyBuilding(type, location);
+            if (getBuildingAtLocation(location) != null && type == BuildingType.RESOURCE) {
+                map.getHexAtLocation(location).removeObjectType();
+                map.getHexAtLocation(location).removeObject();
+                getBuildingAtLocation(location).setMineOnMountain();
+            }
         } catch (RemoteException e) {
             LOGGER.log(Level.ALL, e.getMessage());
         }
@@ -246,6 +266,9 @@ public class LocalGame {
     public void sellBuilding(Point location) {
         try {
             remoteGame.sellBuilding(location);
+            if (map.getHexAtLocation(location).getIsMountain()) {
+                map.getHexAtLocation(location).setMountain();
+            }
         } catch (RemoteException e) {
             LOGGER.log(Level.ALL, e.getMessage());
         }
@@ -260,7 +283,7 @@ public class LocalGame {
         }
     }
 
-    public Unit getUnitAtLocation(Point location){
+    public Unit getUnitAtLocation(Point location) {
         try {
             return remoteGame.getUnitAtLocation(location);
         } catch (RemoteException e) {
@@ -273,25 +296,31 @@ public class LocalGame {
         unit.setWalkableHexes(walkableHexes(unit.getLocation(), unit.getMovementLeft()));
     }
 
-    public List<Hexagon> walkableHexes(Point location, int radius){
+    public List<Hexagon> walkableHexes(Point location, int radius) {
         List<Hexagon> area = new ArrayList<>();
         List<Hexagon> frontier = new ArrayList<>();
         HashMap pathMap = new HashMap();
         Hexagon current;
         int i = 0;
         frontier.add(map.getHexAtLocation(location));
-        while (true){
-            current = frontier.get(i);
-            if (map.pathDistance(pathMap, current, map.getHexAtLocation(location)) == radius){
+        while (true) {
+            try {
+                current = frontier.get(i);
+            } catch (IndexOutOfBoundsException e) {
+                LOGGER.severe("Pathfinding wrong");
+                return area;
+            }
+
+            if (map.pathDistance(pathMap, current, map.getHexAtLocation(location)) == radius) {
                 lastPathGenerated = pathMap;
                 return area;
             }
-            for (Hexagon h : map.getHexesInRadius(current.getLocation(), 1)){
+            for (Hexagon h : map.getHexesInRadius(current.getLocation(), 1)) {
                 if (!pathMap.containsKey(h) &&
                         h.getObjectType() != ObjectType.MOUNTAIN &&
                         h.getGroundType() != GroundType.WATER &&
                         getBuildingAtLocation(h.getLocation()) == null &&
-                        getUnitAtLocation(h.getLocation()) == null){
+                        getUnitAtLocation(h.getLocation()) == null) {
                     frontier.add(h);
                     pathMap.put(h, current);
                     area.add(h);
@@ -301,25 +330,29 @@ public class LocalGame {
         }
     }
 
-    public int pathDistance(Unit unit, Point location){
+    public int pathDistance(Unit unit, Point location) {
         Hexagon targetHex = map.getHexAtLocation(location);
         if (unit.getMovementLeft() == 0 ||
                 targetHex.getObjectType() == ObjectType.MOUNTAIN ||
                 targetHex.getGroundType() == GroundType.WATER ||
                 getBuildingAtLocation(location) != null ||
-                getUnitAtLocation(location) != null){
+                getUnitAtLocation(location) != null) {
             return 1;
         }
         Hexagon current = map.getHexAtLocation(location);
         int i = 0;
-        while (current.getLocation().getX() != unit.getLocation().getX() || current.getLocation().getY() != unit.getLocation().getY()){
-            current = (Hexagon)lastPathGenerated.get(current);
-            i++;
+        while (current.getLocation().x != unit.getLocation().x || current.getLocation().y != unit.getLocation().y) {
+            if (lastPathGenerated.containsKey(current)) {
+                current = (Hexagon) lastPathGenerated.get(current);
+                i++;
+            } else {
+                return 99;
+            }
         }
         return i;
     }
 
-    public void destroyBuilding(Building building){
+    public void destroyBuilding(Building building) {
         try {
             remoteGame.destroyBuilding(building);
         } catch (RemoteException e) {
@@ -362,9 +395,11 @@ public class LocalGame {
         }
 
         //Bind using registry
+        IRemotePublisherForListener remotePublisher = null;
         if (registry != null) {
             try {
                 remoteGame = (IRemoteGame) registry.lookup("ProjectHex");
+                remotePublisher = (IRemotePublisherForListener) registry.lookup("Publisher");
             } catch (RemoteException e) {
                 LOGGER.info("Client: RemoteException on IRemoteGame");
                 LOGGER.info("Client: RemoteException: " + e.getMessage());
@@ -373,6 +408,17 @@ public class LocalGame {
                 LOGGER.info("Client: Cannot bind IRemoteGame");
                 LOGGER.info("Client: NotBoundException: " + e.getMessage());
                 remoteGame = null;
+            }
+        }
+
+        //Try to subscribe
+        if (remotePublisher != null) {
+            try {
+                fontysListener = new FontysListener(this);
+                remotePublisher.subscribeRemoteListener(fontysListener, "Players");
+            } catch (RemoteException e) {
+                LOGGER.severe("Client: subscribing to players went wrong");
+                LOGGER.severe("Client: RemoteException: " + e.getMessage());
             }
         }
 
@@ -394,11 +440,6 @@ public class LocalGame {
     }
 
     public boolean lastPlayer() {
-        try {
-            return remoteGame.lastPlayer() && remoteGame.getVersion()!=1;
-        } catch (RemoteException e) {
-            LOGGER.log(Level.ALL,e.getMessage());
-        }
-        return false;
+        return lastPlayer;
     }
 }

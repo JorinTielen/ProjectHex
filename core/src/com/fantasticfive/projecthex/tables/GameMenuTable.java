@@ -37,7 +37,7 @@ public class GameMenuTable extends Table {
 
         t.add(btnResumeGame).width(collumnWidth).height(collumnHeight).pad(5);
         t.row();
-        //   t.add(btnQuitMainMenu).width(collumnWidth).height(collumnHeight).pad(5); TODO: when making a new mainMenuScreen, somehow the map wont show and creating a new server crashes the game
+        //   t.add(btnQuitMainMenu).width(collumnWidth).height(collumnHeight).pad(5); //TODO: when making a new mainMenuScreen, somehow the map wont show and creating a new server crashes the game
         t.row();
         t.add(btnQuitDesktop).width(collumnWidth).height(collumnHeight).pad(5);
 
@@ -45,7 +45,7 @@ public class GameMenuTable extends Table {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 GameMenuTable.this.setVisible(false);
-                gameScreen.inMenu = false;
+                gameScreen.setInMenu(false);
             }
         });
 

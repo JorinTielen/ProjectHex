@@ -12,7 +12,7 @@ import com.fantasticfive.shared.Unit;
 import java.util.logging.Logger;
 
 public class UnitSellTable extends Table {
-    private static final Logger LOGGER = Logger.getLogger( UnitSellTable.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger(UnitSellTable.class.getName());
 
     private Table t;
     private Label l;

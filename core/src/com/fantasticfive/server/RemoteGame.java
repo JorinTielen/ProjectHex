@@ -2,6 +2,7 @@ package com.fantasticfive.server;
 
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.enums.*;
+import fontyspublisher.RemotePublisher;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -10,6 +11,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
@@ -31,31 +33,44 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     private Registry registry;
     private static final String bindingName = "ProjectHex";
 
+    private RemotePublisher publisher;
+    private static final String publisherBindingName = "Publisher";
+
     public RemoteGame(int portNumber) throws RemoteException {
         RemoteSetup(portNumber);
         map = new Map(20, 10);
     }
 
     private void RemoteSetup(int portNumber) {
+        //Create publisher
+        try {
+            publisher = new RemotePublisher();
+            publisher.registerProperty("Players");
+        } catch (RemoteException e) {
+            LOGGER.severe("Server: Cannot create publisher");
+            LOGGER.severe("Server: RemoteException " + e.getMessage());
+        }
+
         //Create registry at port number
         try {
             registry = LocateRegistry.createRegistry(portNumber);
             LOGGER.info("Server: Registry created on port number " + portNumber);
         } catch (RemoteException e) {
-            LOGGER.info("Server: Cannot create registry");
-            LOGGER.info("Server: RemoteException: " + e.getMessage());
+            LOGGER.severe("Server: Cannot create registry");
+            LOGGER.severe("Server: RemoteException: " + e.getMessage());
         }
 
         //Bind using registry
         try {
             registry.rebind(bindingName, this);
+            registry.rebind(publisherBindingName, publisher);
             LOGGER.info("Server: Game bound to registry");
         } catch (RemoteException e) {
-            LOGGER.info("Server: Cannot bind Game");
-            LOGGER.info("Server: RemoteException: " + e.getMessage());
+            LOGGER.severe("Server: Cannot bind Game");
+            LOGGER.severe("Server: RemoteException: " + e.getMessage());
         } catch (NullPointerException e) {
-            LOGGER.info("Server: Port already in use. \nServer: Please check if the server isn't already running");
-            LOGGER.info("Server: NullPointerException: " + e.getMessage());
+            LOGGER.severe("Server: Port already in use. \nServer: Please check if the server isn't already running");
+            LOGGER.severe("Server: NullPointerException: " + e.getMessage());
         }
     }
 
@@ -67,14 +82,24 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     @Override
     public void startGame() {
         currentPlayer = players.get(0);
-        version++;
+
+        try {
+            publisher.inform("Players", null, players);
+            version++;
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL, e.getMessage());
+        }
     }
 
     @Override
     public void endTurn(int playerId) {
         if (players.size() != 0) {
             if (currentPlayer.getId() == playerId) {
-                currentPlayer.endTurn();
+                if (currentPlayer.getTurnsWithoutGold() == 3) {
+                    leaveGame(currentPlayer.getId());
+                } else {
+                    currentPlayer.endTurn();
+                }
                 int i = players.indexOf(currentPlayer);
 
                 //If current player is not the last in the list
@@ -87,14 +112,20 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
                 }
             }
         }
-        version++;
+
+        try {
+            publisher.inform("Players", null, players);
+            version++;
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL, e.getMessage());
+        }
     }
 
     @Override
     public void leaveGame(int playerId) {
         for (Player p : players) {
             if (playerId == p.getId()) {
-                if (playerId == currentPlayer.getId()){
+                if (playerId == currentPlayer.getId() && currentPlayer.getTurnsWithoutGold() < 3) {
                     endTurn(playerId);
                 }
                 players.remove(p);
@@ -105,7 +136,13 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         if (players.size() == 1) {
             LOGGER.info(currentPlayer.getUsername() + " has won the game!");
         }
-        version++;
+
+        try {
+            publisher.inform("Players", null, players);
+            version++;
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL, e.getMessage());
+        }
     }
 
     @Override
@@ -116,7 +153,13 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
                 currentPlayer = p;
             }
         }
-        version++;
+
+        try {
+            publisher.inform("Players", players, players);
+            version++;
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL, e.getMessage());
+        }
     }
 
     @Override
@@ -146,14 +189,14 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
                     distance = townCenter_distance;
                 }
             }
-        } while (distance < 4 || !hexEmpty(location) || location.getY() == 0 || location.getY() == map.getHeight()
-                || location.getX() == 0 || location.getX() == map.getWidth());
+        } while (distance < 4 || !hexEmpty(location) || location.getY() == 0 || location.getY() == map.getHeight() - 1
+                || location.getX() == 0 || location.getX() == map.getWidth() - 1);
         Building b = buildingFactory.createBuilding(BuildingType.TOWNCENTRE, location, p);
         p.purchaseBuilding(b);
 
         List<Hexagon> ownedLand = map.getHexesInRadius(b.getLocation(), 1);
         for (Hexagon hex : ownedLand) {
-            if(hex.getGroundType() != GroundType.WATER){
+            if (hex.getGroundType() != GroundType.WATER) {
                 p.addHexagon(hex);
             }
         }
@@ -163,7 +206,14 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
 
         players.add(p);
         startGame();
-        version++;
+
+        try {
+            publisher.inform("Players", null, players);
+            version++;
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL, e.getMessage());
+        }
+
         return p;
     }
 
@@ -183,7 +233,13 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         if (players.size() == 1) {
             LOGGER.info(currentPlayer.getUsername() + " has won the game!");
         }
-        version++;
+
+        try {
+            publisher.inform("Players", null, players);
+            version++;
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL, e.getMessage());
+        }
     }
 
     @Override
@@ -194,7 +250,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     public Unit getUnitAtLocation(Point location) {
         for (Player p : players) {
             for (Unit u : p.getUnits()) {
-                if (u.getLocation().equals(location)) {
+                if (u.getLocation().sameAs(location)) {
                     return u;
                 }
             }
@@ -203,7 +259,8 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     }
 
     @Override
-    public void buyUnit(UnitType unitType, Point location, int playerId) {
+    public Hexagon buyUnit(UnitType unitType, Point location, int playerId) {
+        Hexagon hexagon = null;
         if (playerId == currentPlayer.getId()) {
             //When player has enough gold to buy unit
             boolean tileEmpty = false;
@@ -212,6 +269,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
                 if (hexEmpty(hex.getLocation())) {
                     tileEmpty = true;
                     currentPlayer.purchaseUnit(unitFactory.createUnit(unitType, hex.getLocation(), currentPlayer));
+                    hexagon = hex;
                     break;
                 }
             }
@@ -220,7 +278,14 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
                 LOGGER.info("no tiles empty!");
             }
         }
-        version++;
+
+        try {
+            publisher.inform("Players", null, players);
+            version++;
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL, e.getMessage());
+        }
+        return hexagon;
     }
 
 
@@ -234,31 +299,66 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
                     map.getHexAtLocation(location).getObjectType() != ObjectType.MOUNTAIN) {
                 Unit realUnit = getUnitAtLocation(u.getLocation());
                 realUnit.move(location, distance);
-                version++;
+
+                try {
+                    publisher.inform("Players", null, players);
+                    version++;
+                } catch (RemoteException e) {
+                    LOGGER.log(Level.ALL, e.getMessage());
+                }
+
                 return true;
             }
         }
-        version++;
+
+        try {
+            publisher.inform("Players", null, players);
+            version++;
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL, e.getMessage());
+        }
+
         return false;
     }
 
     @Override
-    public void attackUnit(Unit attacker, Unit defender) {
+    public int attackUnit(Unit attacker, Unit defender) {
+        int result = 0;
         if (map.isWithinAttackRange(attacker, defender.getLocation())) {
             Unit realAttacker = getUnitAtLocation(attacker.getLocation());
             Unit realDefender = getUnitAtLocation(defender.getLocation());
+            int beginHP = realDefender.getHealth();
             realAttacker.attack(realDefender);
+            int endHP = realDefender.getHealth();
+            result = beginHP - endHP;
+
+            version++;
         }
-        version++;
+
+        try {
+            publisher.inform("Players", null, players);
+            version++;
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL, e.getMessage());
+        }
+
+        return result;
     }
 
     @Override
     public void sellUnit(Unit u) {
         for (Player p : players) {
             for (Unit unit : p.getUnits()) {
-                if (unit.getLocation().equals(u.getLocation())) {
+                if (unit.getLocation().sameAs(u.getLocation())) {
                     p.sellUnit(unit);
-                    version++;
+
+                    try {
+                        publisher.inform("Players", null, players);
+                        version++;
+                    } catch (RemoteException e) {
+                        LOGGER.log(Level.ALL, e.getMessage());
+                    }
+
                     return;
                 }
             }
@@ -277,7 +377,13 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
                 realUnit.claimedLand();
             }
         }
-        version++;
+
+        try {
+            publisher.inform("Players", null, players);
+            version++;
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL, e.getMessage());
+        }
     }
 
     //Checks if claimed land has any mountain next to it, if it does it claims it.
@@ -287,7 +393,13 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
                 currentPlayer.addHexagon(h);
             }
         }
-        version++;
+
+        try {
+            publisher.inform("Players", null, players);
+            version++;
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL, e.getMessage());
+        }
     }
 
     @Override
@@ -296,17 +408,22 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     }
 
     public void buyBuilding(BuildingType buildingType, Point location) {
-        if (map.isHexBuildable(location, currentPlayer)) {
-            if (buildingType == BuildingType.RESOURCE && hexEmptyResource(location)) {
-                if (currentPlayer.purchaseBuildingOnMountain(buildingFactory.createBuilding(buildingType, location, currentPlayer))) {
-                    map.getHexAtLocation(location).removeObjectType();
-                    map.getHexAtLocation(location).removeObject();
-                }
-            } else if (hexEmpty(location)) {
-                currentPlayer.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, currentPlayer));
+        if (buildingType == BuildingType.RESOURCE && hexEmptyResource(location) && currentPlayerOwnsLand(location)) {
+            currentPlayer.purchaseBuildingOnMountain(buildingFactory.createBuilding(buildingType, location, currentPlayer));
+            if(currentPlayer.getBuildingAtLocation(location) != null) {
+                currentPlayer.getBuildingAtLocation(location).setResourceOnMountain(true);
             }
         }
-        version++;
+        else if (hexEmpty(location) && currentPlayerOwnsLand(location)) {
+            currentPlayer.purchaseBuilding(buildingFactory.createBuilding(buildingType, location, currentPlayer));
+        }
+
+        try {
+            publisher.inform("Players", null, players);
+            version++;
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL, e.getMessage());
+        }
     }
 
     @Override
@@ -320,32 +437,42 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
                 cost = ((Fortification) buildingFactory.getBuildingPreset(BuildingType.FORTIFICATION)).getPurchaseCost();
             } else if (building instanceof Resource) {
                 cost = ((Resource) buildingFactory.getBuildingPreset(BuildingType.RESOURCE)).getPurchaseCost();
-            }
-            if (map.getHexAtLocation(location).getIsMountain()) {
-                map.getHexAtLocation(location).setMountain();
+                building.setResourceOnMountain(false);
             }
             currentPlayer.sellBuilding(building, cost);
         }
-        version++;
+
+        try {
+            publisher.inform("Players", null, players);
+            version++;
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL, e.getMessage());
+        }
     }
 
     @Override
     public void attackBuilding(Unit unit, Building building) {
         if (unit != null && building != null) {
-            if (map.isWithinAttackRange(unit, building.getLocation())) {
-                Unit realUnit = getUnitAtLocation(unit.getLocation());
-                Building realBuilding = getBuildingAtLocation(building.getLocation());
+            Unit realUnit = getUnitAtLocation(unit.getLocation());
+            Building realBuilding = getBuildingAtLocation(building.getLocation());
+
+            if (map.isWithinAttackRange(realUnit, realBuilding.getLocation())) {
                 if (realUnit.attack(realBuilding)) {
                     Player enemy = realBuilding.getOwner();
                     enemy.destroyBuilding(realBuilding);
-                    //enemy.removeBuilding(realBuilding);
                     if (building instanceof TownCentre) {
                         removePlayer(enemy);
                     }
                 }
             }
         }
-        version++;
+
+        try {
+            publisher.inform("Players", null, players);
+            version++;
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL, e.getMessage());
+        }
     }
 
     @Override
@@ -360,12 +487,18 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         return null;
     }
 
-    public void destroyBuilding(Building building){
+    public void destroyBuilding(Building building) {
         Building realBuilding = getBuildingAtLocation(building.getLocation());
-        if (realBuilding != null){
+        if (realBuilding != null) {
             realBuilding.getOwner().removeBuilding(realBuilding);
         }
-        version++;
+
+        try {
+            publisher.inform("Players", null, players);
+            version++;
+        } catch (RemoteException e) {
+            LOGGER.log(Level.ALL, e.getMessage());
+        }
     }
 
     @Override
@@ -375,10 +508,11 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
 
     @Override
     public boolean hexEmpty(Point location) {
+
         //Check if unit is on hex
         for (Player player : players) {
             for (Unit unit : player.getUnits()) {
-                if (unit.getLocation().equals(location)) {
+                if (unit.getLocation().sameAs(location)) {
                     return false;
                 }
             }
@@ -392,10 +526,11 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     }
 
     private boolean hexEmptyResource(Point location) {
+
         //Check if unit is on hex
         for (Player player : players) {
             for (Unit unit : player.getUnits()) {
-                if (unit.getLocation().equals(location)) {
+                if (unit.getLocation().sameAs(location)) {
                     return false;
                 }
             }
@@ -408,15 +543,18 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
                 && hex.getGroundType() != GroundType.WATER);
     }
 
+    private boolean currentPlayerOwnsLand(Point location) {
+        //Check if currentPlayer owns land
+        if (map.getHexAtLocation(location).getOwner() != currentPlayer) {
+            return false;
+        }
+        return true;
+    }
+
     public boolean lastPlayer() {
-        if(players.size() > 1) {
+        if (players.size() > 1) {
             gameHasHadMultiplePlayers = true;
         }
-        if(gameHasHadMultiplePlayers) {
-            if (players.size() == 1) {
-                return true;
-            }
-        }
-        return false;
+        return (gameHasHadMultiplePlayers && players.size() == 1);
     }
 }

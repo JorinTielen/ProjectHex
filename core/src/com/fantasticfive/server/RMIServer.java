@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RMIServer {
-    private static final Logger LOGGER = Logger.getLogger( RMIServer.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger(RMIServer.class.getName());
     private static final int portNumber = 1099;
     private boolean serverStarted;
 
@@ -26,7 +26,7 @@ public class RMIServer {
         } catch (UnknownHostException e) {
             LOGGER.log(Level.ALL, e.getMessage());
         }
-        LOGGER.info("Server: IP Address: " + localhost.getHostAddress());
+        LOGGER.info("Server: IP Address: " + localhost.getHostAddress()); //NOSONAR
         LOGGER.info("Server: Port number " + portNumber);
 
         try {
@@ -40,7 +40,7 @@ public class RMIServer {
         }
     }
 
-    public boolean getServerStarted(){
+    public boolean getServerStarted() {
         return this.serverStarted;
     }
 }

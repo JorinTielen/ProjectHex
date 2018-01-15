@@ -41,8 +41,7 @@ public final class Noise {
         if (value == 0) {
             perm = new int[permOriginal.length];
             System.arraycopy(permOriginal, 0, perm, 0, permOriginal.length);
-        }
-        else {
+        } else {
             perm = new int[512];
             Random rnd = new Random(value);
             for (int i = 0; i < perm.length; i++) {

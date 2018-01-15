@@ -64,14 +64,14 @@ public class UnitTest extends SettingsTest {
         unit.move(new Point(2,2), map.distance(unit.getLocation(), new Point(2,2)));
         Point result = unit.getLocation();
         Point expected = new Point(2,2);
-        assertTrue("New Point should be within movement range",result.equals(expected));
+        assertTrue("New Point should be within movement range",result.sameAs(expected));
 
         unit.resetMoves();
 
         unit.move(new Point(6,8), map.distance(unit.getLocation(), new Point(6,8)));
         result = unit.getLocation();
         expected = new Point(1,2);
-        assertFalse("New location should not be within movement range", result.equals(expected));
+        assertFalse("New location should not be within movement range", result.sameAs(expected));
     }
 
     @Test

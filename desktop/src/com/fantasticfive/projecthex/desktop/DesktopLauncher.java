@@ -7,8 +7,13 @@ import com.fantasticfive.projecthex.screens.GameMain;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DesktopLauncher {
+
+    private static final Logger LOGGER = Logger.getLogger( DesktopLauncher.class.getName() );
+
     public static void main(String[] arg) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         Properties prop = new Properties();
@@ -22,7 +27,7 @@ public class DesktopLauncher {
             else config.height = 720;
             config.fullscreen = Boolean.valueOf(prop.getProperty("fullscreen"));
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
             config.width = 1280;
             config.height = 720;
             config.fullscreen = false;

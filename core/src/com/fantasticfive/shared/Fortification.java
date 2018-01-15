@@ -11,7 +11,9 @@ public class Fortification extends Building {
         this.purchaseCost = purchaseCost;
     }
 
-    public int getPurchaseCost() { return purchaseCost; }
+    public int getPurchaseCost() {
+        return purchaseCost;
+    }
 
     @Override
     public void setOwner(Player owner) {
@@ -21,7 +23,7 @@ public class Fortification extends Building {
     @Override
     public void setImage() {
         this.image = new Texture("tower.png");
-        if(owner != null) {
+        if (owner != null) {
             setColor();
         }
     }
