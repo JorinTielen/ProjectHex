@@ -43,7 +43,7 @@ public class LocalGame {
 
             for (Player p : players) {
                 if (thisPlayer.getId() == p.getId()) {
-                    p.clearAllTextures();
+                    thisPlayer.clearAllTextures();
                     thisPlayer = p;
                 }
                 for (Hexagon h : map.getHexagons()) {
