@@ -23,7 +23,7 @@ public class BeginCreditsScreen implements Screen {
     private Stage stage;
     private Table table;
 
-    private Image logo = new Image(new Texture("FantasticFiveLogo.png"));
+    static private Image logo = new Image(new Texture("FantasticFiveLogo.png"));
 
     private float screenWidth = Gdx.graphics.getWidth();
     private float screenHeight = Gdx.graphics.getHeight();

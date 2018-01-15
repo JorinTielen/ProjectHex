@@ -222,4 +222,32 @@ public class Player implements Serializable {
         }
         return gpt;
     }
+
+    public void clearAllTextures() {
+        for (Unit u : units) {
+            if (u != null) {
+                if (u.getTexture() != null) {
+                    u.getTexture().dispose();
+                }
+            }
+        }
+
+        for (Building b : buildings) {
+            if (b != null) {
+                if (b.getImage() != null) {
+                    b.getImage().dispose();
+                }
+            }
+        }
+
+        for (Hexagon h : hexagons) {
+            if (h.getGroundImage() != null) {
+                h.getGroundImage().dispose();
+            }
+
+            if (h.getObjectImage() != null) {
+                h.getObjectImage().dispose();
+            }
+        }
+    }
 }

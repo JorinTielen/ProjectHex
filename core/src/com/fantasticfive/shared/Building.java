@@ -132,12 +132,21 @@ public abstract class Building implements Cloneable, Serializable {
                 }
             }
         }
+
+        if (image != null) {
+            image.dispose();
+        }
+
         image = new Texture(pixmap);
         image.getTextureData().disposePixmap();
         pixmap.dispose();
     }
 
     public void setMineOnMountain() {
+        if (image != null) {
+            image.dispose();
+        }
+
         image = new Texture("mineMountain.png");
     }
 

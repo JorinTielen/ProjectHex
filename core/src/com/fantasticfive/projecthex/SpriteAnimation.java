@@ -31,6 +31,10 @@ public class SpriteAnimation {
     public boolean animate() {
         if (frame % 12 == 0 && totalAnimationFrames == 0) {
             try {
+                if (sprite != null) {
+                    sprite.dispose();
+                }
+
                 sprite = new Texture(spriteName + (frame / 12) + ".png");
             } catch (GdxRuntimeException e) {
                 totalAnimationFrames = frame - 12;
@@ -38,6 +42,10 @@ public class SpriteAnimation {
         } else if (frame % 12 == 0) {
             if (frame > totalAnimationFrames) {
                 frame = 0;
+            }
+
+            if (sprite != null) {
+                sprite.dispose();
             }
             sprite = new Texture(spriteName + (frame / 12) + ".png");
         }

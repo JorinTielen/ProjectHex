@@ -76,6 +76,7 @@ public class Fog {
                 removeThisHex = h;
             }
         }
+
         neighbouringHexes.remove(removeThisHex);
     }
 
@@ -107,6 +108,7 @@ public class Fog {
                     removeThisHex = h;
                 }
             }
+
             neighbouringHexes.remove(removeThisHex);
         }
     }

@@ -75,6 +75,9 @@ public class Unit implements Cloneable, Serializable {
     }
 
     public void setTexture(Texture texture) {
+        if (this.texture != null) {
+            this.texture.dispose();
+        }
         this.texture = texture;
     }
 
@@ -181,6 +184,10 @@ public class Unit implements Cloneable, Serializable {
     }
 
     public void setTexture() {
+        if (texture != null) {
+            texture.dispose();
+        }
+
         switch (unitType) {
             case ARCHER:
                 this.texture = new Texture("characterArcher.png");
@@ -192,6 +199,7 @@ public class Unit implements Cloneable, Serializable {
                 this.texture = new Texture("characterSwordsman.png");
                 break;
         }
+
         setColor();
     }
 
@@ -236,6 +244,7 @@ public class Unit implements Cloneable, Serializable {
                 newColor = com.badlogic.gdx.graphics.Color.WHITE;
                 break;
         }
+
         pixmap.setColor(newColor);
         com.badlogic.gdx.graphics.Color whiteColor = com.badlogic.gdx.graphics.Color.WHITE;
         for (int y = 0; y < pixmap.getHeight(); y++) {
@@ -246,6 +255,11 @@ public class Unit implements Cloneable, Serializable {
                 }
             }
         }
+
+        if (texture != null) {
+            texture.dispose();
+        }
+
         texture = new Texture(pixmap);
         texture.getTextureData().disposePixmap();
         pixmap.dispose();
