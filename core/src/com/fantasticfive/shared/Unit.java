@@ -54,15 +54,22 @@ public class Unit implements Cloneable, Serializable {
     }
 
     public void attack(Unit unitToAttack) {
-        unitToAttack.reduceHealth(attackPower - unitToAttack.getArmor());
+        if (allowedToAttack != 0) {
+            unitToAttack.reduceHealth(attackPower - unitToAttack.getArmor());
+        }
+
         allowedToMove = 0;
         allowedToAttack = 0;
     }
 
     public boolean attack(Building buildingToAttack) {
+        if (allowedToAttack != 0) {
+            return buildingToAttack.damageHealth(this.attackPower);
+        }
+
         allowedToMove = 0;
         allowedToAttack = 0;
-        return buildingToAttack.damageHealth(this.attackPower);
+        return false;
     }
 
     public void setTexture(Texture texture) {

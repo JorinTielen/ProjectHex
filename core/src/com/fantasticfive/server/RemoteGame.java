@@ -322,14 +322,16 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
 
     @Override
     public int attackUnit(Unit attacker, Unit defender) {
+        int result = 0;
         if (map.isWithinAttackRange(attacker, defender.getLocation())) {
             Unit realAttacker = getUnitAtLocation(attacker.getLocation());
             Unit realDefender = getUnitAtLocation(defender.getLocation());
             int beginHP = realDefender.getHealth();
             realAttacker.attack(realDefender);
             int endHP = realDefender.getHealth();
+            result = beginHP - endHP;
+
             version++;
-            return beginHP - endHP;
         }
 
         try {
@@ -339,7 +341,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             e.printStackTrace();
         }
 
-        return 0;
+        return result;
     }
 
     @Override
