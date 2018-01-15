@@ -319,6 +319,7 @@ public class GameScreen implements Screen {
 
         //Animate endTurn button if it is your turn
         if (localGame.isMyTurn()) {
+            optionsTable.setVisible(true);
             frameCounter++;
             if (frameCounter >= 7200) {
                 ((OptionsTable) optionsTable).animateEndTurnButton(frameCounter);
@@ -330,6 +331,7 @@ public class GameScreen implements Screen {
                 ((OptionsTable) optionsTable).animateEndTurnButton(frameCounter);
             }
         } else {
+            optionsTable.setVisible(false);
             frameCounter = 0;
         }
 
