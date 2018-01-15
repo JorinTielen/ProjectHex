@@ -49,9 +49,9 @@ public class MainMenuScreen implements Screen {
     private SpriteBatch menuBatch = new SpriteBatch();
     private SpriteBatch backgroundBatch = new SpriteBatch();
 
-    Texture title = new Texture("title.png");
-    Texture titleStart = new Texture("titleStart.png");
-    Texture titleCopyright = new Texture("titleCopyright.png");
+    static Texture title = new Texture("title.png");
+    static Texture titleStart = new Texture("titleStart.png");
+    static Texture titleCopyright = new Texture("titleCopyright.png");
 
     //stuff for creating server
     public boolean serverStarted;

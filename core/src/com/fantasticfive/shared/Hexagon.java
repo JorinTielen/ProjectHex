@@ -56,6 +56,14 @@ public class Hexagon implements Serializable {
     public void setTextures() {
         Random random = new Random();
 
+        if (objectImage != null) {
+            objectImage.dispose();
+        }
+
+        if (groundImage != null) {
+            groundImage.dispose();
+        }
+
         if (objectType == null) {
             switch (groundType) {
                 case GRASS:
@@ -107,6 +115,11 @@ public class Hexagon implements Serializable {
                     this.groundImage = new Texture("grassClear.png");
                     break;
             }
+
+            if (objectImage != null) {
+                objectImage.dispose();
+            }
+
             objectImage = new Texture("rockBig.png");
         }
         setColorTexture();
@@ -116,6 +129,10 @@ public class Hexagon implements Serializable {
 
     public void setColorTexture() {
         if (owner != null) {
+            if (this.colorCoding != null) {
+                this.colorCoding.dispose();
+            }
+
             this.colorCoding = new Texture("terrainColor.png");
             setColor();
         }
@@ -149,6 +166,11 @@ public class Hexagon implements Serializable {
 
     public void setMountain() {
         this.objectType = ObjectType.MOUNTAIN;
+
+        if (objectImage != null) {
+            this.objectImage.dispose();
+        }
+
         this.objectImage = new Texture("rockBig.png");
     }
 
@@ -227,6 +249,11 @@ public class Hexagon implements Serializable {
                 }
             }
         }
+
+        if (colorCoding != null) {
+            colorCoding.dispose();
+        }
+
         colorCoding = new Texture(pixmap);
         colorCoding.getTextureData().disposePixmap();
         pixmap.dispose();

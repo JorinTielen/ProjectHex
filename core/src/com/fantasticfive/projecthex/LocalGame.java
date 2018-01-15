@@ -37,12 +37,13 @@ public class LocalGame {
 
     public void UpdateFromRemotePush(List<Player> remotePlayers) {
         Gdx.app.postRunnable(() -> {
-            players = remotePlayers;
-
             clearAllTextures();
+
+            players = remotePlayers;
 
             for (Player p : players) {
                 if (thisPlayer.getId() == p.getId()) {
+                    p.clearAllTextures();
                     thisPlayer = p;
                 }
                 for (Hexagon h : map.getHexagons()) {
@@ -79,21 +80,7 @@ public class LocalGame {
 
     private void clearAllTextures() {
         for (Player p : players) {
-            for (Unit u : p.getUnits()) {
-                if (u != null) {
-                    if (u.getTexture() != null) {
-                        u.getTexture().dispose();
-                    }
-                }
-            }
-
-            for (Building b : p.getBuildings()) {
-                if (b != null) {
-                    if (b.getImage() != null) {
-                        b.getImage().dispose();
-                    }
-                }
-            }
+            p.clearAllTextures();
         }
     }
 
