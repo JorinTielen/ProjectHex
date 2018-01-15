@@ -215,6 +215,11 @@ public class GameScreen implements Screen {
                 batch.draw(b.getImage(), h.getPos().x, h.getPos().y);
                 batch.setColor(Color.RED);
 
+                if (b.getResourceOnMountain()){
+                    h.removeObject();
+                    h.removeObjectType();
+                }
+
                 //draw health bar
                 batch.draw(blankTexture, h.getPos().x + 35, h.getPos().y + 100, 50, 5);
                 batch.setColor(Color.GREEN);

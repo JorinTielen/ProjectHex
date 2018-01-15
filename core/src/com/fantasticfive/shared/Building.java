@@ -66,6 +66,8 @@ public abstract class Building implements Cloneable, Serializable {
         this.resourceOnMountain = resourceOnMountain;
     }
 
+    public boolean getResourceOnMountain() { return this.resourceOnMountain; }
+
     public void setImage() {
         //Needs to be empty, is overwritten in inheritance classes
     }
