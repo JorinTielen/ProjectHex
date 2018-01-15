@@ -16,7 +16,7 @@ public class SpriteAnimation {
     private Point location;
     private int loopValue;
 
-    public SpriteAnimation(String spriteName, Point location){
+    public SpriteAnimation(String spriteName, Point location) {
         this.spriteName = spriteName;
         this.sprite = new Texture(spriteName + "1.png");
         this.frame = 0;
@@ -28,24 +28,22 @@ public class SpriteAnimation {
     }
 
     //Animates seperate images from a gif by changing image every other frame.
-    public boolean animate(){
-        if (frame % 12 == 0 && totalAnimationFrames == 0){
-            try{
+    public boolean animate() {
+        if (frame % 12 == 0 && totalAnimationFrames == 0) {
+            try {
                 sprite = new Texture(spriteName + (frame / 12) + ".png");
-            }
-            catch (GdxRuntimeException e){
+            } catch (GdxRuntimeException e) {
                 totalAnimationFrames = frame - 12;
             }
-        }
-        else if (frame % 12 == 0){
-            if (frame > totalAnimationFrames){
+        } else if (frame % 12 == 0) {
+            if (frame > totalAnimationFrames) {
                 frame = 0;
             }
             sprite = new Texture(spriteName + (frame / 12) + ".png");
         }
         totalCount++;
         frame++;
-        if (totalCount >= totalAnimationFrames * loopValue && totalAnimationFrames != 0){
+        if (totalCount >= totalAnimationFrames * loopValue && totalAnimationFrames != 0) {
             sprite.dispose();
             active = false;
             return false;
@@ -53,15 +51,15 @@ public class SpriteAnimation {
         return true;
     }
 
-    public Texture getTexture(){
+    public Texture getTexture() {
         return this.sprite;
     }
 
-    public Point getLocation(){
+    public Point getLocation() {
         return this.location;
     }
 
-    public boolean getActive(){
+    public boolean getActive() {
         return this.active;
     }
 

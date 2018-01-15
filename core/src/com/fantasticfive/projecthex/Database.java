@@ -110,7 +110,7 @@ public class Database {
         return registerOk == 1;
     }
 
-    public void removeAccount(String username){
+    public void removeAccount(String username) {
         setConnection();
         try (PreparedStatement myStmt = conn.prepareStatement("DELETE FROM projecthex.account WHERE username = ?")) {
             myStmt.setString(1, username);

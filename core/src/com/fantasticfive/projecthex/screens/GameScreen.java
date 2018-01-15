@@ -147,7 +147,7 @@ public class GameScreen implements Screen {
         }
 
         createGameMenuUI();
-        if(gameMenuTable != null){
+        if (gameMenuTable != null) {
             table.add(gameMenuTable);
             gameMenuTable.setVisible(false);
         }
@@ -223,8 +223,8 @@ public class GameScreen implements Screen {
                 if (b.getDestroyed() && explosionAnimation == null) {
                     explosionAnimation = new SpriteAnimation("explosion", b.getLocation());
                 }
-                if (b.getDestroyed() && explosionAnimation != null){
-                    if (!explosionAnimation.getActive() && b.getLocation() != explosionAnimation.getLocation()){
+                if (b.getDestroyed() && explosionAnimation != null) {
+                    if (!explosionAnimation.getActive() && b.getLocation() != explosionAnimation.getLocation()) {
                         explosionAnimation = new SpriteAnimation("explosion", b.getLocation());
                     }
                 }
@@ -245,10 +245,10 @@ public class GameScreen implements Screen {
         }
 
         //draw how many HP a unit loses when it is attacked
-        if(unitHPLossTable.isVisible()) {
+        if (unitHPLossTable.isVisible()) {
             unitHPLossTable.setY(unitHPLossTable.getY() + 0.25f);
             unitHPLossTableUp++;
-            if(unitHPLossTableUp == 25) {
+            if (unitHPLossTableUp == 25) {
                 unitHPLossTableUp = 0;
                 unitHPLossTable.setVisible(false);
             }
@@ -270,7 +270,7 @@ public class GameScreen implements Screen {
                 batch.draw(explosionAnimation.getTexture(), explosionAnimation.getPos().x, explosionAnimation.getPos().y);
                 if (!explosionAnimation.animate()) {
                     Building buildingToDestroy = localGame.getBuildingAtLocation(explosionAnimation.getLocation());
-                    if (buildingToDestroy != null){
+                    if (buildingToDestroy != null) {
                         localGame.destroyBuilding(buildingToDestroy);
                     }
                 }
@@ -291,7 +291,7 @@ public class GameScreen implements Screen {
 
         //draw area where unit can walk
         if (localGame.getSelectedUnit() != null) {
-            if (localGame.getSelectedUnit().getMovementLeft() > 0){
+            if (localGame.getSelectedUnit().getMovementLeft() > 0) {
                 for (Hexagon h : localGame.getSelectedUnit().getWalkableHexes()) {
                     batch.draw(walkableHexTexture, h.getPos().x, h.getPos().y);
                 }
@@ -302,12 +302,12 @@ public class GameScreen implements Screen {
             showPlayerWinUI();
         }
 
-        if(inMenu){
-            batch.draw(menuTexture, camera.position.x - (screenWidth / 2f),camera.position.y - (screenHeight / 2f),screenWidth, screenHeight);
+        if (inMenu) {
+            batch.draw(menuTexture, camera.position.x - (screenWidth / 2f), camera.position.y - (screenHeight / 2f), screenWidth, screenHeight);
         }
 
-        if(localGame.isMyTurn()) {
-            if(uiClearedAfterEndTurn) {
+        if (localGame.isMyTurn()) {
+            if (uiClearedAfterEndTurn) {
                 uiClearedAfterEndTurn = false;
             }
         } else {
@@ -318,18 +318,18 @@ public class GameScreen implements Screen {
         batch.end();
 
         //Animate endTurn button if it is your turn
-        if (localGame.isMyTurn()){
+        if (localGame.isMyTurn()) {
             frameCounter++;
-            if (frameCounter >= 7200){
-                ((OptionsTable)optionsTable).animateEndTurnButton(frameCounter);
+            if (frameCounter >= 7200) {
+                ((OptionsTable) optionsTable).animateEndTurnButton(frameCounter);
                 localGame.endTurn();
+                clearUIEndTurn();
                 frameCounter = 0;
             }
-            if (frameCounter != 0){
-                ((OptionsTable)optionsTable).animateEndTurnButton(frameCounter);
+            if (frameCounter != 0) {
+                ((OptionsTable) optionsTable).animateEndTurnButton(frameCounter);
             }
-        }
-        else {
+        } else {
             frameCounter = 0;
         }
 
@@ -455,7 +455,7 @@ public class GameScreen implements Screen {
         if (localGame.getUnitOnHex(hex) != null && localGame.getSelectedUnit() == null && localGame.getUnitOnHex(hex).getOwner() == localGame.getThisPlayer()) {
             Unit u = localGame.getUnitOnHex(hex);
             u.toggleSelected();
-            if (u.getMovementLeft() > 0){
+            if (u.getMovementLeft() > 0) {
                 localGame.setWalkableHexesForUnit(u);
             }
         }
@@ -501,6 +501,11 @@ public class GameScreen implements Screen {
         unitSellTable.setVisible(false);
         unitShopTable.setVisible(false);
         unitScoutTable.setVisible(false);
+    }
+
+    public void clearUIEndTurn(){
+        clearUI();
+        buildingToBuild = null;
     }
 
     // ====================
@@ -601,7 +606,7 @@ public class GameScreen implements Screen {
     //  (Shows the next turn button)
     // ====================
     private void createOptionsUI() {
-        optionsTable = new OptionsTable(localGame, skin);
+        optionsTable = new OptionsTable(localGame, this, skin);
     }
 
     // ====================
@@ -616,10 +621,10 @@ public class GameScreen implements Screen {
         playerWinTable.setPosition(screenWidth / 2 - playerWinTable.getWidth() / 2,
                 screenHeight / 2 - playerWinTable.getHeight() / 2);
         playerWinTable.setVisible(true);
-        ((PlayerWinTable)playerWinTable).setEndGameLabel(localGame);
+        ((PlayerWinTable) playerWinTable).setEndGameLabel(localGame);
     }
 
-    private void createGameMenuUI(){
+    private void createGameMenuUI() {
         gameMenuTable = new GameMenuTable(game, localGame, this, skin);
     }
 
@@ -643,14 +648,13 @@ public class GameScreen implements Screen {
         skin.add("default", labelStyle);
     }
 
-    public void toggleGameMenu(){
-        if(gameMenuTable.isVisible()){
+    public void toggleGameMenu() {
+        if (gameMenuTable.isVisible()) {
             gameMenuTable.setVisible(false);
             inMenu = false;
 
             optionsTable.setVisible(true);
-        }
-        else{
+        } else {
             gameMenuTable.setVisible(true);
             inMenu = true;
 

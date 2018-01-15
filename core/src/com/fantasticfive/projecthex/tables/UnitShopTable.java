@@ -14,7 +14,7 @@ import com.fantasticfive.shared.enums.UnitType;
 import java.util.logging.Logger;
 
 public class UnitShopTable extends Table {
-    private static final Logger LOGGER = Logger.getLogger( UnitShopTable.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger(UnitShopTable.class.getName());
 
     private Table t;
 

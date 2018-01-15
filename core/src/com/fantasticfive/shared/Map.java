@@ -46,9 +46,9 @@ public class Map implements Serializable {
 
     }
 
-  public boolean canMoveTo(Unit u, Point location, List<Hexagon> movableHexes) {
+    public boolean canMoveTo(Unit u, Point location, List<Hexagon> movableHexes) {
         for (Hexagon hex : movableHexes) {
-            if(hex.getLocation().sameAs(location)) {
+            if (hex.getLocation().sameAs(location)) {
                 return true;
             }
         }
@@ -56,11 +56,11 @@ public class Map implements Serializable {
     }
 
 
-    public int pathDistance(HashMap pathMap, Hexagon currentHex, Hexagon beginHex){
+    public int pathDistance(HashMap pathMap, Hexagon currentHex, Hexagon beginHex) {
         Hexagon current = currentHex;
         int i = 0;
-        while (current != beginHex){
-            current = (Hexagon)pathMap.get(current);
+        while (current != beginHex) {
+            current = (Hexagon) pathMap.get(current);
             i++;
         }
         return i;
@@ -69,7 +69,7 @@ public class Map implements Serializable {
     public boolean isWithinAttackRange(Unit u, Point location) {
         List<Hexagon> movableHexes = getHexesInRadius(u.getLocation(), u.getAttackRangeLeft());
         for (Hexagon hex : movableHexes) {
-            if(hex.getLocation().sameAs(location)) {
+            if (hex.getLocation().sameAs(location)) {
                 return true;
             }
         }
@@ -168,8 +168,8 @@ public class Map implements Serializable {
     }
 
     public boolean bordersOwnLand(Point location, Player currentPlayer) {
-        for (Hexagon h : getHexesInRadius(location, 1)){
-            if (h.getOwner() == currentPlayer){
+        for (Hexagon h : getHexesInRadius(location, 1)) {
+            if (h.getOwner() == currentPlayer) {
                 return true;
             }
         }
@@ -177,7 +177,7 @@ public class Map implements Serializable {
     }
 
 
-    public List<Hexagon> getPath(Hexagon startHex, Hexagon destination){
+    public List<Hexagon> getPath(Hexagon startHex, Hexagon destination) {
         //TODO Maak gebruik van accessible boolean in Hexagon om te bepalen of je er op kan lopen.
         List<Hexagon> path = new ArrayList<>();
         List<Hexagon> frontier = new ArrayList<>();
@@ -186,14 +186,14 @@ public class Map implements Serializable {
         Hexagon current;
         int i = 0;
         frontier.add(startHex);
-        while (!found){
+        while (!found) {
             current = frontier.get(i);
-            if (current == destination){
+            if (current == destination) {
                 found = true;
             }
 
-            for (Hexagon h : getHexesInRadius(current.getLocation(), 1)){
-                if (!pathMap.containsKey(h) && h.getObjectType() != ObjectType.MOUNTAIN && h.getGroundType() != GroundType.WATER){
+            for (Hexagon h : getHexesInRadius(current.getLocation(), 1)) {
+                if (!pathMap.containsKey(h) && h.getObjectType() != ObjectType.MOUNTAIN && h.getGroundType() != GroundType.WATER) {
                     frontier.add(h);
                     pathMap.put(h, current);
                 }
@@ -203,8 +203,8 @@ public class Map implements Serializable {
 
         path.add(destination);
         current = destination;
-        while (current != startHex){
-            current = (Hexagon)pathMap.get(current);
+        while (current != startHex) {
+            current = (Hexagon) pathMap.get(current);
             path.add(current);
         }
         Collections.reverse(path);

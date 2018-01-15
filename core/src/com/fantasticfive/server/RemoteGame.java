@@ -3,6 +3,7 @@ package com.fantasticfive.server;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.enums.*;
 import fontyspublisher.RemotePublisher;
+
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -94,10 +95,9 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     public void endTurn(int playerId) {
         if (players.size() != 0) {
             if (currentPlayer.getId() == playerId) {
-                if (currentPlayer.getTurnsWithoutGold() == 3){
+                if (currentPlayer.getTurnsWithoutGold() == 3) {
                     leaveGame(currentPlayer.getId());
-                }
-                else{
+                } else {
                     currentPlayer.endTurn();
                 }
                 int i = players.indexOf(currentPlayer);
@@ -125,7 +125,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     public void leaveGame(int playerId) {
         for (Player p : players) {
             if (playerId == p.getId()) {
-                if (playerId == currentPlayer.getId() && currentPlayer.getTurnsWithoutGold() < 3){
+                if (playerId == currentPlayer.getId() && currentPlayer.getTurnsWithoutGold() < 3) {
                     endTurn(playerId);
                 }
                 players.remove(p);
@@ -196,7 +196,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
 
         List<Hexagon> ownedLand = map.getHexesInRadius(b.getLocation(), 1);
         for (Hexagon hex : ownedLand) {
-            if(hex.getGroundType() != GroundType.WATER){
+            if (hex.getGroundType() != GroundType.WATER) {
                 p.addHexagon(hex);
             }
         }
@@ -487,9 +487,9 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         return null;
     }
 
-    public void destroyBuilding(Building building){
+    public void destroyBuilding(Building building) {
         Building realBuilding = getBuildingAtLocation(building.getLocation());
-        if (realBuilding != null){
+        if (realBuilding != null) {
             realBuilding.getOwner().removeBuilding(realBuilding);
         }
 
@@ -543,9 +543,9 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
                 && hex.getGroundType() != GroundType.WATER);
     }
 
-    private boolean currentPlayerOwnsLand(Point location){
+    private boolean currentPlayerOwnsLand(Point location) {
         //Check if currentPlayer owns land
-        if(map.getHexAtLocation(location).getOwner() != currentPlayer){
+        if (map.getHexAtLocation(location).getOwner() != currentPlayer) {
             return false;
         }
         return true;

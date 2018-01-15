@@ -30,7 +30,7 @@ public class PlayerWinTable extends Table {
         Player winner = game.getCurrentPlayer();
         l.setText(winner.getUsername() + " has won the game!");
 
-        if(winner.getUsername().equals(game.getThisPlayer().getUsername())) {
+        if (winner.getUsername().equals(game.getThisPlayer().getUsername())) {
             l.setColor(Color.GREEN);
         } else {
             l.setColor(Color.RED);
