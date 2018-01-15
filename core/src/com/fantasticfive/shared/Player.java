@@ -139,7 +139,7 @@ public class Player implements Serializable {
 
     public Building getBuildingAtLocation(Point location) {
         for (Building building : buildings) {
-            if (building.getLocation().equals(location)) {
+            if (building.getLocation().sameAs(location)) {
                 return building;
             }
         }

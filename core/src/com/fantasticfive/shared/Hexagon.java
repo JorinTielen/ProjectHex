@@ -123,7 +123,7 @@ public class Hexagon implements Serializable {
 
     //returns the real x,y position of this hex
     public Vector2 getPos() {
-        double height = radius * 2;
+        double height = radius * 2; //NOSONAR
         double width = height;
 
         double vert = height * 0.75f;

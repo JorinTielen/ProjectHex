@@ -66,7 +66,7 @@ public class SpriteAnimation {
     }
 
     public Vector2 getPos() {
-        double height = 62 * 2;
+        double height = 62 * 2; //NOSONAR
         double width = height;
 
         double vert = height * 0.75f;

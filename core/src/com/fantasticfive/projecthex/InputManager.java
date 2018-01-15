@@ -21,7 +21,7 @@ public class InputManager implements InputProcessor {
 
     public void HandleInput() {
         //Check for key presses
-        if (!gameScreen.inMenu) {
+        if (!gameScreen.isInMenu()) {
             if (Gdx.input.isKeyPressed(Input.Keys.W)) {
                 camPos = new Vector2(0, 5);
             } else if (Gdx.input.isKeyPressed(Input.Keys.A)) {
@@ -56,7 +56,7 @@ public class InputManager implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (!gameScreen.inMenu) {
+        if (!gameScreen.isInMenu()) {
             //Left mouse button down
             if (button == Input.Buttons.LEFT) {
                 gameScreen.screenLeftClick(screenX, screenY);

@@ -45,7 +45,7 @@ public class GameMenuTable extends Table {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 GameMenuTable.this.setVisible(false);
-                gameScreen.inMenu = false;
+                gameScreen.setInMenu(false);
             }
         });
 

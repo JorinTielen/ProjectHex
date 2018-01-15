@@ -10,6 +10,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
@@ -85,7 +86,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 
@@ -116,7 +117,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 
@@ -140,7 +141,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 
@@ -157,7 +158,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             publisher.inform("Players", players, players);
             version++;
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 
@@ -210,7 +211,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
 
         return p;
@@ -237,7 +238,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 
@@ -249,7 +250,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     public Unit getUnitAtLocation(Point location) {
         for (Player p : players) {
             for (Unit u : p.getUnits()) {
-                if (u.getLocation().equals(location)) {
+                if (u.getLocation().sameAs(location)) {
                     return u;
                 }
             }
@@ -282,7 +283,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
         return hexagon;
     }
@@ -303,7 +304,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
                     publisher.inform("Players", null, players);
                     version++;
                 } catch (RemoteException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.ALL, e.getMessage());
                 }
 
                 return true;
@@ -314,7 +315,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
 
         return false;
@@ -336,7 +337,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
 
         return 0;
@@ -346,14 +347,14 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     public void sellUnit(Unit u) {
         for (Player p : players) {
             for (Unit unit : p.getUnits()) {
-                if (unit.getLocation().equals(u.getLocation())) {
+                if (unit.getLocation().sameAs(u.getLocation())) {
                     p.sellUnit(unit);
 
                     try {
                         publisher.inform("Players", null, players);
                         version++;
                     } catch (RemoteException e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.ALL, e.getMessage());
                     }
 
                     return;
@@ -379,7 +380,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 
@@ -395,7 +396,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 
@@ -417,7 +418,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 
@@ -441,7 +442,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 
@@ -466,7 +467,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 
@@ -492,7 +493,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
             publisher.inform("Players", null, players);
             version++;
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());
         }
     }
 
@@ -507,7 +508,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         //Check if unit is on hex
         for (Player player : players) {
             for (Unit unit : player.getUnits()) {
-                if (unit.getLocation().equals(location)) {
+                if (unit.getLocation().sameAs(location)) {
                     return false;
                 }
             }
@@ -525,7 +526,7 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
         //Check if unit is on hex
         for (Player player : players) {
             for (Unit unit : player.getUnits()) {
-                if (unit.getLocation().equals(location)) {
+                if (unit.getLocation().sameAs(location)) {
                     return false;
                 }
             }

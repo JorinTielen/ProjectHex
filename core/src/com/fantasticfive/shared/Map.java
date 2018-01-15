@@ -48,7 +48,7 @@ public class Map implements Serializable {
 
   public boolean canMoveTo(Unit u, Point location, List<Hexagon> movableHexes) {
         for (Hexagon hex : movableHexes) {
-            if(hex.getLocation().equals(location)) {
+            if(hex.getLocation().sameAs(location)) {
                 return true;
             }
         }
@@ -69,7 +69,7 @@ public class Map implements Serializable {
     public boolean isWithinAttackRange(Unit u, Point location) {
         List<Hexagon> movableHexes = getHexesInRadius(u.getLocation(), u.getAttackRangeLeft());
         for (Hexagon hex : movableHexes) {
-            if(hex.getLocation().equals(location)) {
+            if(hex.getLocation().sameAs(location)) {
                 return true;
             }
         }
