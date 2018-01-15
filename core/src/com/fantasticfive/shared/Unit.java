@@ -211,6 +211,10 @@ public class Unit implements Cloneable, Serializable {
         this.allowedToMove = 0;
     }
 
+    public void setAllowedToMove(int allowedToMove) {
+        this.allowedToMove = allowedToMove;
+    }
+
     public void setColor() {
         texture.getTextureData().prepare();
         Pixmap pixmap = texture.getTextureData().consumePixmap();
