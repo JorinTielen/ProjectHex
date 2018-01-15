@@ -207,7 +207,7 @@ public class Player implements Serializable {
     }
 
     public int getGoldPerTurn() {
-        int gpt = 0;
+        int gpt = 2;
         for (Unit u : units) {
             gpt -= u.getCostPerTurn();
         }
