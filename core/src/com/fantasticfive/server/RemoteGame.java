@@ -451,13 +451,13 @@ public class RemoteGame extends UnicastRemoteObject implements IRemoteGame {
     @Override
     public void attackBuilding(Unit unit, Building building) {
         if (unit != null && building != null) {
-            if (map.isWithinAttackRange(unit, building.getLocation())) {
-                Unit realUnit = getUnitAtLocation(unit.getLocation());
-                Building realBuilding = getBuildingAtLocation(building.getLocation());
+            Unit realUnit = getUnitAtLocation(unit.getLocation());
+            Building realBuilding = getBuildingAtLocation(building.getLocation());
+
+            if (map.isWithinAttackRange(realUnit, realBuilding.getLocation())) {
                 if (realUnit.attack(realBuilding)) {
                     Player enemy = realBuilding.getOwner();
                     enemy.destroyBuilding(realBuilding);
-                    //enemy.removeBuilding(realBuilding);
                     if (building instanceof TownCentre) {
                         removePlayer(enemy);
                     }

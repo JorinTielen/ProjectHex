@@ -64,6 +64,8 @@ public class Unit implements Cloneable, Serializable {
 
     public boolean attack(Building buildingToAttack) {
         if (allowedToAttack != 0) {
+            allowedToMove = 0;
+            allowedToAttack = 0;
             return buildingToAttack.damageHealth(this.attackPower);
         }
 
