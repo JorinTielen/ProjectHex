@@ -215,6 +215,11 @@ public class GameScreen implements Screen {
                 batch.draw(b.getImage(), h.getPos().x, h.getPos().y);
                 batch.setColor(Color.RED);
 
+                if (b.getResourceOnMountain()){
+                    h.removeObject();
+                    h.removeObjectType();
+                }
+
                 //draw health bar
                 batch.draw(blankTexture, h.getPos().x + 35, h.getPos().y + 100, 50, 5);
                 batch.setColor(Color.GREEN);
@@ -319,6 +324,7 @@ public class GameScreen implements Screen {
 
         //Animate endTurn button if it is your turn
         if (localGame.isMyTurn()) {
+            optionsTable.setVisible(true);
             frameCounter++;
             if (frameCounter >= 7200) {
                 ((OptionsTable) optionsTable).animateEndTurnButton(frameCounter);
@@ -330,6 +336,7 @@ public class GameScreen implements Screen {
                 ((OptionsTable) optionsTable).animateEndTurnButton(frameCounter);
             }
         } else {
+            optionsTable.setVisible(false);
             frameCounter = 0;
         }
 
