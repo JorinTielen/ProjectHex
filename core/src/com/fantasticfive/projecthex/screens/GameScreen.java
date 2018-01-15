@@ -490,7 +490,9 @@ public class GameScreen implements Screen {
                 Unit u = localGame.getSelectedUnit();
                 Unit enemy = localGame.getUnitOnHex(hex);
                 int hp = localGame.attackUnit(u, enemy);
-                showUnitHPLossUI(hp, x, y);
+                if (hp > 0){
+                    showUnitHPLossUI(hp, x, y);
+                }
             }
         }
     }
