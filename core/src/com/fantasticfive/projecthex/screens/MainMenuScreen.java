@@ -1,7 +1,6 @@
 package com.fantasticfive.projecthex.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
@@ -18,7 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.fantasticfive.projecthex.LocalGame;
-import com.fantasticfive.server.RMIServer;
 import com.fantasticfive.server.ServerManager;
 import com.fantasticfive.shared.*;
 import com.fantasticfive.shared.Map;
@@ -38,10 +36,10 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MainMenuScreen implements Screen {
@@ -212,7 +210,7 @@ public class MainMenuScreen implements Screen {
     @Override
     public void dispose() {
         menuBatch.dispose();
-        game.batch.dispose();
+        game.getBatch().dispose();
         if (menuMusic != null) menuMusic.dispose();
     }
 
@@ -270,7 +268,7 @@ public class MainMenuScreen implements Screen {
                 Point randomLocation = new Point(0, 0);
                 for (Player p : players) {
                     for (Unit u : p.getUnits()) {
-                        while (!u.getLocation().equals(randomLocation)) {
+                        while (!u.getLocation().sameAs(randomLocation)) {
                             int low = -1;
                             int high = 2;
                             int randomx = random.nextInt(high - low) + low;
@@ -404,9 +402,9 @@ public class MainMenuScreen implements Screen {
                     try {
                         localhost = InetAddress.getLocalHost();
                     } catch (UnknownHostException e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.ALL, e.getMessage());
                     }
-                    createServerTable.setIpAddress(localhost.getHostAddress()); //TODO: can be better because can't see when loading is done now
+                    createServerTable.setIpAddress(localhost.getHostAddress()); //NOSONAR //TODO: can be better because can't see when loading is done now
                     createServerTable.setVisible(true);
                 }
             });
@@ -600,7 +598,7 @@ public class MainMenuScreen implements Screen {
                 musicLabel.setText(String.format("%.0f", (sliderMusic.getValue() * 100)));
                 input.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.log(Level.ALL, e.getMessage());
             }
 
             t.add(new Label("Resolution: ", skin));
@@ -647,7 +645,7 @@ public class MainMenuScreen implements Screen {
                         input.close();
                     }
                     catch(Exception e){
-                        e.printStackTrace();
+                        LOGGER.log(Level.ALL, e.getMessage());
                     }
                     menuMusic.dispose();
                     game.setScreen(new MainMenuScreen(game));
@@ -673,7 +671,7 @@ public class MainMenuScreen implements Screen {
                         musicLabel.setText(String.format("%.0f", (sliderMusic.getValue() * 100)));
                         input.close();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        LOGGER.log(Level.ALL, e.getMessage());
                     }
                     optionsTable.setVisible(false);
                     gameSelectTable.setVisible(true);

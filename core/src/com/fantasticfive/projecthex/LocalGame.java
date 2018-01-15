@@ -7,13 +7,8 @@ import com.fantasticfive.shared.enums.BuildingType;
 import com.fantasticfive.shared.enums.GroundType;
 import com.fantasticfive.shared.enums.ObjectType;
 import com.fantasticfive.shared.enums.UnitType;
-import fontyspublisher.IPropertyListener;
-import fontyspublisher.IRemotePropertyListener;
 import fontyspublisher.IRemotePublisherForListener;
-import fontyspublisher.RemotePublisher;
 
-import java.beans.PropertyChangeEvent;
-import java.io.Serializable;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -52,7 +47,7 @@ public class LocalGame {
                 }
                 for (Hexagon h : map.getHexagons()) {
                     for (Hexagon h2 : p.getOwnedHexagons()) {
-                        if (h.getLocation().equals(h2.getLocation())) {
+                        if (h.getLocation().sameAs(h2.getLocation())) {
                             h.setOwner(p);
                         }
                     }
@@ -69,13 +64,13 @@ public class LocalGame {
                 try {
                     isMyTurn = thisPlayer.getId() == remoteGame.getCurrentPlayer().getId();
                 } catch (RemoteException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.ALL, e.getMessage());;
                 }
 
                 try {
                     lastPlayer = remoteGame.lastPlayer() && remoteGame.getVersion() != 1;
                 } catch (RemoteException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.ALL, e.getMessage());
                 }
             }
         });
@@ -230,7 +225,7 @@ public class LocalGame {
         try {
             remoteGame.sellUnit(u);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.ALL, e.getMessage());;
         }
     }
 

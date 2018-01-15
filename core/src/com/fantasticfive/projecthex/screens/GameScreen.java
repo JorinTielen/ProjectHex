@@ -49,7 +49,7 @@ public class GameScreen implements Screen {
     private Texture fogNeighbourTexture; //Texture for fog of war neighbouring visisted land
     private Texture menuTexture;
     private SpriteAnimation explosionAnimation;
-    public boolean inMenu;
+    private boolean inMenu;
     private boolean uiClearedAfterEndTurn;
 
     //endTurnAnimation
@@ -656,5 +656,13 @@ public class GameScreen implements Screen {
 
             optionsTable.setVisible(false);
         }
+    }
+
+    public boolean isInMenu() {
+        return this.inMenu;
+    }
+
+    public void setInMenu(boolean inMenu) {
+        this.inMenu = inMenu;
     }
 }

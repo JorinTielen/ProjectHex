@@ -49,7 +49,7 @@ public class BuildingFactory {
             default:
                 building = null;
         }
-        building.setLocation(location);
+        building.setLocation(location); //NOSONAR Building cannot be null because of the Enum
         building.setOwner(player);
         return building;
     }
