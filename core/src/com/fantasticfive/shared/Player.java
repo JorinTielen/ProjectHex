@@ -154,7 +154,7 @@ public class Player implements Serializable {
         if (this.gold - unit.getPurchaseCost() >= 0) {
             this.removeGold(unit.getPurchaseCost());
             this.units.add(unit);
-            unit.setAllowedToMove(0);
+            unit.setAllowedToAttack(0);
         } else {
             LOGGER.info("Not enough money");
         }

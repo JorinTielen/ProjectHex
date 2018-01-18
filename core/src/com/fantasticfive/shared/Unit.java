@@ -168,6 +168,10 @@ public class Unit implements Cloneable, Serializable {
         return this.allowedToAttack;
     }
 
+    public void setAllowedToAttack(int allowedToAttack){
+        this.allowedToAttack = allowedToAttack;
+    }
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
@@ -209,10 +213,6 @@ public class Unit implements Cloneable, Serializable {
 
     public void claimedLand() {
         this.allowedToMove = 0;
-    }
-
-    public void setAllowedToMove(int allowedToMove) {
-        this.allowedToMove = allowedToMove;
     }
 
     public void setColor() {
