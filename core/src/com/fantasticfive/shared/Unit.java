@@ -168,6 +168,10 @@ public class Unit implements Cloneable, Serializable {
         return this.allowedToAttack;
     }
 
+    public void setAllowedToAttack(int allowedToAttack){
+        this.allowedToAttack = allowedToAttack;
+    }
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
